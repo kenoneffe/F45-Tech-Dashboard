@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Upper Parts -->
+    <dimen name="logo_height">200dp</dimen>
+    <dimen name="logo_width">300dp</dimen>
+    <dimen name="ticketVolumeArea_height">200dp</dimen>
+    <dimen name="ticketVolumeArea_width">400dp</dimen>
+    <dimen name="shiftArea_height">200dp</dimen>
+    <dimen name="shiftArea_width">580dp</dimen>
+
+    <!-- Lower Parts -->
+    <dimen name="graphsArea_width">640dp</dimen>
+    <dimen name="notificationArea_width">640dp</dimen>
+
+
+</resources>

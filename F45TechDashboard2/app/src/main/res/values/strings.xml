@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">F45 Tech Dashboard</string>
+    <string name="ticketvolumearea">Ticket Volume Area</string>
+    <string name="shift_area">Shift Area</string>
+    <string name="marquee_area">Marquee Area</string>
+    <string name="graphs_area">GRAPHS</string>
+    <string name="notfications_area">NOTIFICATIONS AREA</string>
+</resources>

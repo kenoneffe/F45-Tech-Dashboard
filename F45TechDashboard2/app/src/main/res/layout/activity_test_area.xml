@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.android.f45techdashboard.TestArea"
+    android:orientation="vertical"
+    android:id="@+id/parenLayout">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/alert_layout"
+        android:visibility="gone">
+
+        <include
+            layout="@layout/fragment_alert"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <include
+            layout="@layout/fragment_logo"
+            android:layout_height="@dimen/logo_height"
+            android:layout_width="@dimen/logo_width"
+            android:id="@+id/box1" />
+
+        <LinearLayout
+            android:layout_width="@dimen/ticketVolumeArea_width"
+            android:layout_height="@dimen/ticketVolumeArea_height"
+            android:id="@+id/frame_ticketArea" />
+
+
+        <LinearLayout
+            android:layout_width="@dimen/shiftArea_width"
+            android:layout_height="@dimen/shiftArea_height"
+            android:id="@+id/linearParentLayout" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/commonIssueText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/marquee_area"
+        android:textAllCaps="true"
+        android:gravity="center"
+        android:textColor="#000000"
+        android:textSize="25sp"
+        android:maxLines="1"
+        android:ellipsize="marquee"
+        android:fadingEdge="horizontal"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:scrollHorizontally="true"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <include
+            layout="@layout/fragment_graphs"
+            android:layout_height="match_parent"
+            android:layout_width="@dimen/graphsArea_width"/>
+
+
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent"
+          android:orientation="vertical">
+
+          <FrameLayout
+              android:layout_width="match_parent"
+              android:layout_height="150dp"
+              android:id="@+id/timerFrame"/>
+
+        <include
+            layout="@layout/fragment_feeds"
+            android:layout_width="@dimen/notificationArea_width"
+            android:layout_height="match_parent"
+            />
+
+      </LinearLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
