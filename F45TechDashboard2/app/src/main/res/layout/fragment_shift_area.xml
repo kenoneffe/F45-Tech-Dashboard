@@ -70,7 +70,7 @@
                 android:layout_width="193dp"
                 android:layout_height="30dp"
                 android:background="#919191"
-                android:text="Evening"
+                android:text="Even"
                 android:gravity="center_vertical|start"/>
 
             <LinearLayout
@@ -78,9 +78,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"/>
-
-
-
 
         </LinearLayout>
 
