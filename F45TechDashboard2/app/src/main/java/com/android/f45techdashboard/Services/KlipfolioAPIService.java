@@ -1,6 +1,7 @@
 package com.android.f45techdashboard.Services;
 
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.android.f45techdashboard.Models.Constants;
@@ -42,11 +43,12 @@ public class KlipfolioAPIService extends AsyncTask<String, String, String> {
 
         try {
 
-//            String apiKey = "b14f4a3baa6b948bdaf976f97a6bb98ae74c53e0";
+                String apiKey = "b14f4a3baa6b948bdaf976f97a6bb98ae74c53e0";
+
 
             apiURL = new URL(strings[0]);
             apiCon = (HttpURLConnection) apiURL.openConnection();
-//            apiCon.addRequestProperty("kf-api-key", apiKey);
+            apiCon.addRequestProperty("kf-api-key", apiKey);
             apiCon.setRequestMethod("GET");
             apiCon.connect();
 
@@ -67,12 +69,11 @@ public class KlipfolioAPIService extends AsyncTask<String, String, String> {
             bufferedReader.close();
 
 
-            klifolioDataModel = new Gson().fromJson(sbuilder.toString(), KlifolioDataModel.class);
+            KlifolioDataModel klifolioDataModel = new Gson().fromJson(sbuilder.toString(), KlifolioDataModel.class);
             Constants.klifolioDataModel = klifolioDataModel;
 
-
-            Log.d("LIXAN GWAPO", sbuilder.toString());
-            Log.d("LIXAN GWAPO", klifolioDataModel.toString());
+            Log.e("Result", sbuilder.toString());
+            Log.e("Result1", klifolioDataModel.toString());
 
         }catch (Exception e)
         {

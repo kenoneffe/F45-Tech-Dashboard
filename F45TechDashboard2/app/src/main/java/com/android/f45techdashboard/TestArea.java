@@ -1,5 +1,6 @@
 package com.android.f45techdashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -47,17 +48,16 @@ public class TestArea extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_test_area);
 
 
         layout = (LinearLayout) findViewById(R.id.linearParentLayout);
         timerFrame = (FrameLayout) findViewById(R.id.timerFrame);
         ticketLayout = (LinearLayout) findViewById(R.id.frame_ticketArea);
-//        startService(new Intent(getApplicationContext(), DeputyAPIService.class));
-//        startService(new Intent(getApplicationContext(), FreshdeskAPIService.class));
-        /*freshdeskAPIService = new FreshdeskAPIService();
-        freshdeskAPIService.getFreshdeskData("https://f45training.freshdesk.com/api/v2/tickets");*/
+        startService(new Intent(getApplicationContext(), DeputyAPIService.class));
+        startService(new Intent(getApplicationContext(), FreshdeskAPIService.class));
+        freshdeskAPIService = new FreshdeskAPIService();
+        freshdeskAPIService.getFreshdeskData("https://f45training.freshdesk.com/api/v2/tickets");
         klipfolioAPIService = new KlipfolioAPIService();
         deputyAPIService = new DeputyAPIService();
 
@@ -91,7 +91,7 @@ public class TestArea extends AppCompatActivity {
         }
         else
         {
-            Log.e("LIXAN", "onCreate: layout is NULL damn it why?");
+            Log.e("LIXAN", "onCreate: layout is NULL");
         }
 
 
