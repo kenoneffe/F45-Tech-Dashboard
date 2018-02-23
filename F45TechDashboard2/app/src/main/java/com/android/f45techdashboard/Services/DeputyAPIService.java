@@ -100,7 +100,7 @@ public class DeputyAPIService extends AsyncTask<String, String, String>
             
             if(shiftTableManager != null)
             {
-//                Log.e("LIXAN", "MODEL: NAME: " + deputyDataModelList.deputyDataModelList.get(0).data._DPMetaData.EmployeeInfo.DisplayName  + " ID: " + deputyDataModelList.deputyDataModelList.get(0).data.Id);
+//              Log.e("LIXAN", "MODEL: NAME: " + deputyDataModelList.deputyDataModelList.get(0).data._DPMetaData.EmployeeInfo.DisplayName  + " ID: " + deputyDataModelList.deputyDataModelList.get(0).data.Id);
                 Log.e("LIXAN", "MODEL: " + array1);
                 shiftTableManager.notifyObserver(array1);
             }

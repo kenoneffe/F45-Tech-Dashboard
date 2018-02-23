@@ -43,9 +43,7 @@ public class KlipfolioAPIService extends AsyncTask<String, String, String> {
 
         try {
 
-                String apiKey = "b14f4a3baa6b948bdaf976f97a6bb98ae74c53e0";
-
-
+            String apiKey = "b14f4a3baa6b948bdaf976f97a6bb98ae74c53e0";
             apiURL = new URL(strings[0]);
             apiCon = (HttpURLConnection) apiURL.openConnection();
             apiCon.addRequestProperty("kf-api-key", apiKey);

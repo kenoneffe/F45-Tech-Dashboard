@@ -16,6 +16,7 @@ import com.android.f45techdashboard.Controllers.TimerController;
 import com.android.f45techdashboard.Managers.ShiftTableManager;
 import com.android.f45techdashboard.Models.Constants;
 import com.android.f45techdashboard.Models.DeputyDataModel;
+import com.android.f45techdashboard.Models.KlifolioDataModel;
 import com.android.f45techdashboard.Services.DeputyAPIService;
 import com.android.f45techdashboard.Services.FreshdeskAPIService;
 import com.android.f45techdashboard.Services.KlipfolioAPIService;
@@ -88,11 +89,16 @@ public class TestArea extends AppCompatActivity {
             klipfolioAPIService.getKlipfolioData("http://matrix.f45.info/v1/tv_reports");
             deputyAPIService.getDeputyAPIdata("https://a3c3f816065445.as.deputy.com/api/v1/resource/Timesheet/");
             shiftManager.putObserver("observerKo", controller);
+
         }
         else
         {
             Log.e("LIXAN", "onCreate: layout is NULL");
         }
+
+
+
+
 
 
         chart = (BarChart) findViewById(R.id.barChart);

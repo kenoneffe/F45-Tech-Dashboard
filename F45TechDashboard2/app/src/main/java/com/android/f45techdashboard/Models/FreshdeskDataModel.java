@@ -16,4 +16,16 @@ public class FreshdeskDataModel implements Serializable {
     @SerializedName("updated_at")
     public String updated_at;
 
+    public FreshdeskDataModel(String created_at, String updated_at) {
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
 }
