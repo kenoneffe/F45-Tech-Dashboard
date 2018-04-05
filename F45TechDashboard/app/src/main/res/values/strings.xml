@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">F45TechDashboard</string>
+    <string name="_45logo">45Logo</string>
+    <string name="_ticketstoday">## Tickets Today</string>
+    <string name="avgResponse">## Response Time</string>
 </resources>

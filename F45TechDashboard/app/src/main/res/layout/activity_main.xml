@@ -1,10 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.android.f45tv.f45techdashboard.MainActivity">
 
+<<<<<<< HEAD
+=======
 
-</android.support.constraint.ConstraintLayout>
+    <include
+        android:id="@+id/_45logoImg"
+        android:layout_width="wrap_content"
+        android:layout_height="117dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="24dp"
+        android:layout="@layout/f45logo" />
+
+    <include
+        android:id="@+id/ticketsToday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="186dp"
+        android:layout_marginTop="31dp"
+        android:layout="@layout/tickets" />
+>>>>>>> f51574f2a5a928b7cc5739f0e248ef9ace933ccc
+
+    <include
+        android:id="@+id/avgResponse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/ticketsToday"
+        android:layout_marginTop="72dp"
+        android:layout="@layout/response" />
+</RelativeLayout>
