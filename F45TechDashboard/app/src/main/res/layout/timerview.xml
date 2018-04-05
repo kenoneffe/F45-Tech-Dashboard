@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="30"
+        android:text="@string/_minutes"
         android:textSize="30sp"
         android:textStyle="bold"
         android:id="@+id/minutesView"
