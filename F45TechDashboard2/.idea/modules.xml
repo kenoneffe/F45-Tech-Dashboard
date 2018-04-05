@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/F45-Tech-Dashboard-F45TechDashboard2.iml" filepath="$PROJECT_DIR$/F45-Tech-Dashboard-F45TechDashboard2.iml" />
       <module fileurl="file://$PROJECT_DIR$/F45TechDashboard2.iml" filepath="$PROJECT_DIR$/F45TechDashboard2.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/F45TechDashboard2-app.iml" filepath="$PROJECT_DIR$/app/F45TechDashboard2-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
