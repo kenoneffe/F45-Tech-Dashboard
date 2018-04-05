@@ -44,12 +44,4 @@
         android:layout_alignParentTop="true"
         android:layout="@layout/schedule" />
 
-    <include
-        android:id="@+id/main_marque_scrolling_text"
-        layout="@layout/marquee"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="125dp" />
 </RelativeLayout>
