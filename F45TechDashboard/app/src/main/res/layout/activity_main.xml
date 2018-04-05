@@ -7,8 +7,6 @@
     android:layout_height="match_parent"
     tools:context="com.android.f45tv.f45techdashboard.MainActivity">
 
-<<<<<<< HEAD
-=======
 
     <include
         android:id="@+id/_45logoImg"
@@ -28,7 +26,7 @@
         android:layout_marginStart="186dp"
         android:layout_marginTop="31dp"
         android:layout="@layout/tickets" />
->>>>>>> f51574f2a5a928b7cc5739f0e248ef9ace933ccc
+
 
     <include
         android:id="@+id/avgResponse"
