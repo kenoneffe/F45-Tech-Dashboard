@@ -36,4 +36,10 @@
         android:layout_alignStart="@+id/ticketsToday"
         android:layout_marginTop="72dp"
         android:layout="@layout/response" />
+
+    <include
+        android:id="@+id/minutesView"
+        android:layout="@layout/timerview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>
