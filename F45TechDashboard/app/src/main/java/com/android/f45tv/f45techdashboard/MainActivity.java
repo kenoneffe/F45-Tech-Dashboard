@@ -30,21 +30,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         barChart = (BarChart) findViewById(R.id.chart);
-//        barChart.setDrawBarShadow(false);
-//        barChart.setDrawValueAboveBar(true);
-//        barChart.setMaxVisibleValueCount(50);
-//        barChart.setPinchZoom(false);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.setMaxVisibleValueCount(50);
+        barChart.setPinchZoom(false);
         barChart.setDoubleTapToZoomEnabled(false);
         barChart.setDrawGridBackground(true);
 
         barEntries = new ArrayList<>();
-        barEntries.add(new BarEntry(40f,0));
-        barEntries.add(new BarEntry(30f, 0));
-        barEntries.add(new BarEntry(50f, 0));
+        barEntries.add(new BarEntry(1, 40f));
+        barEntries.add(new BarEntry(2, 44f));
+        barEntries.add(new BarEntry(3, 30f));
 
-        graphLabels = new String[]{"Opened", "Solved", "Unresolved"};
+        graphLabels = new String[]{" ","Opened", "Solved", "Unresolved"};
 
-        BarDataSet barDataSet = new BarDataSet(barEntries, "Data Set1");
+        BarDataSet barDataSet = new BarDataSet(barEntries, "Cells");
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
 
 
