@@ -71,11 +71,12 @@
         android:orientation="horizontal"
         android:baselineAligned="false">
 
-        <include
-            layout="@layout/graph"
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/chart"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"/>
+
 
         <LinearLayout
             android:layout_width="0dp"
