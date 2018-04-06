@@ -3,6 +3,11 @@ package com.android.f45tv.f45techdashboard;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
@@ -17,7 +22,11 @@ import java.util.ArrayList;
  */
 
 public class MainActivity extends AppCompatActivity {
+
+    TextView marqueeView;
     BarChart barChart;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,5 +52,16 @@ public class MainActivity extends AppCompatActivity {
         data.setBarWidth(0.9f);
 
         barChart.setData(data);
+    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        marqueeView = (TextView) findViewById(R.id.marque_scrolling_text);
+        Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
+        marqueeView.startAnimation(marqueeAnim);
+
     }
 }
