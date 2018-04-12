@@ -2,14 +2,11 @@ package com.android.f45tv.f45techdashboard;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
-
+import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -18,10 +15,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-
 
 
 
@@ -33,32 +27,23 @@ public class MainActivity extends AppCompatActivity {
 
     TextView marqueeView;
     BarChart barChart;
-<<<<<<< HEAD
-<<<<<<< HEAD
     String[] graphLabels;
     ArrayList<BarEntry> barEntries;
-=======
-=======
     TextView tv;
     CountDownTimer countDownTimer;
-
->>>>>>> bb8b710785b2edac93d957fd676591af8a838e5e
-
+    TicketVolumeController ticketVolumeController;
 
 
-    String[] graphLabels;
-    ArrayList<BarEntry> barEntries;
-
->>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        //Marquee
         tv = (TextView) findViewById(R.id.minutesText);
+        //Ticket Volume Controller
+        ticketVolumeController = new TicketVolumeController(this);
 
-
-
+        //Graph
         barChart = (BarChart) findViewById(R.id.chart);
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
@@ -72,11 +57,10 @@ public class MainActivity extends AppCompatActivity {
         barEntries.add(new BarEntry(2, 44f));
         barEntries.add(new BarEntry(3, 35f));
 
-        graphLabels = new String[]{" ","Opened", "Solved", "Unresolved"};
+        graphLabels = new String[]{" ", "Opened", "Solved", "Unresolved"};
 
         BarDataSet barDataSet = new BarDataSet(barEntries, "Cells");
         barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-
 
 
         BarData data = new BarData(barDataSet);
@@ -91,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public class MyAxisValueFormatter implements IAxisValueFormatter{
+    public class MyAxisValueFormatter implements IAxisValueFormatter {
         private String[] mValues;
 
         public MyAxisValueFormatter(String[] mValues) {
@@ -111,20 +95,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
     @Override
     protected void onStart() {
         super.onStart();
 
-        new CountDownTimer(60000, 1000){
+        new CountDownTimer(60000, 1000) {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                tv.setText("" + millisUntilFinished /1000);
+                tv.setText("" + millisUntilFinished / 1000);
             }
 
             @Override
@@ -137,9 +116,8 @@ public class MainActivity extends AppCompatActivity {
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
+        //onStart set Ticket Volume and Response Time
+        ticketVolumeController.setTicketVolumeText("69");
+        ticketVolumeController.setResponseTimeText("123");
     }
-<<<<<<< HEAD
-=======
-
->>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
 }
