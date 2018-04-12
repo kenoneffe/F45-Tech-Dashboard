@@ -102,11 +102,12 @@
             android:weightSum="2"
             android:orientation="vertical">
 
-            <include
+            <FrameLayout
                 layout="@layout/timerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0" />
+                android:layout_weight="0"
+                android:id="@+id/timerFrame"/>
 
             <Button
                 android:id="@+id/notificationsID"
