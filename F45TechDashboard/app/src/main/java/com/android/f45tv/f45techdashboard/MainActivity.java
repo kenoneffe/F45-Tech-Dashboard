@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.f45tv.f45techdashboard.Controller.TimerController;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -21,6 +22,9 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import com.android.f45tv.f45techdashboard.R;
 
 
 
@@ -33,31 +37,30 @@ public class MainActivity extends AppCompatActivity {
 
     TextView marqueeView;
     BarChart barChart;
-<<<<<<< HEAD
-<<<<<<< HEAD
     String[] graphLabels;
     ArrayList<BarEntry> barEntries;
-=======
-=======
-    TextView tv;
-    CountDownTimer countDownTimer;
-
->>>>>>> bb8b710785b2edac93d957fd676591af8a838e5e
+    TimerController timerController;
+    FrameLayout timerFrame;
+    //TextView tv;
+    //CountDownTimer countDownTimer;
 
 
 
-    String[] graphLabels;
-    ArrayList<BarEntry> barEntries;
 
->>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        tv = (TextView) findViewById(R.id.minutesText);
+        //tv = (TextView) findViewById(R.id.minutesText);
 
-
+        timerFrame = (FrameLayout) findViewById(R.id.timerFrame);
+        timerController = new TimerController(this);
 
         barChart = (BarChart) findViewById(R.id.chart);
         barChart.setDrawBarShadow(false);
@@ -91,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     public class MyAxisValueFormatter implements IAxisValueFormatter{
         private String[] mValues;
 
@@ -111,12 +115,15 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
+        timerFrame.addView(timerController);
+    }
+
+    /*@Override
     protected void onStart() {
         super.onStart();
 
@@ -137,9 +144,6 @@ public class MainActivity extends AppCompatActivity {
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
-    }
-<<<<<<< HEAD
-=======
+    }*/
 
->>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
 }
