@@ -29,8 +29,17 @@ public class MainActivity extends AppCompatActivity {
 
     TextView marqueeView;
     BarChart barChart;
+<<<<<<< HEAD
     String[] graphLabels;
     ArrayList<BarEntry> barEntries;
+=======
+
+
+
+    String[] graphLabels;
+    ArrayList<BarEntry> barEntries;
+
+>>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +98,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
     @Override
     protected void onStart() {
         super.onStart();
@@ -98,4 +111,8 @@ public class MainActivity extends AppCompatActivity {
         marqueeView.startAnimation(marqueeAnim);
 
     }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 06116c82195968a29a0f86fa03d8851b5cef24e1
 }
