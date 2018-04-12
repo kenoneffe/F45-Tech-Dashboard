@@ -41,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<BarEntry> barEntries;
     TimerController timerController;
     FrameLayout timerFrame;
-    //TextView tv;
-    //CountDownTimer countDownTimer;
+
 
 
 
@@ -121,29 +120,12 @@ public class MainActivity extends AppCompatActivity {
 
         timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
         timerFrame.addView(timerController);
-    }
-
-    /*@Override
-    protected void onStart() {
-        super.onStart();
-
-        new CountDownTimer(60000, 1000){
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                tv.setText("" + millisUntilFinished /1000);
-            }
-
-            @Override
-            public void onFinish() {
-                tv.setText("Finish");
-            }
-        }.start();
 
         marqueeView = (TextView) findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
+    }
 
-    }*/
+
 
 }
