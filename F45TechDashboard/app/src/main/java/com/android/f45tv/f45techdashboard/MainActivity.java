@@ -1,6 +1,7 @@
 package com.android.f45tv.f45techdashboard;
 
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
@@ -21,6 +22,9 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+
+
+
 /**
  * Created by LeakSun on 04/04/2018.
  */
@@ -30,9 +34,15 @@ public class MainActivity extends AppCompatActivity {
     TextView marqueeView;
     BarChart barChart;
 <<<<<<< HEAD
+<<<<<<< HEAD
     String[] graphLabels;
     ArrayList<BarEntry> barEntries;
 =======
+=======
+    TextView tv;
+    CountDownTimer countDownTimer;
+
+>>>>>>> bb8b710785b2edac93d957fd676591af8a838e5e
 
 
 
@@ -44,6 +54,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tv = (TextView) findViewById(R.id.minutesText);
+
+
 
         barChart = (BarChart) findViewById(R.id.chart);
         barChart.setDrawBarShadow(false);
@@ -105,6 +119,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        new CountDownTimer(60000, 1000){
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                tv.setText("" + millisUntilFinished /1000);
+            }
+
+            @Override
+            public void onFinish() {
+                tv.setText("Finish");
+            }
+        }.start();
 
         marqueeView = (TextView) findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
