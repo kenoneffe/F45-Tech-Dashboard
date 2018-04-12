@@ -29,18 +29,18 @@
         <LinearLayout
             android:id="@+id/topMiddleLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
             android:weightSum="1">
 
             <LinearLayout
                 android:id="@+id/ticketFrame"
-                layout="@layout/timerview"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="horizontal" />
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+            </LinearLayout>
+
 
         </LinearLayout>
 

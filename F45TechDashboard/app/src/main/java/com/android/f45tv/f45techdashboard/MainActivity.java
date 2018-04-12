@@ -81,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
     }
 
-    public class MyAxisValueFormatter implements IAxisValueFormatter{
+    public class MyAxisValueFormatter implements IAxisValueFormatter {
 
         private String[] mValues;
 
@@ -110,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
         timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
         timerFrame.addView(timerController);
 
+
         marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
@@ -119,5 +120,6 @@ public class MainActivity extends AppCompatActivity {
         ticketVolumeController.setResponseTimeText("123");
         ticketLayout.addView(ticketVolumeController);
     }
+
 }
 
