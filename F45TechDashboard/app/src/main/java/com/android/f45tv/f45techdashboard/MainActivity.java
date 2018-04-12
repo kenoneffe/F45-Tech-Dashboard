@@ -5,13 +5,14 @@ import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.FrameLayout;
 import android.widget.TextView;
-<<<<<<< HEAD
+
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
-=======
+
 
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
->>>>>>> 5551cc286d7df642aa17f487304433d5deec6dba
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -37,12 +38,12 @@ public class MainActivity extends AppCompatActivity {
     BarChart barChart;
     String[] graphLabels;
     ArrayList<BarEntry> barEntries;
-<<<<<<< HEAD
+
     TextView tv;
     CountDownTimer countDownTimer;
     TicketVolumeController ticketVolumeController;
 
-=======
+
     TimerController timerController;
     FrameLayout timerFrame;
 
@@ -53,29 +54,29 @@ public class MainActivity extends AppCompatActivity {
 
 
 
->>>>>>> 5551cc286d7df642aa17f487304433d5deec6dba
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-<<<<<<< HEAD
+
         setContentView(R.layout.activity_main);
         //Marquee
-        tv = (TextView) findViewById(R.id.minutesText);
+
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
 
         //Graph
-=======
 
-        setContentView(R.layout.activity_main);
 
-        //tv = (TextView) findViewById(R.id.minutesText);
+
+
+
 
         timerFrame = (FrameLayout) findViewById(R.id.timerFrame);
         timerController = new TimerController(this);
 
->>>>>>> 5551cc286d7df642aa17f487304433d5deec6dba
+
         barChart = (BarChart) findViewById(R.id.chart);
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(true);
@@ -107,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-<<<<<<< HEAD
-    public class MyAxisValueFormatter implements IAxisValueFormatter {
-=======
+
+
+
 
     public class MyAxisValueFormatter implements IAxisValueFormatter{
->>>>>>> 5551cc286d7df642aa17f487304433d5deec6dba
+
         private String[] mValues;
 
         public MyAxisValueFormatter(String[] mValues) {
@@ -133,52 +134,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-<<<<<<< HEAD
-=======
     protected void onStart() {
         super.onStart();
 
         timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
         timerFrame.addView(timerController);
-<<<<<<< HEAD
-=======
-    }
-
-    /*@Override
->>>>>>> 5551cc286d7df642aa17f487304433d5deec6dba
-    protected void onStart() {
-        super.onStart();
-
-        new CountDownTimer(60000, 1000) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-                tv.setText("" + millisUntilFinished / 1000);
-            }
-
-            @Override
-            public void onFinish() {
-                tv.setText("Finish");
-            }
-        }.start();
->>>>>>> 1c4e509335930fbcb001555033de6f3f3361dae8
 
         marqueeView = (TextView) findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
+
     }
 
 
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-        //onStart set Ticket Volume and Response Time
-        ticketVolumeController.setTicketVolumeText("69");
-        ticketVolumeController.setResponseTimeText("123");
-    }
-=======
-    }*/
->>>>>>> 1c4e509335930fbcb001555033de6f3f3361dae8
 
->>>>>>> 5551cc286d7df642aa17f487304433d5deec6dba
 }
