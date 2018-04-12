@@ -1,6 +1,5 @@
 package com.android.f45tv.f45techdashboard.Interfaces;
 
-
 import android.view.View;
 
 public interface TimerInterface {
