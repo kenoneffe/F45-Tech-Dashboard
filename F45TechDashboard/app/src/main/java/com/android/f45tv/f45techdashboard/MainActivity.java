@@ -32,17 +32,11 @@ public class MainActivity extends AppCompatActivity {
     String[] graphLabels;
     String[] graphStackLabels;
     ArrayList<BarEntry> barEntries;
-<<<<<<< HEAD
-=======
-    TextView tv;
->>>>>>> 86cd9950e6a359b078d7f36555e256da6f806276
-    CountDownTimer countDownTimer;
     TicketVolumeController ticketVolumeController;
     TimerController timerController;
     FrameLayout timerFrame;
     LinearLayout ticketLayout;
 
-<<<<<<< HEAD
 
 
 
@@ -53,13 +47,13 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-=======
->>>>>>> 86cd9950e6a359b078d7f36555e256da6f806276
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-<<<<<<< HEAD
+
 
         //Marquee
 
@@ -79,9 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
         barChart = (BarChart) findViewById(R.id.chart);
 
-=======
 
->>>>>>> 86cd9950e6a359b078d7f36555e256da6f806276
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
         ticketLayout = findViewById(R.id.ticketFrame);
@@ -126,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
     }
 
-<<<<<<< HEAD
+
 
 
 
@@ -138,10 +130,6 @@ public class MainActivity extends AppCompatActivity {
     public class MyAxisValueFormatter implements IAxisValueFormatter {
 
 
-=======
-    public class MyAxisValueFormatter implements IAxisValueFormatter {
-
->>>>>>> 86cd9950e6a359b078d7f36555e256da6f806276
         private String[] mValues;
 
         public MyAxisValueFormatter(String[] mValues) {
@@ -162,17 +150,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-<<<<<<< HEAD
 
-=======
->>>>>>> 86cd9950e6a359b078d7f36555e256da6f806276
     protected void onStart() {
         super.onStart();
 
         timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
         timerFrame.addView(timerController);
 
-<<<<<<< HEAD
+
 
         marqueeView = (TextView) findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
@@ -190,16 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-=======
-        marqueeView = findViewById(R.id.marque_scrolling_text);
-        Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
-        marqueeView.startAnimation(marqueeAnim);
 
-        //onStart set Ticket Volume and Response Time
-        ticketVolumeController.setTicketVolumeText("69");
-        ticketVolumeController.setResponseTimeText("123");
-        ticketLayout.addView(ticketVolumeController);
-    }
->>>>>>> 86cd9950e6a359b078d7f36555e256da6f806276
+
 }
 
