@@ -144,14 +144,6 @@ public class MainActivity extends AppCompatActivity {
         ticketLayout.addView(ticketVolumeController);
 
     }
-
-
-
-
-
-
-
-
-
+    
 }
 
