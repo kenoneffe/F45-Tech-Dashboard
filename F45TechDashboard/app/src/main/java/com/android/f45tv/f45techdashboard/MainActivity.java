@@ -1,5 +1,6 @@
 package com.android.f45tv.f45techdashboard;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -31,7 +33,19 @@ public class MainActivity extends AppCompatActivity {
     BarChart barChart;
     String[] graphLabels;
     String[] graphStackLabels;
-    ArrayList<BarEntry> barEntries;
+    List<BarEntry> barEntries1;
+    List<BarEntry> barEntries2;
+    List<BarEntry> barEntries3;
+    List<BarEntry> barEntriesMar;
+    List<BarEntry> barEntriesApr;
+    List<BarEntry> barEntriesMay;
+    List<BarEntry> barEntriesJun;
+    List<BarEntry> barEntriesJul;
+    List<BarEntry> barEntriesAug;
+    List<BarEntry> barEntriesSep;
+    List<BarEntry> barEntriesOct;
+    List<BarEntry> barEntriesNov;
+    List<BarEntry> barEntriesDec;
     TextView tv;
     CountDownTimer countDownTimer;
     TicketVolumeController ticketVolumeController;
@@ -55,36 +69,49 @@ public class MainActivity extends AppCompatActivity {
         barChart.setDrawBarShadow(false);
         barChart.setDrawValueAboveBar(false);
         barChart.setPinchZoom(false);
-        barChart.setFocusable(false);
+        barChart.setFocusable(true);
+        barChart.setDragEnabled(true);
         barChart.setDoubleTapToZoomEnabled(false);
         barChart.setScaleEnabled(false);
-        barChart.setDragEnabled(false);
+        barChart.setHighlightFullBarEnabled(false);
+        barChart.setHighlightPerTapEnabled(false);
+        barChart.setHighlightPerDragEnabled(false);
         barChart.setDrawGridBackground(true);
         barChart.setClickable(false);
         //add the retrofit here.
-        barEntries = new ArrayList<>();
-        float[] opened =  {30f, 35f, 40f};
-        float[] solved = {10f, 14f, 34f};
-        float[] unresolved = {20f, 54f, 15f};
-        barEntries.add(new BarEntry(1, opened));
-        barEntries.add(new BarEntry(2, solved));
-        barEntries.add(new BarEntry(3, unresolved));
+        barEntries1 = new ArrayList<>();
+        barEntries2 = new ArrayList<>();
+        barEntries3 = new ArrayList<>();
 
-        graphLabels = new String[]{" ", "Jan-Apr", "May-Aug", "Sept-Dec"};
-        graphStackLabels = new String[]{"Opened", "Solved", "Unresolved"};
+        int[] opened =  {30,20,10,5,100};
+        float[] resolved = {15,18,10,5,70};
+        float[] unresolved = {15,2,0,0,30};
 
-        BarDataSet barDataSet = new BarDataSet(barEntries, "Legend");
-        barDataSet.setStackLabels(graphStackLabels);
-        //barDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
-        BarData data = new BarData(barDataSet);
-        data.setBarWidth(0.9f);
+        for (int i = 0; i < opened.length; i++){
+            barEntries1.add(new BarEntry(i,opened[i]));
+            barEntries2.add(new BarEntry(i,resolved[i]));
+            barEntries3.add(new BarEntry(i,unresolved[i]));
+        }
 
+        graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        //graphStackLabels = new String[]{"Opened", "Solved", "Unresolved"};
+        //3 barDataSets for Opened Solved and Unresolved
+        BarDataSet barDataSetOpened = new BarDataSet(barEntries1, "Opened");
+        barDataSetOpened.setColors(Color.BLUE);
+        BarDataSet barDataSetResolved = new BarDataSet(barEntries2, "Resolved");
+        barDataSetResolved.setColors(Color.GREEN);
+        BarDataSet barDataSetUnresolved = new BarDataSet(barEntries3, "Unresolved");
+        barDataSetUnresolved.setColors(Color.RED);
+
+        BarData data = new BarData(barDataSetOpened,barDataSetResolved,barDataSetUnresolved);
+        data.setBarWidth(0.2f);
         barChart.setData(data);
+        barChart.groupBars(-1,.02f, 0.01f);
+        barChart.invalidate();
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setValueFormatter(new MyAxisValueFormatter(graphLabels));
-        xAxis.setGranularity(1);
+        xAxis.setCenterAxisLabels(true);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
     }
 
