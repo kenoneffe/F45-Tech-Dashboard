@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">F45TechDashboard</string>
+    <string name="_45logo">45Logo</string>
+    <string name="_ticketstoday">Tickets Today</string>
+    <string name="avgResponse">Response Time</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="evening">Evening</string>
+    <string name="schedule">Schedule</string>
+    <string name="_minutes">30:00</string>
+    <string name="Notifications">Notifications</string>
 </resources>
