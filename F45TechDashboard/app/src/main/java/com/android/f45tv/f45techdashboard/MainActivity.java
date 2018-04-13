@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
         barEntries3 = new ArrayList<>();
 
         int[] opened =  {30,20,10,5,100};
-        float[] resolved = {15,18,10,5,70};
-        float[] unresolved = {15,2,0,0,30};
+        float[] resolved = {15,18,2,3,70};
+        float[] unresolved = {15,2,8,2,30};
 
         for (int i = 0; i < opened.length; i++){
             barEntries1.add(new BarEntry(i,opened[i]));
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
         BarData data = new BarData(barDataSetOpened,barDataSetResolved,barDataSetUnresolved);
         data.setBarWidth(0.2f);
         barChart.setData(data);
-        barChart.groupBars(-1,.02f, 0.01f);
+        barChart.groupBars(0,.02f, 0.01f);
         barChart.invalidate();
 
         XAxis xAxis = barChart.getXAxis();
