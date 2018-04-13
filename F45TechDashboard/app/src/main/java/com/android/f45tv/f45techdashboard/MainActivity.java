@@ -154,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
+
         timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
         timerFrame.addView(timerController);
 

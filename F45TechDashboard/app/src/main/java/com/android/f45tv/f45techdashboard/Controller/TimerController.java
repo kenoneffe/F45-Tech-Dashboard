@@ -49,12 +49,20 @@ public class TimerController extends LinearLayout implements TimerInterface {
         timeInMillis = timeInMillis + 1000;
 
         countDownTimer = new CountDownTimer(timeInMillis, interval) {
+
+
+
+
             @Override
             public void onTick(long l) {
+
                 String remainTime = String.format("%02d : %02d", java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l),
                         java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(l) - java.util.concurrent.TimeUnit.MINUTES.toSeconds(java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l)));
                 setMinuteText(remainTime);
+
             }
+
+
 
             @Override
             public void onFinish() {
@@ -68,6 +76,7 @@ public class TimerController extends LinearLayout implements TimerInterface {
                     public void onFinish() {
                         //hideAlert();
                         countDownTimer.start();
+
                     }
                 }.start();
             }
