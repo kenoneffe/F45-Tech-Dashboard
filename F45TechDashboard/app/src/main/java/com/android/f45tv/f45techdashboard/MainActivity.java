@@ -32,20 +32,9 @@ public class MainActivity extends AppCompatActivity {
     TextView marqueeView;
     BarChart barChart;
     String[] graphLabels;
-    String[] graphStackLabels;
     List<BarEntry> barEntries1;
     List<BarEntry> barEntries2;
     List<BarEntry> barEntries3;
-    List<BarEntry> barEntriesMar;
-    List<BarEntry> barEntriesApr;
-    List<BarEntry> barEntriesMay;
-    List<BarEntry> barEntriesJun;
-    List<BarEntry> barEntriesJul;
-    List<BarEntry> barEntriesAug;
-    List<BarEntry> barEntriesSep;
-    List<BarEntry> barEntriesOct;
-    List<BarEntry> barEntriesNov;
-    List<BarEntry> barEntriesDec;
     TextView tv;
     CountDownTimer countDownTimer;
     TicketVolumeController ticketVolumeController;
@@ -94,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
         //graphStackLabels = new String[]{"Opened", "Solved", "Unresolved"};
         //3 barDataSets for Opened Solved and Unresolved
         BarDataSet barDataSetOpened = new BarDataSet(barEntries1, "Opened");
@@ -117,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     public class MyAxisValueFormatter implements IAxisValueFormatter {
 
+
         private String[] mValues;
 
         public MyAxisValueFormatter(String[] mValues) {
@@ -137,20 +128,30 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+
     protected void onStart() {
         super.onStart();
 
         timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
         timerFrame.addView(timerController);
 
-        marqueeView = findViewById(R.id.marque_scrolling_text);
+        marqueeView = (TextView) findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
-        //onStart set Ticket Volume and Response Time
         ticketVolumeController.setTicketVolumeText("69");
         ticketVolumeController.setResponseTimeText("123");
         ticketLayout.addView(ticketVolumeController);
+
     }
+
+
+
+
+
+
+
+
+
 }
 
