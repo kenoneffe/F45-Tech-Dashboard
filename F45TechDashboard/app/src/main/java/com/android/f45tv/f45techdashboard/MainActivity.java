@@ -1,9 +1,11 @@
 package com.android.f45tv.f45techdashboard;
 
 import android.graphics.Color;
+import android.media.effect.Effect;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -13,7 +15,9 @@ import com.android.f45tv.f45techdashboard.Controller.TimerController;
 import android.widget.LinearLayout;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
@@ -56,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
         //Graph
         barChart = findViewById(R.id.chart);
         barChart.setDrawBarShadow(false);
-        barChart.setDrawValueAboveBar(false);
-        barChart.setPinchZoom(false);
+        barChart.setDrawGridBackground(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.setPinchZoom(true);
         barChart.setFocusable(true);
         barChart.setDragEnabled(true);
         barChart.setDoubleTapToZoomEnabled(false);
@@ -65,16 +70,16 @@ public class MainActivity extends AppCompatActivity {
         barChart.setHighlightFullBarEnabled(false);
         barChart.setHighlightPerTapEnabled(false);
         barChart.setHighlightPerDragEnabled(false);
-        barChart.setDrawGridBackground(true);
-        barChart.setClickable(false);
+        barChart.getDescription().setEnabled(false);
+        barChart.setClickable(true);
         //add the retrofit here.
         barEntries1 = new ArrayList<>();
         barEntries2 = new ArrayList<>();
         barEntries3 = new ArrayList<>();
 
-        int[] opened =  {30,20,10,5,100};
-        float[] resolved = {15,18,2,3,70};
-        float[] unresolved = {15,2,8,2,30};
+        int[] opened =  {30,20,10,5,100,60,23,53,32,10,15,20};
+        float[] resolved = {15,18,2,3,70,40,8,28,18,7,5,15};
+        float[] unresolved = {15,2,8,2,30,20,15,25,16,3,10,5};
 
         for (int i = 0; i < opened.length; i++){
             barEntries1.add(new BarEntry(i,opened[i]));
@@ -94,15 +99,30 @@ public class MainActivity extends AppCompatActivity {
         barDataSetUnresolved.setColors(Color.RED);
 
         BarData data = new BarData(barDataSetOpened,barDataSetResolved,barDataSetUnresolved);
-        data.setBarWidth(0.2f);
+        float barW = data.getBarWidth();
+        Log.d("Bar Width", Float.toString(barW));
+        data.setBarWidth(barW/3);
+        data.setHighlightEnabled(false);
         barChart.setData(data);
-        barChart.groupBars(0,.02f, 0.01f);
+        barChart.setVisibleXRangeMaximum(4);
+        barChart.moveViewToX(0); //this moves to what index of the month
+        barChart.setFitBars(true);
+        barChart.groupBars(0,(barW/3)/2, 0);
         barChart.invalidate();
 
+        //X AXIS AND Y AXIS
         XAxis xAxis = barChart.getXAxis();
+        YAxis yAxis = barChart.getAxisLeft();
+        xAxis.setDrawLimitLinesBehindData(false);
         xAxis.setValueFormatter(new MyAxisValueFormatter(graphLabels));
         xAxis.setCenterAxisLabels(true);
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(11);
+        yAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(11);
+        xAxis.setGranularity(1f); // restrict interval to 1 (minimum)
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
     }
 
     public class MyAxisValueFormatter implements IAxisValueFormatter {
@@ -116,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public String getFormattedValue(float value, AxisBase axis) {
+
             if (value >= 0) {
                 if (mValues.length > (int) value) {
                     return mValues[(int) value];
@@ -135,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
         timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
         timerFrame.addView(timerController);
 
-        marqueeView = (TextView) findViewById(R.id.marque_scrolling_text);
+        marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
