@@ -1,7 +1,6 @@
 package com.android.f45tv.f45techdashboard;
 
 import android.graphics.Color;
-import android.media.effect.Effect;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
@@ -15,14 +14,12 @@ import com.android.f45tv.f45techdashboard.Controller.TimerController;
 import android.widget.LinearLayout;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -78,8 +75,8 @@ public class MainActivity extends AppCompatActivity {
         barEntries3 = new ArrayList<>();
 
         int[] opened =  {30,20,10,5,100,60,23,53,32,10,15,20};
-        float[] resolved = {15,18,2,3,70,40,8,28,18,7,5,15};
-        float[] unresolved = {15,2,8,2,30,20,15,25,16,3,10,5};
+        int[] resolved = {15,18,2,3,70,40,8,28,18,7,5,15};
+        int[] unresolved = {15,2,8,2,30,20,15,25,16,3,10,5};
 
         for (int i = 0; i < opened.length; i++){
             barEntries1.add(new BarEntry(i,opened[i]));
