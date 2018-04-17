@@ -6,9 +6,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.android.f45tv.f45techdashboard.Interfaces.TicketVolumeInterface;
+import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.android.f45tv.f45techdashboard.R;
 
-public class TicketVolumeController extends LinearLayout implements TicketVolumeInterface {
+import java.util.List;
+
+import retrofit2.Call;
+
+public class TicketVolumeController extends LinearLayout implements TicketVolumeInterface{
 
     Context context;
     LinearLayout linearLayout;
@@ -42,5 +47,10 @@ public class TicketVolumeController extends LinearLayout implements TicketVolume
     @Override
     public View getLayout() {
         return this;
+    }
+
+    @Override
+    public Call<List<TicketVolumeDataModel>> getTicketVolume() {
+        return null;
     }
 }

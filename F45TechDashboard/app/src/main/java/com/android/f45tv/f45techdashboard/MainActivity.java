@@ -9,9 +9,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
 import android.widget.LinearLayout;
+import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     TimerController timerController;
     FrameLayout timerFrame;
     LinearLayout ticketLayout;
+    RetrofitInterface retrofitInterface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
         ticketVolumeController.setResponseTimeText("123");
         ticketLayout.addView(ticketVolumeController);
 
+        RetrofitClient.
     }
     
 }
