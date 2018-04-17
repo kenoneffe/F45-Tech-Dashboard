@@ -10,12 +10,15 @@ import android.widget.TextView;
 import com.android.f45tv.f45techdashboard.Interfaces.TimerInterface;
 import com.android.f45tv.f45techdashboard.R;
 
+import org.w3c.dom.Text;
+
 public class TimerController extends LinearLayout implements TimerInterface {
 
     Context context;
     TextView minutesText;
     LinearLayout timerFragment;
     CountDownTimer countDownTimer;
+    String remainTime;
 
     public TimerController(Context context) {
         super(context);
@@ -38,6 +41,8 @@ public class TimerController extends LinearLayout implements TimerInterface {
         minutesText.setText(text);
     }
 
+
+
     @Override
     public View getLayout() {
         return this;
@@ -51,10 +56,13 @@ public class TimerController extends LinearLayout implements TimerInterface {
         countDownTimer = new CountDownTimer(timeInMillis, interval) {
             @Override
             public void onTick(long l) {
-                String remainTime = String.format("%02d : %02d", java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l),
+
+                remainTime = String.format("%02d : %02d", java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l),
                         java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(l) - java.util.concurrent.TimeUnit.MINUTES.toSeconds(java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l)));
                 setMinuteText(remainTime);
+
             }
+
 
             @Override
             public void onFinish() {
@@ -72,7 +80,12 @@ public class TimerController extends LinearLayout implements TimerInterface {
                 }.start();
             }
         }.start();
+
+
     }
+
+
+
 
 
 

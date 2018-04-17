@@ -1,5 +1,6 @@
 package com.android.f45tv.f45techdashboard.Interfaces;
 
+import android.os.CountDownTimer;
 import android.view.View;
 
 public interface TimerInterface {
@@ -9,6 +10,9 @@ public interface TimerInterface {
     void setTimer(long time, long interval);
 
     View getLayout();
+
+
+
 
     //void showAlert();
 

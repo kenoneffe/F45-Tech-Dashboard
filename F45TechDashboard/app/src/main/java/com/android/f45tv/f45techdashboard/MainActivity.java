@@ -53,6 +53,10 @@ public class MainActivity extends AppCompatActivity {
         //Timer Controller
         timerFrame = findViewById(R.id.timerFrame);
         timerController = new TimerController(this);
+
+
+
+
         //Graph
         barChart = findViewById(R.id.chart);
         barChart.setDrawBarShadow(false);
@@ -144,6 +148,14 @@ public class MainActivity extends AppCompatActivity {
         ticketLayout.addView(ticketVolumeController);
 
     }
+
+
+
+
+
+
+
+
     
 }
 
