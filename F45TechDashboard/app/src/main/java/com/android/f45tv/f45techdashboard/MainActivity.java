@@ -170,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
+        timerController.setTimer(TimeUnit.MINUTES.toMillis(1), 1000);
         timerFrame.addView(timerController);
 
         marqueeView = findViewById(R.id.marque_scrolling_text);
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
-        retrofitClient.setBaseUrl("https://f45training.freshdesk.com/api/v2/");
+        retrofitClient.setBaseUrl("https://f45training.freshdesk.com/");
         String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
         String cacheControl = "no-cache";
         String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
@@ -194,15 +194,18 @@ public class MainActivity extends AppCompatActivity {
 
                 if(call.isExecuted()){
                     Log.i(TAG, "call executed");
-//                    Log.i(TAG, model.get(1).status);
+                    Log.i(TAG, model.get(1).status);
                     Log.i(TAG, "ERROR CODE: "+String.valueOf(response.code()));
+                    Log.i(TAG, "ERROR CODE: "+String.valueOf(response));
+
                 }
                 if(response.isSuccessful()){
                     Log.i(TAG, "response succesful");
+                    ticketVolumeController.setTicketVolumeText(Integer.toString(model.size()));
                 }
 
-                /*Log.i(TAG, Integer.toString(model.size()));
-                ticketVolumeController.setTicketVolumeText(Integer.toString(model.size()));*/
+                Log.i(TAG, Integer.toString(model.size()));
+
                 Log.i(TAG, "onResponse: success");
 
             }

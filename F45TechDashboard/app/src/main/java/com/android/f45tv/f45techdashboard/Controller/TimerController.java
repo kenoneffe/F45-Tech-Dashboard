@@ -1,6 +1,7 @@
 package com.android.f45tv.f45techdashboard.Controller;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ public class TimerController extends LinearLayout implements TimerInterface {
     TextView minutesText;
     LinearLayout timerFragment;
     CountDownTimer countDownTimer;
+    MediaPlayer audioPlay;
+    View alertLayout;
 
     public TimerController(Context context) {
         super(context);
@@ -61,12 +64,12 @@ public class TimerController extends LinearLayout implements TimerInterface {
                 new CountDownTimer(6000, 1000) {
                     @Override
                     public void onTick(long l) {
-                        //showAlert();
+                        showAlert();
                     }
 
                     @Override
                     public void onFinish() {
-                        //hideAlert();
+                        hideAlert();
                         countDownTimer.start();
                     }
                 }.start();
@@ -74,6 +77,24 @@ public class TimerController extends LinearLayout implements TimerInterface {
         }.start();
     }
 
+    @Override
+    public void showAlert() {
+        alertLayout = findViewById(R.id.alert_layout);
+        alertLayout.setVisibility(View.VISIBLE);
+        audioPlay = MediaPlayer.create(context, R.raw.front_desk_bells);
+        try {
+            audioPlay.start();
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
+    public void hideAlert()
+    {
+        alertLayout = findViewById(R.id.alert_layout);
+        alertLayout.setVisibility(View.GONE);
+        audioPlay.stop();
+    }
 
 }

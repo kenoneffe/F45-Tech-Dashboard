@@ -10,7 +10,7 @@ public interface TimerInterface {
 
     View getLayout();
 
-    //void showAlert();
+    void showAlert();
 
 
 }

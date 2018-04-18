@@ -82,7 +82,7 @@ public class TestArea extends AppCompatActivity {
             ticketVolumeController.setTicketVolumeText("69");
             ticketVolumeController.setResponseTimeText("123");
             ticketLayout.addView(ticketVolumeController);
-            timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
+            timerController.setTimer(TimeUnit.MINUTES.toMillis(1), 1000);
             timerFrame.addView(timerController);
             layout.addView(controller);
             klipfolioAPIService.getKlipfolioData("http://matrix.f45.info/v1/tv_reports");
