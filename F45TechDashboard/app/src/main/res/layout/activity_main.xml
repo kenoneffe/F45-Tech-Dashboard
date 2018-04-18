@@ -11,6 +11,21 @@
 
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/alert_layout"
+        android:visibility="gone">
+
+        <include
+            layout="@layout/alert"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+
+
+    <LinearLayout
         android:id="@+id/logoLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -98,12 +113,15 @@
             android:weightSum="2"
             android:orientation="vertical">
 
+
+
             <FrameLayout
                 layout="@layout/timerview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:id="@+id/timerFrame"/>
+
 
             <Button
                 android:id="@+id/notificationsID"

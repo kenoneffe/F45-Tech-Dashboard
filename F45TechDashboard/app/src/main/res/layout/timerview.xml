@@ -6,7 +6,12 @@
     android:orientation="horizontal" android:gravity="center"
     android:id="@+id/timerFragment">
 
-
+    <include
+        layout="@layout/alert"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@id/alert_layout"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/minutesText"
