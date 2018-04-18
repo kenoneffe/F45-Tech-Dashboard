@@ -197,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
                 int test =+ model.size();
                 if(call.isExecuted()){
                     Log.i(TAG, "call executed");
-<<<<<<< HEAD
                     Log.e(TAG, "ERROR CODE :"+ String.valueOf(response.code()));
                 }
                 if(response.isSuccessful()){
@@ -206,24 +205,9 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     ticketVolumeController.setTicketVolumeText("Retrieve error");
                 }
-
-=======
                     Log.i(TAG, model.get(1).status);
                     Log.i(TAG, "ERROR CODE: "+String.valueOf(response.code()));
-                    Log.i(TAG, "ERROR CODE: "+String.valueOf(response));
-
                 }
-                if(response.isSuccessful()){
-                    Log.i(TAG, "response succesful");
-                    ticketVolumeController.setTicketVolumeText(Integer.toString(model.size()));
-                }
-
-                Log.i(TAG, Integer.toString(model.size()));
-
-                Log.i(TAG, "onResponse: success");
-
->>>>>>> a568aa326953fce1997b8b4559f4c25719b6a433
-            }
 
             @Override
             public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
