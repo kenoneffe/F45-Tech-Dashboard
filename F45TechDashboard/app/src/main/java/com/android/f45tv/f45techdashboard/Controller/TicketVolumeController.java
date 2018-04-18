@@ -49,8 +49,4 @@ public class TicketVolumeController extends LinearLayout implements TicketVolume
         return this;
     }
 
-    @Override
-    public Call<List<TicketVolumeDataModel>> getTicketVolume() {
-        return null;
-    }
 }

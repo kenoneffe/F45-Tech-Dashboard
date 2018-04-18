@@ -4,17 +4,20 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.android.f45tv.f45techdashboard.Client.AuthenticationInterceptor;
 import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
 import android.widget.LinearLayout;
 import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
+import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -23,9 +26,18 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by LeakSun on 04/04/2018.
@@ -45,12 +57,16 @@ public class MainActivity extends AppCompatActivity {
     TimerController timerController;
     FrameLayout timerFrame;
     LinearLayout ticketLayout;
-    RetrofitInterface retrofitInterface;
+
+    List<TicketVolumeDataModel> ticketVolumeDataModels;
+    String TAG = "Kyle";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
@@ -161,11 +177,44 @@ public class MainActivity extends AppCompatActivity {
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
-        ticketVolumeController.setTicketVolumeText("69");
-        ticketVolumeController.setResponseTimeText("123");
-        ticketLayout.addView(ticketVolumeController);
 
-        RetrofitClient.
+        //retrofitclient
+        RetrofitClient retrofitClient = new RetrofitClient();
+        retrofitClient.setBaseUrl("https://f45training.freshdesk.com/api/v2/");
+        String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
+        String cacheControl = "no-cache";
+        String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
+        RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
+        Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl ,postmanToken);
+
+        call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
+            @Override
+            public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
+                ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
+
+                if(call.isExecuted()){
+                    Log.i(TAG, "call executed");
+                    Log.i(TAG, model.get(1).status);
+                }
+                if(response.isSuccessful()){
+                    Log.i(TAG, "response succesful");
+                }
+
+                /*Log.i(TAG, Integer.toString(model.size()));
+                ticketVolumeController.setTicketVolumeText(Integer.toString(model.size()));*/
+                Log.i(TAG, "onResponse: success");
+
+            }
+
+            @Override
+            public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
+                Log.e(TAG, "onFailure: faileed");
+            }
+        });
+
+            ticketVolumeController.setResponseTimeText("123");
+            ticketLayout.addView(ticketVolumeController);
+
     }
     
 }
