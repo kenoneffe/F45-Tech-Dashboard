@@ -82,12 +82,8 @@ public class TimerController extends LinearLayout implements TimerInterface {
         alertLayout = findViewById(R.id.alert_layout);
         alertLayout.setVisibility(View.VISIBLE);
         audioPlay = MediaPlayer.create(context, R.raw.front_desk_bells);
-        try {
-            audioPlay.start();
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+        audioPlay.start();
+
     }
 
     public void hideAlert()
