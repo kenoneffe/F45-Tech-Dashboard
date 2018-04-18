@@ -194,7 +194,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(call.isExecuted()){
                     Log.i(TAG, "call executed");
-                    Log.i(TAG, model.get(1).status);
+//                    Log.i(TAG, model.get(1).status);
+                    Log.i(TAG, "ERROR CODE: "+String.valueOf(response.code()));
                 }
                 if(response.isSuccessful()){
                     Log.i(TAG, "response succesful");
