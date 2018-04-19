@@ -184,35 +184,36 @@ public class MainActivity extends AppCompatActivity {
         String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
         String cacheControl = "no-cache";
         String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
+        String linkHeader = "https://f45training.freshdesk.com/api/v2/tickets?per_page=100&page=2/rel=next";
+
+
         RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-        Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl ,postmanToken);
+        Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl ,postmanToken,linkHeader);
 
         call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
             @Override
             public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                 ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
-
+                int test =+ model.size();
                 if(call.isExecuted()){
                     Log.i(TAG, "call executed");
-                    Log.i(TAG, model.get(1).status);
-                    Log.i(TAG, "ERROR CODE: "+String.valueOf(response.code()));
-                    Log.i(TAG, "ERROR CODE: "+String.valueOf(response));
-
+                    Log.e(TAG, "ERROR CODE :"+ String.valueOf(response.code()));
                 }
                 if(response.isSuccessful()){
                     Log.i(TAG, "response succesful");
-                    ticketVolumeController.setTicketVolumeText(Integer.toString(model.size()));
+                    ticketVolumeController.setTicketVolumeText(Integer.toString(test));
+                } else {
+                    ticketVolumeController.setTicketVolumeText("Retrieve error");
                 }
-
-                Log.i(TAG, Integer.toString(model.size()));
-
-                Log.i(TAG, "onResponse: success");
-
-            }
+                    Log.i(TAG, model.get(1).status);
+                    Log.i(TAG, "ERROR CODE: "+String.valueOf(response.code()));
+                }
 
             @Override
             public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
-                Log.e(TAG, "onFailure: faileed");
+                Log.e(TAG, "onFailure: "+t.getMessage());
+                Log.getStackTraceString(t.getCause());
+                t.printStackTrace();
             }
         });
 

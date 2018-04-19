@@ -7,10 +7,9 @@ import retrofit2.http.Header;
 
 public interface RetrofitInterface
 {
-    @GET("/api/v2//tickets/")
+    @GET("/api/v2/tickets/?per_page=100&page=1")
     Call<List<TicketVolumeDataModel>> getTicketVolume(@Header("Authorization") String authHeader,
                                                       @Header("Cache-Control") String cacheControl,
-                                                      @Header("Postman-Token") String postmanToken);
-
-
+                                                      @Header("Postman-Token") String postmanToken,
+                                                      @Header("link") String linkHeader);
 }
