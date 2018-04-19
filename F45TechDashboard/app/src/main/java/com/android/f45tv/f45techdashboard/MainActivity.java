@@ -64,9 +64,7 @@ public class MainActivity extends AppCompatActivity {
     Integer tickets = 0;
     List<TicketVolumeDataModel> ticketVolumeDataModels;
     String TAG = "Kyle";
-    boolean gotAll = false;
     int page = 1;
-    int modelSize = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                     ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
-                    modelSize = model.size();
                     if (response.isSuccessful()) {
                         Log.i(TAG, "response succesful");
                         if(tickets != null){
