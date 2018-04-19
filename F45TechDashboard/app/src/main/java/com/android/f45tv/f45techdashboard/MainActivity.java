@@ -15,8 +15,11 @@ import com.android.f45tv.f45techdashboard.Client.AuthenticationInterceptor;
 import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
+
 import android.widget.LinearLayout;
+
 import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
+import com.android.f45tv.f45techdashboard.Interfaces.TicketVolumeInterface;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -38,6 +41,7 @@ import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Query;
 
 /**
  * Created by LeakSun on 04/04/2018.
@@ -57,16 +61,17 @@ public class MainActivity extends AppCompatActivity {
     TimerController timerController;
     FrameLayout timerFrame;
     LinearLayout ticketLayout;
-
+    Integer tickets = 0;
     List<TicketVolumeDataModel> ticketVolumeDataModels;
     String TAG = "Kyle";
+    boolean gotAll = false;
+    int page = 1;
+    int modelSize = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
@@ -94,14 +99,14 @@ public class MainActivity extends AppCompatActivity {
         barEntries2 = new ArrayList<>();
         barEntries3 = new ArrayList<>();
 
-        int[] opened =  {30,20,10,5,100,60,23,53,32,10,15,20};
-        int[] resolved = {15,18,2,3,70,40,8,28,18,7,5,15};
-        int[] unresolved = {15,2,8,2,30,20,15,25,16,3,10,5};
+        int[] opened = {30, 20, 10, 5, 100, 60, 23, 53, 32, 10, 15, 20};
+        int[] resolved = {15, 18, 2, 3, 70, 40, 8, 28, 18, 7, 5, 15};
+        int[] unresolved = {15, 2, 8, 2, 30, 20, 15, 25, 16, 3, 10, 5};
 
-        for (int i = 0; i < opened.length; i++){
-            barEntries1.add(new BarEntry(i,opened[i]));
-            barEntries2.add(new BarEntry(i,resolved[i]));
-            barEntries3.add(new BarEntry(i,unresolved[i]));
+        for (int i = 0; i < opened.length; i++) {
+            barEntries1.add(new BarEntry(i, opened[i]));
+            barEntries2.add(new BarEntry(i, resolved[i]));
+            barEntries3.add(new BarEntry(i, unresolved[i]));
         }
 
         graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -115,16 +120,16 @@ public class MainActivity extends AppCompatActivity {
         BarDataSet barDataSetUnresolved = new BarDataSet(barEntries3, "Unresolved");
         barDataSetUnresolved.setColors(Color.RED);
 
-        BarData data = new BarData(barDataSetOpened,barDataSetResolved,barDataSetUnresolved);
+        BarData data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
         float barW = data.getBarWidth();
         Log.d("Bar Width", Float.toString(barW));
-        data.setBarWidth(barW/3);
+        data.setBarWidth(barW / 3);
         data.setHighlightEnabled(false);
         barChart.setData(data);
         barChart.setVisibleXRangeMaximum(4);
         barChart.moveViewToX(0); //this moves to what index of the month
         barChart.setFitBars(true);
-        barChart.groupBars(0,(barW/3)/2, 0);
+        barChart.groupBars(0, (barW / 3) / 2, 0);
         barChart.invalidate();
 
         //X AXIS AND Y AXIS
@@ -166,17 +171,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-
     protected void onStart() {
         super.onStart();
 
-        timerController.setTimer(TimeUnit.MINUTES.toMillis(1), 1000);
+        timerController.setTimer(TimeUnit.SECONDS.toMillis(10), 1000);
         timerFrame.addView(timerController);
 
         marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
-
 
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
@@ -184,43 +187,40 @@ public class MainActivity extends AppCompatActivity {
         String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
         String cacheControl = "no-cache";
         String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
-        String linkHeader = "https://f45training.freshdesk.com/api/v2/tickets?per_page=100&page=2/rel=next";
-
 
         RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-        Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl ,postmanToken,linkHeader);
 
-        call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
-            @Override
-            public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
-                ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
-                int test =+ model.size();
-                if(call.isExecuted()){
-                    Log.i(TAG, "call executed");
-                    Log.e(TAG, "ERROR CODE :"+ String.valueOf(response.code()));
+            Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100);
+            call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
+                @Override
+                public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
+                    ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
+                    modelSize = model.size();
+                    if (response.isSuccessful()) {
+                        Log.i(TAG, "response succesful");
+                        if(tickets != null){
+                            tickets = tickets + model.size();
+                            Log.d(TAG, Integer.toString(tickets));
+                            //Log.d(TAG, Integer.toString(model.size()));
+                            ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+                        }else{
+                            Log.e(TAG, "tickets is null");
+                        }
+                    }
                 }
-                if(response.isSuccessful()){
-                    Log.i(TAG, "response succesful");
-                    ticketVolumeController.setTicketVolumeText(Integer.toString(test));
-                } else {
-                    ticketVolumeController.setTicketVolumeText("Retrieve error");
+                @Override
+                public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
+                    Log.e(TAG, "onFailure: " + t.getMessage());
+                    Log.getStackTraceString(t.getCause());
+                    t.printStackTrace();
                 }
-                    Log.i(TAG, model.get(1).status);
-                    Log.i(TAG, "ERROR CODE: "+String.valueOf(response.code()));
-                }
+            });
 
-            @Override
-            public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
-                Log.e(TAG, "onFailure: "+t.getMessage());
-                Log.getStackTraceString(t.getCause());
-                t.printStackTrace();
-            }
-        });
 
-            ticketVolumeController.setResponseTimeText("123");
-            ticketLayout.addView(ticketVolumeController);
-
+        //ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+        ticketVolumeController.setResponseTimeText("123");
+        ticketLayout.addView(ticketVolumeController);
     }
-    
+
 }
 

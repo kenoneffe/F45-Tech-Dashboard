@@ -32,12 +32,12 @@ public class TimerController extends LinearLayout implements TimerInterface {
 
     private void initComponents()
     {
-        timerFragment = (LinearLayout) findViewById(R.id.timerFragment);
+        timerFragment = findViewById(R.id.timerFragment);
     }
 
     @Override
     public void setMinuteText(String text) {
-        minutesText = (TextView) findViewById(R.id.minutesText);
+        minutesText = findViewById(R.id.minutesText);
         minutesText.setText(text);
     }
 
@@ -76,6 +76,7 @@ public class TimerController extends LinearLayout implements TimerInterface {
             }
         }.start();
     }
+
 
     @Override
     public void showAlert() {
