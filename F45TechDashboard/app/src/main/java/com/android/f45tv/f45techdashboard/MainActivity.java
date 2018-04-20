@@ -175,12 +175,7 @@ public class MainActivity extends AppCompatActivity {
                             tickets = tickets + model.size();
                             Log.d(TAG, Integer.toString(tickets));
                             ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-<<<<<<< HEAD
-
-
-=======
                             Log.i(TAG, model.get(0).updated_at);
->>>>>>> aa44798b8da5f1c73eca9fd283d31edb63c7808d
                             //BARCHART DATA
                             int aprilO = 0;
                             int aprilR = 0;
@@ -235,12 +230,6 @@ public class MainActivity extends AppCompatActivity {
                             barChart.setFitBars(true);
                             barChart.groupBars(0, (barW / 3) / 2, 0);
                             barChart.invalidate();
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> aa44798b8da5f1c73eca9fd283d31edb63c7808d
                         }else{
                             Log.e(TAG, "tickets is null");
                         }
@@ -253,36 +242,8 @@ public class MainActivity extends AppCompatActivity {
                     t.printStackTrace();
                 }
             });
-
-<<<<<<< HEAD
-
-
-        //ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-
-=======
         ticketVolumeController.setResponseTimeText("123");
         ticketLayout.addView(ticketVolumeController);
->>>>>>> aa44798b8da5f1c73eca9fd283d31edb63c7808d
     }
-
-
-    @Override
-    protected void onResume() {
-
-        super.onResume();
-
-
-<<<<<<< HEAD
-
-
-        ticketVolumeController.setResponseTimeText("123");
-        ticketLayout.addView(ticketVolumeController);
-=======
->>>>>>> aa44798b8da5f1c73eca9fd283d31edb63c7808d
-    }
-
-
-
-
 }
 
