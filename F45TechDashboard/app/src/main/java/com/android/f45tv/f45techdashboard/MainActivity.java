@@ -4,22 +4,16 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
-import com.android.f45tv.f45techdashboard.Client.AuthenticationInterceptor;
 import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
-
 import android.widget.LinearLayout;
-
 import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
-import com.android.f45tv.f45techdashboard.Interfaces.TicketVolumeInterface;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -29,19 +23,12 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Query;
 
 /**
  * Created by LeakSun on 04/04/2018.
@@ -186,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                             tickets = tickets + model.size();
                             Log.d(TAG, Integer.toString(tickets));
                             ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-
+                            Log.i(TAG, model.get(0).updated_at);
                             //BARCHART DATA
                             int aprilO = 0;
                             int aprilR = 0;
