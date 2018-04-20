@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
 
-
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
         retrofitClient.setBaseUrl("https://f45training.freshdesk.com/");
@@ -202,6 +201,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        marqueeView = findViewById(R.id.marque_scrolling_text);
+        Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
+        marqueeView.startAnimation(marqueeAnim);
+
     }
 
     public class MyAxisValueFormatter implements IAxisValueFormatter {
@@ -231,9 +234,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Toast.makeText(this,"Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
-        marqueeView = findViewById(R.id.marque_scrolling_text);
-        Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
-        marqueeView.startAnimation(marqueeAnim);
 
     }
 
@@ -241,10 +241,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Toast.makeText(this,"On Resume", Toast.LENGTH_SHORT).show();
+<<<<<<< HEAD
 
 
     }
 
+=======
+    }
+>>>>>>> 4c0200a66b1f59200ae79aded0d5fdb21cac2874
 
     @Override
     protected void onPause() {
