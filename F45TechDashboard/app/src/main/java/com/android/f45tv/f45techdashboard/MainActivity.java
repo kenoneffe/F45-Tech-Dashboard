@@ -163,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
                             tickets = tickets + model.size();
                             Log.d(TAG, Integer.toString(tickets));
                             ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+                            ticketVolumeController.setResponseTimeText("123");
+                            ticketLayout.addView(ticketVolumeController);
 
                             Log.i(TAG, model.get(0).updated_at);
 
@@ -242,8 +244,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onResume();
 
-        ticketVolumeController.setResponseTimeText("123");
-        //ticketLayout.addView(ticketVolumeController);
+
 
 
     }
