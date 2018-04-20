@@ -13,6 +13,8 @@ import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
 import android.widget.LinearLayout;
+import android.widget.Toast;
+
 import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.github.mikephil.charting.charts.BarChart;
@@ -146,8 +148,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-
+        Toast.makeText(this,"Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
 
         marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
@@ -161,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
         String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
 
         RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-        
+
             Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100);
             call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
                 @Override
@@ -246,6 +247,7 @@ public class MainActivity extends AppCompatActivity {
         ticketVolumeController.setResponseTimeText("123");
         ticketLayout.addView(ticketVolumeController);
     }
+
 
     @Override
     protected void onResume() {
