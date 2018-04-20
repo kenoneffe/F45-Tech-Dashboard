@@ -65,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
     List<TicketVolumeDataModel> ticketVolumeDataModels;
     String TAG = "Kyle";
     int page = 1;
+    BarDataSet barDataSetOpened;
+    BarDataSet barDataSetResolved;
+    BarDataSet barDataSetUnresolved;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,38 +104,19 @@ public class MainActivity extends AppCompatActivity {
         barEntries2 = new ArrayList<>();
         barEntries3 = new ArrayList<>();
 
-        int[] opened = {30, 20, 10, 5, 100, 60, 23, 53, 32, 10, 15, 20};
-        int[] resolved = {15, 18, 2, 3, 70, 40, 8, 28, 18, 7, 5, 15};
-        int[] unresolved = {15, 2, 8, 2, 30, 20, 15, 25, 16, 3, 10, 5};
-
-        for (int i = 0; i < opened.length; i++) {
-            barEntries1.add(new BarEntry(i, opened[i]));
-            barEntries2.add(new BarEntry(i, resolved[i]));
-            barEntries3.add(new BarEntry(i, unresolved[i]));
-        }
+//        int[] opened = {30, 20, 10, 5, 100, 60, 23, 53, 32, 10, 15, 20};
+//        int[] resolved = {15, 18, 2, 3, 70, 40, 8, 28, 18, 7, 5, 15};
+//        int[] unresolved = {15, 2, 8, 2, 30, 20, 15, 25, 16, 3, 10, 5};
+//
+//        for (int i = 0; i < opened.length; i++) {
+//            barEntries1.add(new BarEntry(i, opened[i]));
+//            barEntries2.add(new BarEntry(i, resolved[i]));
+//            barEntries3.add(new BarEntry(i, unresolved[i]));
+//        }
 
         graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-        //graphStackLabels = new String[]{"Opened", "Solved", "Unresolved"};
-        //3 barDataSets for Opened Solved and Unresolved
-        BarDataSet barDataSetOpened = new BarDataSet(barEntries1, "Opened");
-        barDataSetOpened.setColors(Color.BLUE);
-        BarDataSet barDataSetResolved = new BarDataSet(barEntries2, "Resolved");
-        barDataSetResolved.setColors(Color.GREEN);
-        BarDataSet barDataSetUnresolved = new BarDataSet(barEntries3, "Unresolved");
-        barDataSetUnresolved.setColors(Color.RED);
 
-        BarData data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
-        float barW = data.getBarWidth();
-        Log.d("Bar Width", Float.toString(barW));
-        data.setBarWidth(barW / 3);
-        data.setHighlightEnabled(false);
-        barChart.setData(data);
-        barChart.setVisibleXRangeMaximum(4);
-        barChart.moveViewToX(0); //this moves to what index of the month
-        barChart.setFitBars(true);
-        barChart.groupBars(0, (barW / 3) / 2, 0);
-        barChart.invalidate();
 
         //X AXIS AND Y AXIS
         XAxis xAxis = barChart.getXAxis();
@@ -190,19 +175,79 @@ public class MainActivity extends AppCompatActivity {
 
         RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
 
+
             Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100);
             call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
                 @Override
                 public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
+                //updated at - created at = summation sa tanan / total
                     ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
                     if (response.isSuccessful()) {
                         Log.i(TAG, "response succesful");
                         if(tickets != null){
                             tickets = tickets + model.size();
                             Log.d(TAG, Integer.toString(tickets));
-                            //Log.d(TAG, Integer.toString(model.size()));
                             ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
 
+<<<<<<< HEAD
+=======
+                            //BARCHART DATA
+                            int aprilO = 0;
+                            int aprilR = 0;
+                            int aprilU = 0;
+                            for (int i = 0; i < model.size(); i++) {
+                                Log.d(TAG, model.get(i).status);
+
+                                if (model.get(i).status.equals("1") || model.get(i).status.equals("2")){
+                                    aprilO += 1;
+                                }
+                                else if (model.get(i).status.equals("3") || model.get(i).status.equals("6")){
+                                    aprilU += 1;
+                                }
+                                else if (model.get(i).status.equals("4")|| model.get(i).status.equals("5")){
+                                    aprilR +=1;
+                                }
+                                else {
+                                    Log.d(TAG, "damn");
+                                }
+                            }
+
+                            Log.i(TAG, Integer.toString(aprilO));
+                            Log.i(TAG, Integer.toString(aprilU));
+                            Log.i(TAG, Integer.toString(aprilR));
+
+                            int[] opened = {30, 20, 10,aprilO , 100, 60, 23, 53, 32, 10, 15, 20};
+                            int[] resolved = {15, 18, 2,aprilR , 70, 40, 8, 28, 18, 7, 5, 15};
+                            int[] unresolved = {15, 2, 8,aprilU , 30, 20, 15, 25, 16, 3, 10, 5};
+
+                            for (int i = 0; i < opened.length; i++) {
+                                barEntries1.add(new BarEntry(i, opened[i]));
+                                barEntries2.add(new BarEntry(i, resolved[i]));
+                                barEntries3.add(new BarEntry(i, unresolved[i]));
+                            }
+
+                            //graphStackLabels = new String[]{"Opened", "Solved", "Unresolved"};
+                            //3 barDataSets for Opened Solved and Unresolved
+                            barDataSetOpened = new BarDataSet(barEntries1, "Opened");
+                            barDataSetOpened.setColors(Color.BLUE);
+                            barDataSetResolved = new BarDataSet(barEntries2, "Resolved");
+                            barDataSetResolved.setColors(Color.GREEN);
+                            barDataSetUnresolved = new BarDataSet(barEntries3, "Unresolved");
+                            barDataSetUnresolved.setColors(Color.RED);
+
+                            BarData data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
+                            float barW = data.getBarWidth();
+                            data.setBarWidth(barW / 3);
+                            data.setHighlightEnabled(false);
+                            barChart.setData(data);
+                            barChart.setVisibleXRangeMaximum(4);
+                            barChart.moveViewToX(0); //this moves to what index of the month
+                            barChart.setFitBars(true);
+                            barChart.groupBars(0, (barW / 3) / 2, 0);
+                            barChart.invalidate();
+
+
+>>>>>>> 15b5770ce39f0d205aed26a60e3dc87c5d35e954
                         }else{
                             Log.e(TAG, "tickets is null");
                         }
@@ -216,6 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+<<<<<<< HEAD
 
         //ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
 
@@ -228,6 +274,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+=======
+>>>>>>> 15b5770ce39f0d205aed26a60e3dc87c5d35e954
         ticketVolumeController.setResponseTimeText("123");
         ticketLayout.addView(ticketVolumeController);
     }
