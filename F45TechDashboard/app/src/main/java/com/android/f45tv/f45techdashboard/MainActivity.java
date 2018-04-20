@@ -77,6 +77,9 @@ public class MainActivity extends AppCompatActivity {
         //Timer Controller
         timerFrame = findViewById(R.id.timerFrame);
         timerController = new TimerController(this);
+
+        timerController.setTimer(TimeUnit.SECONDS.toMillis(10), 1000);
+        timerFrame.addView(timerController);
         //Graph
         barChart = findViewById(R.id.chart);
         barChart.setDrawBarShadow(false);
@@ -172,8 +175,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        timerController.setTimer(TimeUnit.SECONDS.toMillis(10), 1000);
-        timerFrame.addView(timerController);
+
 
         marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
@@ -200,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, Integer.toString(tickets));
                             //Log.d(TAG, Integer.toString(model.size()));
                             ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+
                         }else{
                             Log.e(TAG, "tickets is null");
                         }
@@ -215,9 +218,22 @@ public class MainActivity extends AppCompatActivity {
 
 
         //ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        super.onResume();
+
+
+
         ticketVolumeController.setResponseTimeText("123");
         ticketLayout.addView(ticketVolumeController);
     }
+
+
+
 
 }
 
