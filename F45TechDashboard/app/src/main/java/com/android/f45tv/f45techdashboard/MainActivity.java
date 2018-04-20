@@ -229,7 +229,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+/*
+* ADDED TOAST ON ACTIVITY LIFE CYCLE
+* */
     @Override
     protected void onStart() {
         super.onStart();

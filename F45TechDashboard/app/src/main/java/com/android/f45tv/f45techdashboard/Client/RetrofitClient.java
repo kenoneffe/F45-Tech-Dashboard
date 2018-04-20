@@ -49,8 +49,10 @@ public class RetrofitClient {
     public static Retrofit getClient(){
 
 
-        /*   https://stackoverflow.com/questions/31002159/now-that-sslsocketfactory-is-deprecated-on-android-what-would-be-the-best-way-t/31003269#31003269
-        *
+        /*   Problem : https://forums.developer.amazon.com/questions/27905/javaxnetsslsslexception-connection-closed-by-peer.html
+        *    Solution: https://stackoverflow.com/questions/31002159/now-that-sslsocketfactory-is-deprecated-on-android-what-would-be-the-best-way-t/31003269#31003269
+
+         *    
         *   SSL SOCKET FACTORY DEPRECATED FIX
         *   BUG FOR ANDROID 4.4 BELOW
         *   NEED TO ENABLE TLS SOCKET
@@ -88,7 +90,7 @@ public class RetrofitClient {
 
         /*
         * ADDING REQUEST TIMEOUT FOR FETCHING
-        *
+        * https://futurestud.io/tutorials/retrofit-2-customize-network-timeouts
         * */
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(1, TimeUnit.MINUTES)
