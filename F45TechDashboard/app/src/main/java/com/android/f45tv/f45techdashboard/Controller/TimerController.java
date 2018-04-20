@@ -22,7 +22,7 @@ public class TimerController extends LinearLayout implements TimerInterface {
 
     public TimerController(Context context) {
         super(context);
-        this.context = context;
+        //this.context = context;
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.timerview, this);
         this.context = context;
