@@ -243,7 +243,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Toast.makeText(this,"On Resume", Toast.LENGTH_SHORT).show();
+<<<<<<< HEAD
+
+
     }
+
+=======
+    }
+>>>>>>> 4c0200a66b1f59200ae79aded0d5fdb21cac2874
 
     @Override
     protected void onPause() {
