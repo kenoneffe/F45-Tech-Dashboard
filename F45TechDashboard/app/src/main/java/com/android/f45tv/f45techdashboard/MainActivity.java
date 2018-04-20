@@ -189,8 +189,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, Integer.toString(tickets));
                             ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
 
-<<<<<<< HEAD
-=======
+
                             //BARCHART DATA
                             int aprilO = 0;
                             int aprilR = 0;
@@ -247,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                             barChart.invalidate();
 
 
->>>>>>> 15b5770ce39f0d205aed26a60e3dc87c5d35e954
+
                         }else{
                             Log.e(TAG, "tickets is null");
                         }
@@ -261,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-<<<<<<< HEAD
+
 
         //ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
 
@@ -274,8 +273,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-=======
->>>>>>> 15b5770ce39f0d205aed26a60e3dc87c5d35e954
+
         ticketVolumeController.setResponseTimeText("123");
         ticketLayout.addView(ticketVolumeController);
     }
