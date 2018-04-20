@@ -93,19 +93,7 @@ public class MainActivity extends AppCompatActivity {
         barEntries2 = new ArrayList<>();
         barEntries3 = new ArrayList<>();
 
-//        int[] opened = {30, 20, 10, 5, 100, 60, 23, 53, 32, 10, 15, 20};
-//        int[] resolved = {15, 18, 2, 3, 70, 40, 8, 28, 18, 7, 5, 15};
-//        int[] unresolved = {15, 2, 8, 2, 30, 20, 15, 25, 16, 3, 10, 5};
-//
-//        for (int i = 0; i < opened.length; i++) {
-//            barEntries1.add(new BarEntry(i, opened[i]));
-//            barEntries2.add(new BarEntry(i, resolved[i]));
-//            barEntries3.add(new BarEntry(i, unresolved[i]));
-//        }
-
         graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
-
 
         //X AXIS AND Y AXIS
         XAxis xAxis = barChart.getXAxis();
@@ -176,9 +164,6 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, Integer.toString(tickets));
                             ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
 
-
-                            Log.i(TAG, model.get(0).updated_at);
-
                             Log.i(TAG, model.get(0).updated_at);
 
                             //BARCHART DATA
@@ -236,9 +221,6 @@ public class MainActivity extends AppCompatActivity {
                             barChart.groupBars(0, (barW / 3) / 2, 0);
                             barChart.invalidate();
 
-
-
-
                         }else{
                             Log.e(TAG, "tickets is null");
                         }
@@ -252,14 +234,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-
-
-
-
-        //ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-
-
-
     }
 
 
@@ -267,9 +241,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
 
         super.onResume();
-
-
-
 
         ticketVolumeController.setResponseTimeText("123");
         //ticketLayout.addView(ticketVolumeController);
