@@ -161,8 +161,7 @@ public class MainActivity extends AppCompatActivity {
         String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
 
         RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-
-
+        
             Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100);
             call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
                 @Override
