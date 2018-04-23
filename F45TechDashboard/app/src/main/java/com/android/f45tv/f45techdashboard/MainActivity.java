@@ -229,7 +229,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
+/*
+* ADDED TOAST ON ACTIVITY LIFE CYCLE
+* */
     @Override
     protected void onStart() {
         super.onStart();
@@ -241,9 +243,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Toast.makeText(this,"On Resume", Toast.LENGTH_SHORT).show();
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 3cacd0ed85cefa9f408236b3ebe79576c8c73095
     }
 
 
