@@ -18,7 +18,5 @@ public interface RetrofitInterface
                                                       @Header("Postman-Token") String postmanToken,
                                                       @Query("page") int page,
                                                       @Query("per_page") int limit,
-                                                      @Query("updated_since") String date,
-                                                      @Header("link") String linkHeader,
-                                                      @Header("rel") String next);
+                                                      @Query("updated_since") String date);
 }

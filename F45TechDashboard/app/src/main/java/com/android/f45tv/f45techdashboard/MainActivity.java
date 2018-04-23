@@ -37,6 +37,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Headers;
+import okhttp3.internal.http2.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -68,14 +71,13 @@ public class MainActivity extends AppCompatActivity {
     BarDataSet barDataSetOpened;
     BarDataSet barDataSetResolved;
     BarDataSet barDataSetUnresolved;
+    BarData data;
     LocalDateTime currentDateTime = LocalDateTime.now();
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     Date date = new Date();
     long responseTime = 0;
-
-
-
+    float barW;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,18 +134,16 @@ public class MainActivity extends AppCompatActivity {
         String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
         String cacheControl = "no-cache";
         String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
-        String linkHeader = "https://f45training.freshdesk.com/api/v2/tickets&filter=all_tickets&page=2>";
-        String rel = "next";
+        String linkHeader = "https://f45training.freshdesk.com/api/v2/tickets?filter=all_tickets&per_page=100&page=2";
         RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
 
         for(int i = page; i < 50; i++){
-            Log.e(TAG, "This is the current page number: "+i);
-            Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, i, 100, "2015-01-19T02:00:00Z", linkHeader, rel);
+            Log.e(TAG, "This is the current page number: "+ i);
+            Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, i,100, "2015-01-19T02:00:00Z");
             call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
-
                 @Override
                 public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
-                    //updated at - created at = summation sa tanan / model size
+                    //updated at - created at = summation of everything / model size
                     ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
                     if (response.isSuccessful()) {
                         Log.i(TAG, "response succesful");
@@ -169,7 +169,6 @@ public class MainActivity extends AppCompatActivity {
                             * */
 
                             for (int i = 0; i < model.size(); i++) {
-                                // FIX THIS FIRST 
                                 if (model.get(i).created_at.contains(formatter.format(date))) {
                                     try {
                                         Date updated_at = dateFormat.parse(model.get(i).updated_at);
@@ -237,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
                             int[] resolved = {janR, febR, marR, aprilR, 70, 40, 8, 28, 18, 7, 5, 15};
                             int[] unresolved = {janU, febU, marU, aprilU, 30, 20, 15, 25, 16, 3, 10, 5};
 
-                            for (int i = 0; i < opened.length; i++) {
+                            for (int i = 0; i < 11; i++) {
                                 barEntries1.add(new BarEntry(i, opened[i]));
                                 barEntries2.add(new BarEntry(i, resolved[i]));
                                 barEntries3.add(new BarEntry(i, unresolved[i]));
@@ -252,16 +251,21 @@ public class MainActivity extends AppCompatActivity {
                             barDataSetUnresolved = new BarDataSet(barEntries3, "Unresolved");
                             barDataSetUnresolved.setColors(Color.RED);
 
-                            BarData data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
-                            float barW = data.getBarWidth();
+                            barDataSetOpened.notifyDataSetChanged();
+                            barDataSetResolved.notifyDataSetChanged();
+                            barDataSetUnresolved.notifyDataSetChanged();
+                            data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
+                            data.notifyDataChanged();
+                            barChart.refreshDrawableState();
+                            barW = data.getBarWidth();
                             data.setBarWidth(barW / 3);
                             data.setHighlightEnabled(false);
-                            barChart.setData(data);
                             barChart.setVisibleXRangeMaximum(4);
-                            barChart.moveViewToX(0); //this moves to what index of the month
+                            barChart.moveViewToX(3); //this moves to what index of the month
                             barChart.setFitBars(true);
-                            barChart.groupBars(0, (barW / 3) / 2, 0);
+                            barChart.setData(data);
                             barChart.invalidate();
+                            barChart.groupBars(0, (barW / 3) / 2, 0);
 
                             //END OF BARCHART DATA
                         } else {
@@ -278,8 +282,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
-
-        ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
 
 
         marqueeView = findViewById(R.id.marque_scrolling_text);
@@ -317,6 +319,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Toast.makeText(this,"Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
+        ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
+
+
+
 
     }
 
