@@ -17,5 +17,8 @@ public interface RetrofitInterface
                                                       @Header("Cache-Control") String cacheControl,
                                                       @Header("Postman-Token") String postmanToken,
                                                       @Query("page") int page,
-                                                      @Query("per_page") int limit);
+                                                      @Query("per_page") int limit,
+                                                      @Query("updated_since") String date,
+                                                      @Header("link") String linkHeader,
+                                                      @Header("rel") String next);
 }
