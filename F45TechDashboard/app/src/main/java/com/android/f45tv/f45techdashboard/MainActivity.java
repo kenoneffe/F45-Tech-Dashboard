@@ -29,6 +29,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +44,8 @@ import okhttp3.internal.http2.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.GET;
+import retrofit2.http.Url;
 
 import static java.text.DateFormat.getDateTimeInstance;
 
@@ -131,20 +134,22 @@ public class MainActivity extends AppCompatActivity {
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
         retrofitClient.setBaseUrl("https://f45training.freshdesk.com/");
-        String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
-        String cacheControl = "no-cache";
-        String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
-        String linkHeader = "https://f45training.freshdesk.com/api/v2/tickets?filter=all_tickets&per_page=100&page=2";
-        RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
+        final String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
+        final String cacheControl = "no-cache";
+        final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
+        final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
 
-        for(int i = page; i < 50; i++){
-            Log.e(TAG, "This is the current page number: "+ i);
-            Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, i,100, "2015-01-19T02:00:00Z");
+        //for(int i = page; i < 50; i++){
+            Log.e(TAG, "This is the current page number: "+ page);
+            Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page,100, "2015-01-19T02:00:00Z");
+
             call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
                 @Override
                 public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                     //updated at - created at = summation of everything / model size
                     ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
+                    Headers headers =  response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
+                    Log.d(TAG, headers.toString());
                     if (response.isSuccessful()) {
                         Log.i(TAG, "response succesful");
                         if (tickets != null) {
@@ -273,6 +278,8 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                     }
+
+
                 }
                 @Override
                 public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
@@ -281,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
                     t.printStackTrace();
                 }
             });
-        }
+        //}
 
 
         marqueeView = findViewById(R.id.marque_scrolling_text);
