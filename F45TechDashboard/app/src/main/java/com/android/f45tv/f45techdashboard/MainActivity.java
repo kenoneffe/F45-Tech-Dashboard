@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     Date date = new Date();
+    long responseTime = 0;
 
 
 
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
                             * timeInSeconds = timeInSeconds - (minutes * 60);
                             * seconds = timeInSeconds;
                             * */
-                            long responseTime = 0;
+
                             for (int i = 0; i < model.size(); i++) {
                                 // FIX THIS FIRST 
                                 if (model.get(i).created_at.contains(formatter.format(date))) {
@@ -276,7 +277,9 @@ public class MainActivity extends AppCompatActivity {
                     t.printStackTrace();
                 }
             });
-        } ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
+        }
+
+        ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
 
 
         marqueeView = findViewById(R.id.marque_scrolling_text);
