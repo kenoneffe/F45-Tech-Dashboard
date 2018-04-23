@@ -14,10 +14,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled  true
-<<<<<<< HEAD
 
-=======
->>>>>>> 4c0200a66b1f59200ae79aded0d5fdb21cac2874
     }
     buildTypes {
         release {
@@ -56,15 +53,8 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.6.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.0'
     compile 'com.wealdtech.hawk:hawk-core:1.2.0'
-<<<<<<< HEAD
     //
     compile 'com.android.support:multidex:1.0.1'
 
 
-
-=======
-    ///
-    compile 'com.android.support:multidex:1.0.1'
-
->>>>>>> 4c0200a66b1f59200ae79aded0d5fdb21cac2874
 }
