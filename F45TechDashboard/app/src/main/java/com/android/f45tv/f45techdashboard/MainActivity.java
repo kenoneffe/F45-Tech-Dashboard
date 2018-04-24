@@ -354,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
                 public void checkCOmplete(){
                         if (!isComplete) {
                             Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
-                            handler.postDelayed(runnable, 500);
+                            handler.postDelayed(runnable, 1500);
                         }
                         else{
                             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
          };
-        handler.postDelayed(runnable, 500);
+        handler.postDelayed(runnable, 1500);
 
         /*while(!isComplete){
             Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page,100, "2015-01-19T02:00:00Z");
