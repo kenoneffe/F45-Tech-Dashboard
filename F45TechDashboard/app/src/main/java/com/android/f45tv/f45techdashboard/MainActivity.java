@@ -1,7 +1,6 @@
 package com.android.f45tv.f45techdashboard;
 
 import android.graphics.Color;
-import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -27,32 +26,20 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.wealdtech.utils.StringUtils;
 
 import org.joda.time.LocalDateTime;
-import org.joda.time.Minutes;
-
-import java.io.IOException;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Headers;
-import okhttp3.internal.http2.Header;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.GET;
-import retrofit2.http.Url;
-
-import static java.text.DateFormat.getDateTimeInstance;
-
 /**
  * Created by LeakSun on 04/04/2018.
  */
@@ -311,15 +298,11 @@ public class MainActivity extends AppCompatActivity {
                                             barDataSetResolved.setColors(Color.GREEN);
                                             barDataSetUnresolved = new BarDataSet(barEntries3, "Unresolved");
                                             barDataSetUnresolved.setColors(Color.RED);
+                                            data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
+                                            barChart.setData(data);
                                             barDataSetOpened.notifyDataSetChanged();
                                             barDataSetResolved.notifyDataSetChanged();
                                             barDataSetUnresolved.notifyDataSetChanged();
-                                            data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
-                                            data.notifyDataChanged();
-                                            data.notifyAll();
-                                            barChart.notifyAll();
-                                            barChart.notifyDataSetChanged();
-                                            barChart.setData(data);
                                             barChart.invalidate();
                                             barChart.refreshDrawableState();
                                             barW = data.getBarWidth();
