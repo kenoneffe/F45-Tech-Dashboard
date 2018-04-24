@@ -1,8 +1,10 @@
 package com.android.f45tv.f45techdashboard;
 
 import android.graphics.Color;
+import android.icu.text.RelativeDateTimeFormatter;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.animation.Animation;
@@ -25,10 +27,12 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.wealdtech.utils.StringUtils;
 
 import org.joda.time.LocalDateTime;
 import org.joda.time.Minutes;
 
+import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     Integer tickets = 0;
     List<TicketVolumeDataModel> ticketVolumeDataModels;
     String TAG = "Kyle";
-    Integer page = 1;
+    int page = 1;
     BarDataSet barDataSetOpened;
     BarDataSet barDataSetResolved;
     BarDataSet barDataSetUnresolved;
@@ -81,7 +85,16 @@ public class MainActivity extends AppCompatActivity {
     Date date = new Date();
     long responseTime = 0;
     float barW;
+    String headerString = "";
+    String pageNum = "1";
+    int janO = 0 , janR = 0, janU = 0;
+    int febO = 0 , febR = 0, febU = 0;
+    int marO = 0 , marR = 0, marU = 0;
+    int aprilO = 0 , aprilR = 0, aprilU = 0;
+    boolean isComplete = false;
 
+    Handler handler = new Handler();
+    Runnable runnable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,163 +152,276 @@ public class MainActivity extends AppCompatActivity {
         final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
         final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
 
-        //for(int i = page; i < 50; i++){
-            Log.e(TAG, "This is the current page number: "+ page);
-            Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page,100, "2015-01-19T02:00:00Z");
 
-            call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
-                @Override
-                public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
-                    //updated at - created at = summation of everything / model size
-                    ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
-                    Headers headers =  response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
-                    Log.d(TAG, headers.toString());
-                    if (response.isSuccessful()) {
-                        Log.i(TAG, "response succesful");
-                        if (tickets != null) {
-                            for (int i = 0; i < model.size(); i++){
-                                //getting current date time so we can get tickets for today only
-                                if (model.get(i).created_at.contains(formatter.format(date))){
-                                    tickets += 1;
-                                }
+
+         runnable = new Runnable() {
+            @Override
+            public void run() {
+                    Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page,100, "2015-01-19T02:00:00Z");
+                    Log.d(TAG, "On loop start, page number is :"+ page);
+                    Log.d(TAG, "headerString: " + headerString);
+
+                    if(headerString.isEmpty()){
+                        Log.d("HERE", "ENTER HERE");
+                        call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
+                            @Override
+                            public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
+                                Headers header = response.headers();
+                                headerString = header.get("link");
+                                Log.d(TAG, "ON RESPONSE: " + headerString);
+
                             }
-                            Log.d(TAG, Integer.toString(tickets));
-                            ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-                            /*
-                            * URL: https://stackoverflow.com/questions/3514639/android-java-how-to-subtract-two-times
-                            * Response Time
-                            * int timeInSeconds = diff / 1000;
-                            * int hours, minutes, seconds;
-                            * hours = timeInSeconds / 3600;
-                            * timeInSeconds = timeInSeconds - (hours * 3600);
-                            * minutes = timeInSeconds / 60;
-                            * timeInSeconds = timeInSeconds - (minutes * 60);
-                            * seconds = timeInSeconds;
-                            * */
 
-                            for (int i = 0; i < model.size(); i++) {
-                                if (model.get(i).created_at.contains(formatter.format(date))) {
-                                    try {
-                                        Date updated_at = dateFormat.parse(model.get(i).updated_at);
-                                        Date created_at = dateFormat.parse(model.get(i).created_at);
-                                        long diff = updated_at.getTime() - created_at.getTime();
-                                        long rT = diff / 1000;
-                                        //Log.i(TAG, "Date #" + i + " UDPATED AT - CREATED AT = " + rT + "s");
-                                        responseTime += rT;
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                        Log.e(TAG, "onResponse: error in parsing created at");
+                            @Override
+                            public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                    else{
+                        //code on NOTEPAD
+                        call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
+                            @Override
+                            public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
+                                //updated at - created at = summation of everything / model size
+                                ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
+                                Headers headers =  response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
+                                Log.d(TAG, headers.toString());
+                                headerString = headers.get("link");
+
+                                if(headerString.isEmpty()){
+                                    isComplete = true;
+                                    checkCOmplete();
+                                    Log.d("HERE", "ISCOMPLETE: " + isComplete);
+                                }
+                                else{
+                                    String result = headerString.substring(headerString.indexOf("?") + 1, headerString.indexOf("&"));
+                                    pageNum = result.substring(result.lastIndexOf('=')+1);
+                                    Log.d(TAG, "This is the page number "+pageNum);
+                                    page = Integer.parseInt(pageNum);
+                                    if (response.isSuccessful()) {
+
+                                        Log.e(TAG, "This is the current page number: "+ page);
+                                        Log.i(TAG, "response succesful");
+
+                                        if (tickets != null) {
+                                            for (int i = 0; i < model.size(); i++){
+                                                //getting current date time so we can get tickets for today only
+                                                if (model.get(i).created_at.contains(formatter.format(date))){
+                                                    tickets += 1;
+                                                }
+                                            }
+                                            Log.d(TAG, "This is the number of tickets today: "+Integer.toString(tickets));
+                                            ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+                                            /*
+                                             * URL: https://stackoverflow.com/questions/3514639/android-java-how-to-subtract-two-times
+                                             * Response Time
+                                             * int timeInSeconds = diff / 1000;
+                                             * int hours, minutes, seconds;
+                                             * hours = timeInSeconds / 3600;
+                                             * timeInSeconds = timeInSeconds - (hours * 3600);
+                                             * minutes = timeInSeconds / 60;
+                                             * timeInSeconds = timeInSeconds - (minutes * 60);
+                                             * seconds = timeInSeconds;
+                                             * */
+                                            for (int i = 0; i < model.size(); i++) {
+                                                if (model.get(i).created_at.contains(formatter.format(date))) {
+                                                    try {
+                                                        Date updated_at = dateFormat.parse(model.get(i).updated_at);
+                                                        Date created_at = dateFormat.parse(model.get(i).created_at);
+                                                        long diff = updated_at.getTime() - created_at.getTime();
+                                                        long rT = diff / 1000;
+                                                        //Log.i(TAG, "Date #" + i + " UDPATED AT - CREATED AT = " + rT + "s");
+                                                        responseTime += rT;
+                                                    } catch (ParseException e) {
+                                                        e.printStackTrace();
+                                                        Log.e(TAG, "onResponse: error in parsing created at");
+                                                    }
+                                                }
+                                            }
+                                            long avgResponseTime = responseTime / model.size();
+                                            Log.i(TAG, "onResponse: This is the average response time: " + avgResponseTime);
+                                            ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                                            // END OF RESPONSE TIME
+                                            //BARCHART DATA
+
+                                            for (int i = 0; i < model.size(); i++) {
+                                                //Log.d(TAG, model.get(i).status);
+                                                if (model.get(i).status.equals("1") && model.get(i).created_at.contains("2018-01")|| model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-01")) {
+                                                    janO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-01")) {
+                                                    janU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-01")) {
+                                                    janR += 1;
+                                                }
+
+                                                if (model.get(i).status.equals("1") && model.get(i).created_at.contains("2018-02")|| model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-02")) {
+                                                    febO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-02")) {
+                                                    febU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-02")) {
+                                                    febR += 1;
+                                                }
+
+                                                if (model.get(i).status.equals("1") && model.get(i).created_at.contains("2018-03")|| model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-03")) {
+                                                    marO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-03")) {
+                                                    marU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-03")) {
+                                                    marR += 1;
+                                                }
+
+                                                if (model.get(i).status.equals("1") && model.get(i).created_at.contains("2018-04")|| model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-04")) {
+                                                    aprilO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-04")) {
+                                                    aprilU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-04")) {
+                                                    aprilR += 1;
+                                                }
+                                            }
+
+                                            Log.i(TAG, Integer.toString(janO));
+                                            Log.i(TAG, Integer.toString(janU));
+                                            Log.i(TAG, Integer.toString(janR));
+                                            Log.i(TAG, Integer.toString(febO));
+                                            Log.i(TAG, Integer.toString(febU));
+                                            Log.i(TAG, Integer.toString(febR));
+                                            Log.i(TAG, Integer.toString(marO));
+                                            Log.i(TAG, Integer.toString(marU));
+                                            Log.i(TAG, Integer.toString(marR));
+                                            Log.i(TAG, Integer.toString(aprilO));
+                                            Log.i(TAG, Integer.toString(aprilU));
+                                            Log.i(TAG, Integer.toString(aprilR));
+
+                                            int[] opened = {janO, febO, marO, aprilO, 100, 60, 23, 53, 32, 10, 15, 20};
+                                            int[] resolved = {janR, febR, marR, aprilR, 70, 40, 8, 28, 18, 7, 5, 15};
+                                            int[] unresolved = {janU, febU, marU, aprilU, 30, 20, 15, 25, 16, 3, 10, 5};
+
+                                            for (int i = 0; i < 11; i++) {
+                                                barEntries1.add(new BarEntry(i, opened[i]));
+                                                barEntries2.add(new BarEntry(i, resolved[i]));
+                                                barEntries3.add(new BarEntry(i, unresolved[i]));
+                                            }
+
+                                            //graphStackLabels = new String[]{"Opened", "Solved", "Unresolved"};
+                                            //3 barDataSets for Opened Solved and Unresolved
+                                            barDataSetOpened = new BarDataSet(barEntries1, "Opened");
+                                            barDataSetOpened.setColors(Color.BLUE);
+                                            barDataSetResolved = new BarDataSet(barEntries2, "Resolved");
+                                            barDataSetResolved.setColors(Color.GREEN);
+                                            barDataSetUnresolved = new BarDataSet(barEntries3, "Unresolved");
+                                            barDataSetUnresolved.setColors(Color.RED);
+                                            barDataSetOpened.notifyDataSetChanged();
+                                            barDataSetResolved.notifyDataSetChanged();
+                                            barDataSetUnresolved.notifyDataSetChanged();
+                                            data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
+                                            data.notifyDataChanged();
+                                            data.notifyAll();
+                                            barChart.notifyAll();
+                                            barChart.notifyDataSetChanged();
+                                            barChart.setData(data);
+                                            barChart.invalidate();
+                                            barChart.refreshDrawableState();
+                                            barW = data.getBarWidth();
+                                            data.setBarWidth(barW / 3);
+                                            data.setHighlightEnabled(false);
+                                            barChart.setVisibleXRangeMaximum(4);
+                                            barChart.moveViewToX(0); //this moves to what index of the month
+                                            barChart.setFitBars(true);
+                                            barChart.groupBars(0, (barW / 3) / 2, 0);
+
+                                            //END OF BARCHART DATA
+                                        } else {
+                                            Log.e(TAG, "tickets is null");
+                                        }
+
                                     }
                                 }
                             }
-                            long avgResponseTime = responseTime / model.size();
-                            Log.i(TAG, "onResponse: This is the average response time: " + avgResponseTime);
-                            ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                            // END OF RESPONSE TIME
-
-                            //BARCHART DATA
-                            int janO = 0 , janR = 0, janU = 0;
-                            int febO = 0 , febR = 0, febU = 0;
-                            int marO = 0 , marR = 0, marU = 0;
-                            int aprilO = 0 , aprilR = 0, aprilU = 0;
-                            for (int i = 0; i < model.size(); i++) {
-                                //Log.d(TAG, model.get(i).status);
-                                if (model.get(i).status.equals("1") && model.get(i).created_at.contains("2018-01")|| model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-01")) {
-                                    janO += 1;
-                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-01")) {
-                                    janU += 1;
-                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-01")) {
-                                    janR += 1;
-                                }
-
-                                if (model.get(i).status.equals("1") && model.get(i).created_at.contains("2018-02")|| model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-02")) {
-                                    febO += 1;
-                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-02")) {
-                                    febU += 1;
-                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-02")) {
-                                    febR += 1;
-                                }
-
-                                if (model.get(i).status.equals("1") && model.get(i).created_at.contains("2018-03")|| model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-03")) {
-                                    marO += 1;
-                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-03")) {
-                                    marU += 1;
-                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-03")) {
-                                    marR += 1;
-                                }
-
-                                if (model.get(i).status.equals("1") && model.get(i).created_at.contains("2018-04")|| model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-04")) {
-                                    aprilO += 1;
-                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-04")) {
-                                    aprilU += 1;
-                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-04")) {
-                                    aprilR += 1;
-                                }
+                            @Override
+                            public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
+                                Log.e(TAG, "onFailure: " + t.getMessage());
+                                Log.getStackTraceString(t.getCause());
+                                t.printStackTrace();
                             }
+                        });
 
-                            Log.i(TAG, Integer.toString(aprilO));
-                            Log.i(TAG, Integer.toString(aprilU));
-                            Log.i(TAG, Integer.toString(aprilR));
+                        Log.d("HERE", "ISCOMPLETE: " + isComplete);
+                    }
+                    checkCOmplete();
+                }
 
-                            int[] opened = {janO, febO, marO, aprilO, 100, 60, 23, 53, 32, 10, 15, 20};
-                            int[] resolved = {janR, febR, marR, aprilR, 70, 40, 8, 28, 18, 7, 5, 15};
-                            int[] unresolved = {janU, febU, marU, aprilU, 30, 20, 15, 25, 16, 3, 10, 5};
-
-                            for (int i = 0; i < 11; i++) {
-                                barEntries1.add(new BarEntry(i, opened[i]));
-                                barEntries2.add(new BarEntry(i, resolved[i]));
-                                barEntries3.add(new BarEntry(i, unresolved[i]));
-                            }
-
-                            //graphStackLabels = new String[]{"Opened", "Solved", "Unresolved"};
-                            //3 barDataSets for Opened Solved and Unresolved
-                            barDataSetOpened = new BarDataSet(barEntries1, "Opened");
-                            barDataSetOpened.setColors(Color.BLUE);
-                            barDataSetResolved = new BarDataSet(barEntries2, "Resolved");
-                            barDataSetResolved.setColors(Color.GREEN);
-                            barDataSetUnresolved = new BarDataSet(barEntries3, "Unresolved");
-                            barDataSetUnresolved.setColors(Color.RED);
-
-                            barDataSetOpened.notifyDataSetChanged();
-                            barDataSetResolved.notifyDataSetChanged();
-                            barDataSetUnresolved.notifyDataSetChanged();
-                            data = new BarData(barDataSetOpened, barDataSetResolved, barDataSetUnresolved);
-                            data.notifyDataChanged();
-                            barChart.refreshDrawableState();
-                            barW = data.getBarWidth();
-                            data.setBarWidth(barW / 3);
-                            data.setHighlightEnabled(false);
-                            barChart.setVisibleXRangeMaximum(4);
-                            barChart.moveViewToX(3); //this moves to what index of the month
-                            barChart.setFitBars(true);
-                            barChart.setData(data);
-                            barChart.invalidate();
-                            barChart.groupBars(0, (barW / 3) / 2, 0);
-
-                            //END OF BARCHART DATA
-                        } else {
-                            Log.e(TAG, "tickets is null");
+                public void checkCOmplete(){
+                        if (!isComplete) {
+                            Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
+                            handler.postDelayed(runnable, 500);
                         }
-
+                        else{
+                            Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
+                            handler.removeCallbacksAndMessages(runnable);
+                        }
                     }
 
+         };
+        handler.postDelayed(runnable, 500);
 
-                }
+        /*while(!isComplete){
+            Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page,100, "2015-01-19T02:00:00Z");
+            Log.d(TAG, "On loop start, page number is :"+ page);
+            Log.d(TAG, "headerString: " + headerString);
+
+            if(headerString.isEmpty()){
+            Log.d("HERE", "ENTER HERE");
+            Handler handler = new Handler();
+            Runnable runnable = new Runnable() {
                 @Override
-                public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
-                    Log.e(TAG, "onFailure: " + t.getMessage());
-                    Log.getStackTraceString(t.getCause());
-                    t.printStackTrace();
+                public void run() {
+                    Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page,100, "2015-01-19T02:00:00Z");
+
+                    call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
+                        @Override
+                        public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
+                            Headers header = response.headers();
+                            headerString = header.get("link");
+                            Log.d(TAG, "ON RESPONSE: " + headerString);
+                        }
+
+                        @Override
+                        public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
+                            Log.e(TAG, "ERROR", t);
+                        }
+                    });
+                    Log.d(TAG, headerString);
                 }
-            });
-        //}
+            };
+            handler.postDelayed(runnable, 5000);
+            handler.removeCallbacksAndMessages(runnable);
 
-
+        }else{
+            Log.d(TAG, headerString);
+            isComplete = true;
+            break;
+        }
+//            page++;
+    }*/
+        ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
         marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
     }
+
+    public void checkCOmplete(){
+        if (!isComplete) {
+            Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
+            handler.postDelayed(runnable, 5000);
+        }
+        else{
+            Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
+            handler.removeCallbacksAndMessages(runnable);
+        }
+    }
+
 
     public class MyAxisValueFormatter implements IAxisValueFormatter {
 
@@ -319,6 +445,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 /*
 * ADDED TOAST ON ACTIVITY LIFE CYCLE
 * */
@@ -326,7 +454,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Toast.makeText(this,"Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
-        ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
+
 
 
 
