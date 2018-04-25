@@ -179,7 +179,7 @@ public class MainActivity extends AppCompatActivity {
                             Log.d(TAG, headers.toString());
                             if (headers.get("link") == null) {
                                 isComplete = true;
-                                checkCOmplete();
+                                checkComplete();
                                 Log.d("HERE", "ISCOMPLETE: " + isComplete);
                             } else {
                                 headerString = headers.get("link");
@@ -301,10 +301,10 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.d("HERE", "ISCOMPLETE: " + isComplete);
                 }
-                checkCOmplete();
+                checkComplete();
             }
 
-            public void checkCOmplete() {
+            public void checkComplete() {
                 if (!isComplete) {
                     Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
                     handler.postDelayed(runnable, 1500);
@@ -349,62 +349,12 @@ public class MainActivity extends AppCompatActivity {
         };
         handler.postDelayed(runnable, 1500);
 
-        /*while(!isComplete){
-            Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page,100, "2015-01-19T02:00:00Z");
-            Log.d(TAG, "On loop start, page number is :"+ page);
-            Log.d(TAG, "headerString: " + headerString);
-
-            if(headerString.isEmpty()){
-            Log.d("HERE", "ENTER HERE");
-            Handler handler = new Handler();
-            Runnable runnable = new Runnable() {
-                @Override
-                public void run() {
-                    Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page,100, "2015-01-19T02:00:00Z");
-
-                    call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
-                        @Override
-                        public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
-                            Headers header = response.headers();
-                            headerString = header.get("link");
-                            Log.d(TAG, "ON RESPONSE: " + headerString);
-                        }
-
-                        @Override
-                        public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
-                            Log.e(TAG, "ERROR", t);
-                        }
-                    });
-                    Log.d(TAG, headerString);
-                }
-            };
-            handler.postDelayed(runnable, 5000);
-            handler.removeCallbacksAndMessages(runnable);
-
-        }else{
-            Log.d(TAG, headerString);
-            isComplete = true;
-            break;
-        }
-//            page++;
-    }*/
         ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
         marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
     }
-
-    public void checkCOmplete() {
-        if (!isComplete) {
-            Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
-            handler.postDelayed(runnable, 5000);
-        } else {
-            Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
-            handler.removeCallbacksAndMessages(runnable);
-        }
-    }
-
 
     public class MyAxisValueFormatter implements IAxisValueFormatter {
 
