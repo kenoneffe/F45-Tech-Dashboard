@@ -12,6 +12,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
+import com.android.f45tv.f45techdashboard.Controller.ScheduleController;
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
 
@@ -19,6 +20,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
+import com.android.f45tv.f45techdashboard.Managers.ScheduleManager;
+import com.android.f45tv.f45techdashboard.Model.ScheduleDataModel;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -87,10 +90,20 @@ public class MainActivity extends AppCompatActivity {
     Handler handler = new Handler();
     Runnable runnable;
 
+    //Schedule Declarations
+    ScheduleManager shiftManager;
+    ScheduleController controller;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        //Schedule
+        shiftManager = new ScheduleManager();
+        controller = new ScheduleController(this);
 
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
@@ -143,6 +156,8 @@ public class MainActivity extends AppCompatActivity {
         final String cacheControl = "no-cache";
         final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
         final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
+
+
 
 
         runnable = new Runnable() {
@@ -353,6 +368,33 @@ public class MainActivity extends AppCompatActivity {
         marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
+
+        //Deputy
+        //retrofitclient
+        RetrofitClient retrofitClientD = new RetrofitClient();
+        retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
+        final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
+        final String cacheControlD = "no-cache";
+        final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
+        final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
+
+        Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
+        call.enqueue(new Callback<List<ScheduleDataModel>>() {
+            @Override
+            public void onResponse(Call<List<ScheduleDataModel>> call, Response<List<ScheduleDataModel>> response) {
+
+                ArrayList<ScheduleDataModel> model = (ArrayList<ScheduleDataModel>) response.body();
+                Log.d(TAG, "onResponse: "+model.get(0).Employee);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<ScheduleDataModel>> call, Throwable t) {
+
+            }
+        });
+
 
     }
 

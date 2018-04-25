@@ -41,34 +41,80 @@
             android:background="@color/lightgray">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight=".1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:id="@+id/linearParentLayout">
 
-                <TextView
-                    android:id="@+id/textView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/morning"/>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/textView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/afternoon" />
+                    <TextView
+                        android:layout_width="193dp"
+                        android:layout_height="30dp"
+                        android:background="#919191"
+                        android:text="Morning"
+                        android:gravity="center_vertical|start"/>
 
-                <TextView
-                    android:id="@+id/textView3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/evening" />
+                    <LinearLayout
+                        android:id="@+id/scheduleGroupMorning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="193dp"
+                        android:layout_height="30dp"
+                        android:background="#919191"
+                        android:text="Afternoon"
+                        android:gravity="center_vertical|start"/>
+
+
+                    <LinearLayout
+                        android:id="@+id/scheduleGroupAfternoon"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="193dp"
+                        android:layout_height="30dp"
+                        android:background="#919191"
+                        android:text="Evening"
+                        android:gravity="center_vertical|start"/>
+
+                    <LinearLayout
+                        android:id="@+id/scheduleGroupEvening"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"/>
+
+
+
+
+                </LinearLayout>
+
+
+
+
             </LinearLayout>
 
         </TableRow>
