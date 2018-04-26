@@ -60,14 +60,12 @@ public class MainActivity extends AppCompatActivity {
     List<BarEntry> barEntries1;
     List<BarEntry> barEntries2;
     List<BarEntry> barEntries3;
-    CountDownTimer countDownTimer;
     TicketVolumeController ticketVolumeController;
     TimerController timerController;
     FrameLayout timerFrame;
     LinearLayout ticketLayout;
     Integer tickets = 0;
     String TAG = "Kyle";
-    int page = 1;
     BarDataSet barDataSetOpened;
     BarDataSet barDataSetResolved;
     BarDataSet barDataSetUnresolved;
@@ -75,10 +73,11 @@ public class MainActivity extends AppCompatActivity {
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     Date date = new Date();
-    long responseTime = 0;
-    float barW;
     String headerString = "";
     String pageNum = "1";
+    long responseTime = 0;
+    float barW;
+    int page = 1;
     int janO = 0, janR = 0, janU = 0;
     int febO = 0, febR = 0, febU = 0;
     int marO = 0, marR = 0, marU = 0;
@@ -92,12 +91,10 @@ public class MainActivity extends AppCompatActivity {
     ScheduleManager shiftManager;
     ScheduleController controller;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         //Schedule
         shiftManager = new ScheduleManager();
@@ -106,46 +103,15 @@ public class MainActivity extends AppCompatActivity {
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
         ticketLayout = findViewById(R.id.ticketFrame);
+
         //Timer Controller
         timerFrame = findViewById(R.id.timerFrame);
         timerController = new TimerController(this);
-
         timerController.setTimer(TimeUnit.SECONDS.toMillis(10), 1000);
         timerFrame.addView(timerController);
-        //Graph
-        barChart = findViewById(R.id.chart);
-        barChart.setDrawBarShadow(false);
-        barChart.setDrawGridBackground(false);
-        barChart.setDrawValueAboveBar(true);
-        barChart.setPinchZoom(true);
-        barChart.setFocusable(true);
-        barChart.setDragEnabled(true);
-        barChart.setDoubleTapToZoomEnabled(false);
-        barChart.setScaleEnabled(false);
-        barChart.setHighlightFullBarEnabled(false);
-        barChart.setHighlightPerTapEnabled(false);
-        barChart.setHighlightPerDragEnabled(false);
-        barChart.getDescription().setEnabled(false);
-        barChart.setClickable(true);
-        //add the retrofit here.
-        barEntries1 = new ArrayList<>();
-        barEntries2 = new ArrayList<>();
-        barEntries3 = new ArrayList<>();
 
-        graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
-        //X AXIS AND Y AXIS
-        XAxis xAxis = barChart.getXAxis();
-        YAxis yAxis = barChart.getAxisLeft();
-        xAxis.setDrawLimitLinesBehindData(false);
-        xAxis.setValueFormatter(new MyAxisValueFormatter(graphLabels));
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(12);
-        yAxis.setAxisMinimum(0);
-        xAxis.setGranularity(1f); // restrict interval to 1 (minimum)
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+        //Methods
+        makeGraph();
 
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
@@ -154,8 +120,6 @@ public class MainActivity extends AppCompatActivity {
         final String cacheControl = "no-cache";
         final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
         final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-
-
         runnable = new Runnable() {
             @Override
             public void run() {
@@ -359,38 +323,15 @@ public class MainActivity extends AppCompatActivity {
 
         };
         handler.postDelayed(runnable, 1500);
-
         ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
+
+        //Marquee
         marqueeView = findViewById(R.id.marque_scrolling_text);
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
         //Deputy
-        //retrofitclient
-        RetrofitClient retrofitClientD = new RetrofitClient();
-        retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
-        final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
-        final String cacheControlD = "no-cache";
-        final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
-        final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
-
-        Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
-        call.enqueue(new Callback<List<ScheduleDataModel>>() {
-            @Override
-            public void onResponse(Call<List<ScheduleDataModel>> call, Response<List<ScheduleDataModel>> response) {
-
-                ArrayList<ScheduleDataModel> model = (ArrayList<ScheduleDataModel>) response.body();
-                Log.d(TAG, "onResponse: "+model.get(0).Employee);
-
-
-            }
-
-            @Override
-            public void onFailure(Call<List<ScheduleDataModel>> call, Throwable t) {
-
-            }
-        });
-
+        startDeputyRequest();
 
     }
 
@@ -433,6 +374,70 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void makeGraph() {
+        //Graph
+        barChart = findViewById(R.id.chart);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawGridBackground(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.setPinchZoom(true);
+        barChart.setFocusable(true);
+        barChart.setDragEnabled(true);
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setScaleEnabled(false);
+        barChart.setHighlightFullBarEnabled(false);
+        barChart.setHighlightPerTapEnabled(false);
+        barChart.setHighlightPerDragEnabled(false);
+        barChart.getDescription().setEnabled(false);
+        barChart.setClickable(true);
+        //add the retrofit here.
+        barEntries1 = new ArrayList<>();
+        barEntries2 = new ArrayList<>();
+        barEntries3 = new ArrayList<>();
+
+        graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+        //X AXIS AND Y AXIS
+        XAxis xAxis = barChart.getXAxis();
+        YAxis yAxis = barChart.getAxisLeft();
+        xAxis.setDrawLimitLinesBehindData(false);
+        xAxis.setValueFormatter(new MyAxisValueFormatter(graphLabels));
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(12);
+        yAxis.setAxisMinimum(0);
+        xAxis.setGranularity(1f); // restrict interval to 1 (minimum)
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+
+    }
+
+    protected void startDeputyRequest() {
+        RetrofitClient retrofitClientD = new RetrofitClient();
+        retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
+        final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
+        final String cacheControlD = "no-cache";
+        final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
+        final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
+
+        Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
+        call.enqueue(new Callback<List<ScheduleDataModel>>() {
+            @Override
+            public void onResponse(Call<List<ScheduleDataModel>> call, Response<List<ScheduleDataModel>> response) {
+
+                ArrayList<ScheduleDataModel> model = (ArrayList<ScheduleDataModel>) response.body();
+                Log.d(TAG, "onResponse: " + model.get(0).Employee);
+
+
+            }
+
+            @Override
+            public void onFailure(Call<List<ScheduleDataModel>> call, Throwable t) {
+
+            }
+        });
     }
 
 
