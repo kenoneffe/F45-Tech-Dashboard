@@ -49,6 +49,7 @@ import retrofit2.Response;
 
 /**
  * Created by LeakSun on 04/04/2018.
+ * Developed and Modified by Kyle & Keno.
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -59,21 +60,18 @@ public class MainActivity extends AppCompatActivity {
     List<BarEntry> barEntries1;
     List<BarEntry> barEntries2;
     List<BarEntry> barEntries3;
-    TextView tv;
     CountDownTimer countDownTimer;
     TicketVolumeController ticketVolumeController;
     TimerController timerController;
     FrameLayout timerFrame;
     LinearLayout ticketLayout;
     Integer tickets = 0;
-    List<TicketVolumeDataModel> ticketVolumeDataModels;
     String TAG = "Kyle";
     int page = 1;
     BarDataSet barDataSetOpened;
     BarDataSet barDataSetResolved;
     BarDataSet barDataSetUnresolved;
     BarData data;
-    LocalDateTime currentDateTime = LocalDateTime.now();
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
     Date date = new Date();
@@ -156,8 +154,6 @@ public class MainActivity extends AppCompatActivity {
         final String cacheControl = "no-cache";
         final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
         final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-
-
 
 
         runnable = new Runnable() {
