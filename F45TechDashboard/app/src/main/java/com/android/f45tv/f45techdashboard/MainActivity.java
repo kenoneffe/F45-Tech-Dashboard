@@ -112,101 +112,6 @@ public class MainActivity extends AppCompatActivity {
 
         //Methods
         makeGraph();
-        startFreshdeskRequest();
-        handler.postDelayed(runnable, 2000);
-
-        ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
-
-        //Marquee
-        marqueeView = findViewById(R.id.marque_scrolling_text);
-        Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
-        marqueeView.startAnimation(marqueeAnim);
-
-        //Deputy
-        startDeputyRequest();
-
-    }
-
-    public class MyAxisValueFormatter implements IAxisValueFormatter {
-
-
-        private String[] mValues;
-
-        public MyAxisValueFormatter(String[] mValues) {
-            this.mValues = mValues;
-        }
-
-        @Override
-        public String getFormattedValue(float value, AxisBase axis) {
-
-            if (value >= 0) {
-                if (mValues.length > (int) value) {
-                    return mValues[(int) value];
-                } else return "";
-            } else {
-                return "";
-            }
-        }
-
-    }
-
-
-    /*
-     * ADDED TOAST ON ACTIVITY LIFE CYCLE
-     * */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Toast.makeText(this, "Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
-
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show();
-    }
-
-    protected void makeGraph() {
-        //Graph
-        barChart = findViewById(R.id.chart);
-        barChart.setDrawBarShadow(false);
-        barChart.setDrawGridBackground(false);
-        barChart.setDrawValueAboveBar(true);
-        barChart.setPinchZoom(true);
-        barChart.setFocusable(true);
-        barChart.setDragEnabled(true);
-        barChart.setDoubleTapToZoomEnabled(false);
-        barChart.setScaleEnabled(false);
-        barChart.setHighlightFullBarEnabled(false);
-        barChart.setHighlightPerTapEnabled(false);
-        barChart.setHighlightPerDragEnabled(false);
-        barChart.getDescription().setEnabled(false);
-        barChart.setClickable(true);
-        //add the retrofit here.
-        barEntries1 = new ArrayList<>();
-        barEntries2 = new ArrayList<>();
-        barEntries3 = new ArrayList<>();
-
-        graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-
-        //X AXIS AND Y AXIS
-        XAxis xAxis = barChart.getXAxis();
-        YAxis yAxis = barChart.getAxisLeft();
-        xAxis.setDrawLimitLinesBehindData(false);
-        xAxis.setValueFormatter(new MyAxisValueFormatter(graphLabels));
-        xAxis.setCenterAxisLabels(true);
-        xAxis.setAxisMinimum(0);
-        xAxis.setAxisMaximum(12);
-        yAxis.setAxisMinimum(0);
-        xAxis.setGranularity(1f); // restrict interval to 1 (minimum)
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
-
-    }
-
-    protected void startFreshdeskRequest(){
 
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
@@ -418,6 +323,95 @@ public class MainActivity extends AppCompatActivity {
 
         };
         handler.postDelayed(runnable, 1500);
+        ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
+
+        //Marquee
+        marqueeView = findViewById(R.id.marque_scrolling_text);
+        Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
+        marqueeView.startAnimation(marqueeAnim);
+
+        //Deputy
+        startDeputyRequest();
+
+    }
+
+    public class MyAxisValueFormatter implements IAxisValueFormatter {
+
+
+        private String[] mValues;
+
+        public MyAxisValueFormatter(String[] mValues) {
+            this.mValues = mValues;
+        }
+
+        @Override
+        public String getFormattedValue(float value, AxisBase axis) {
+
+            if (value >= 0) {
+                if (mValues.length > (int) value) {
+                    return mValues[(int) value];
+                } else return "";
+            } else {
+                return "";
+            }
+        }
+
+    }
+
+
+    /*
+     * ADDED TOAST ON ACTIVITY LIFE CYCLE
+     * */
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Toast.makeText(this, "Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
+
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show();
+    }
+
+    protected void makeGraph() {
+        //Graph
+        barChart = findViewById(R.id.chart);
+        barChart.setDrawBarShadow(false);
+        barChart.setDrawGridBackground(false);
+        barChart.setDrawValueAboveBar(true);
+        barChart.setPinchZoom(true);
+        barChart.setFocusable(true);
+        barChart.setDragEnabled(true);
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setScaleEnabled(false);
+        barChart.setHighlightFullBarEnabled(false);
+        barChart.setHighlightPerTapEnabled(false);
+        barChart.setHighlightPerDragEnabled(false);
+        barChart.getDescription().setEnabled(false);
+        barChart.setClickable(true);
+        //add the retrofit here.
+        barEntries1 = new ArrayList<>();
+        barEntries2 = new ArrayList<>();
+        barEntries3 = new ArrayList<>();
+
+        graphLabels = new String[]{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
+        //X AXIS AND Y AXIS
+        XAxis xAxis = barChart.getXAxis();
+        YAxis yAxis = barChart.getAxisLeft();
+        xAxis.setDrawLimitLinesBehindData(false);
+        xAxis.setValueFormatter(new MyAxisValueFormatter(graphLabels));
+        xAxis.setCenterAxisLabels(true);
+        xAxis.setAxisMinimum(0);
+        xAxis.setAxisMaximum(12);
+        yAxis.setAxisMinimum(0);
+        xAxis.setGranularity(1f); // restrict interval to 1 (minimum)
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+
     }
 
     protected void startDeputyRequest() {
