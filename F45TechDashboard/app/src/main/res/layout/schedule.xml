@@ -5,119 +5,76 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <TableLayout
-        android:id="@+id/scheduleID"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:background="@color/lightgray">
 
         <TableRow
-            android:id="@+id/row0"
+            android:background="@color/lightgray"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight=".001"
-            android:background="@color/gray">
-
+            android:weightSum="1">
 
             <TextView
-                android:id="@+id/textView6"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/schedule"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+
+        </TableRow>
+
+        <TableRow
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#919191"
+            android:weightSum="3">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:textSize="18sp"
                 android:gravity="center"
-                android:text="@string/schedule"
-                android:textAlignment="center" />
-        </TableRow>
+                android:textStyle="bold"
+                android:text="@string/morning"
+                />
 
-        <TableRow
-            android:id="@+id/row1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight=".1"
-            android:background="@color/lightgray">
+            <TextView
 
-            <LinearLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="@string/afternoon"
+                />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/linearParentLayout">
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="193dp"
-                        android:layout_height="30dp"
-                        android:background="#919191"
-                        android:text="Morning"
-                        android:gravity="center_vertical|start"/>
-
-                    <LinearLayout
-                        android:id="@+id/scheduleGroupMorning"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="193dp"
-                        android:layout_height="30dp"
-                        android:background="#919191"
-                        android:text="Afternoon"
-                        android:gravity="center_vertical|start"/>
-
-
-                    <LinearLayout
-                        android:id="@+id/scheduleGroupAfternoon"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"/>
-
-
-                </LinearLayout>
-
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="193dp"
-                        android:layout_height="30dp"
-                        android:background="#919191"
-                        android:text="Evening"
-                        android:gravity="center_vertical|start"/>
-
-                    <LinearLayout
-                        android:id="@+id/scheduleGroupEvening"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"/>
+                android:layout_weight="1"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="@string/evening"
+                />
 
 
 
-
-                </LinearLayout>
-
-
-
-
-            </LinearLayout>
 
         </TableRow>
+
+
+
+
 
     </TableLayout>
 
