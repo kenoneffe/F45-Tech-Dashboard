@@ -20,6 +20,7 @@ public class TimerController extends LinearLayout implements TimerInterface {
     MediaPlayer audioPlay;
     View alertLayout;
 
+
     public TimerController(Context context) {
         super(context);
         this.context = context;
@@ -54,6 +55,8 @@ public class TimerController extends LinearLayout implements TimerInterface {
         countDownTimer = new CountDownTimer(timeInMillis, interval) {
             @Override
             public void onTick(long l) {
+
+
                 String remainTime = String.format("%02d : %02d", java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l),
                         java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(l) - java.util.concurrent.TimeUnit.MINUTES.toSeconds(java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l)));
                 setMinuteText(remainTime);
@@ -83,7 +86,12 @@ public class TimerController extends LinearLayout implements TimerInterface {
         alertLayout = findViewById(R.id.alert_layout);
         alertLayout.setVisibility(View.VISIBLE);
         audioPlay = MediaPlayer.create(context, R.raw.front_desk_bells);
-        audioPlay.start();
+        try {
+            audioPlay.start();
+        }catch(Exception e)
+        {
+            e.printStackTrace();
+        }
 
     }
 

@@ -65,6 +65,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
+
 /**
  * Created by LeakSun on 04/04/2018.
  * Developed and Modified by Kyle & Keno.
@@ -130,10 +132,11 @@ public class MainActivity extends AppCompatActivity {
         ticketLayout = findViewById(R.id.ticketFrame);
 
         //Timer Controller
-        timerFrame = findViewById(R.id.timerFrame);
         timerController = new TimerController(this);
+        timerFrame = findViewById(R.id.timerFrame);
         timerController.setTimer(TimeUnit.SECONDS.toMillis(10), 1000);
         timerFrame.addView(timerController);
+
 
         //Methods
         makeGraph();
@@ -540,6 +543,7 @@ public class MainActivity extends AppCompatActivity {
 
         };
         handler.postDelayed(runnable, 1500);
+
     }
 
     protected void startDeputyRequest() {

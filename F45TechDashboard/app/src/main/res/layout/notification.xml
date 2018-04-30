@@ -3,11 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
+    <TextView
         android:id="@+id/notificationsID"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/orange"
-        android:text="@string/Notifications" />
+        android:text="@string/Notifications"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="20sp"/>
 
 </LinearLayout>

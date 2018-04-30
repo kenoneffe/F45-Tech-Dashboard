@@ -37,9 +37,9 @@ public class ScheduleController extends LinearLayout implements ScheduleInterfac
 
     public void initViews()
     {
-        morningGroup = (LinearLayout) findViewById(R.id.scheduleGroupMorning);
+       /* morningGroup = (LinearLayout) findViewById(R.id.scheduleGroupMorning);
         afternoonGroup = (LinearLayout) findViewById(R.id.scheduleGroupAfternoon);
-        eveningGroup = (LinearLayout) findViewById(R.id.scheduleGroupEvening);
+        eveningGroup = (LinearLayout) findViewById(R.id.scheduleGroupEvening);*/
     }
 
     @Override
