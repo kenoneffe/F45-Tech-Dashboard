@@ -11,14 +11,20 @@ import android.widget.TextView;
 import com.android.f45tv.f45techdashboard.Interfaces.TimerInterface;
 import com.android.f45tv.f45techdashboard.R;
 
+import java.util.concurrent.TimeUnit;
+
 public class TimerController extends LinearLayout implements TimerInterface {
 
     Context context;
+    CountDownTimer countDownTimer;
     TextView minutesText;
     LinearLayout timerFragment;
-    CountDownTimer countDownTimer;
     MediaPlayer audioPlay;
     View alertLayout;
+    long timeleft;
+
+
+
 
 
     public TimerController(Context context) {
@@ -30,6 +36,7 @@ public class TimerController extends LinearLayout implements TimerInterface {
 
         initComponents();
     }
+
 
     private void initComponents()
     {
@@ -47,19 +54,30 @@ public class TimerController extends LinearLayout implements TimerInterface {
         return this;
     }
 
+
+
+
+
     @Override
     public void setTimer(long timeInMillis, long interval) {
 
         timeInMillis = timeInMillis + 1000;
 
         countDownTimer = new CountDownTimer(timeInMillis, interval) {
+
             @Override
             public void onTick(long l) {
+
 
 
                 String remainTime = String.format("%02d : %02d", java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l),
                         java.util.concurrent.TimeUnit.MILLISECONDS.toSeconds(l) - java.util.concurrent.TimeUnit.MINUTES.toSeconds(java.util.concurrent.TimeUnit.MILLISECONDS.toMinutes(l)));
                 setMinuteText(remainTime);
+
+
+
+
+
             }
 
             @Override
@@ -67,13 +85,18 @@ public class TimerController extends LinearLayout implements TimerInterface {
                 new CountDownTimer(6000, 1000) {
                     @Override
                     public void onTick(long l) {
+
                         showAlert();
+                        countDownTimer.cancel();
+
+
                     }
 
                     @Override
                     public void onFinish() {
                         hideAlert();
                         countDownTimer.start();
+
                     }
                 }.start();
             }
@@ -86,12 +109,10 @@ public class TimerController extends LinearLayout implements TimerInterface {
         alertLayout = findViewById(R.id.alert_layout);
         alertLayout.setVisibility(View.VISIBLE);
         audioPlay = MediaPlayer.create(context, R.raw.front_desk_bells);
-        try {
+
             audioPlay.start();
-        }catch(Exception e)
-        {
-            e.printStackTrace();
-        }
+
+
 
     }
 
@@ -100,6 +121,22 @@ public class TimerController extends LinearLayout implements TimerInterface {
         alertLayout = findViewById(R.id.alert_layout);
         alertLayout.setVisibility(View.GONE);
         audioPlay.stop();
+
     }
+
+
+    public void pauseCount(){
+        countDownTimer.cancel();
+    }
+
+
+    public void resumeCount() {
+
+
+        countDownTimer.start();
+
+
+    }
+
 
 }
