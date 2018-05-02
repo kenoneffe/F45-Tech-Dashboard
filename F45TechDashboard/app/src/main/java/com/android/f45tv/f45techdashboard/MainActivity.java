@@ -37,6 +37,7 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import org.joda.time.LocalDateTime;
 import org.json.JSONArray;
@@ -74,10 +75,8 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final static String januaryData = "januaryData2018.txt";
-    private final static String februaryData = "februaryData2018.txt";
-    private final static String marchData = "marchData2018.txt";
-    private final static String aprilData = "aprilData2018.txt";
+    Boolean isDirectoryCreated;
+    Boolean isFileCreated;
     TextView marqueeView;
     BarChart barChart;
     String[] graphLabels;
@@ -102,10 +101,11 @@ public class MainActivity extends AppCompatActivity {
     long responseTime = 0;
     float barW;
     int page = 1;
-    int janO = 8, janR = 10279, janU = 3;
-    int febO = 160, febR = 13912, febU = 2;
-    int marO = 138, marR = 13129, marU = 52;
+    int janO = 0, janR = 0, janU = 0;
+    int febO = 0, febR = 0, febU = 0;
+    int marO = 0, marR = 0, marU = 0;
     int aprilO = 0, aprilR = 0, aprilU = 0;
+    int mayO = 0, mayR = 0, mayU = 0;
     boolean isComplete = false;
     Handler handler = new Handler();
     Runnable runnable;
@@ -118,10 +118,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        File mediaStorageDir = new File(Environment.getExternalStorageDirectory(), "45Dashboard");
-        if (!mediaStorageDir.exists())
-            if (!mediaStorageDir.mkdirs()) Log.d("App", "failed to create directory");
 
         //Schedule
         shiftManager = new ScheduleManager();
@@ -241,25 +237,49 @@ public class MainActivity extends AppCompatActivity {
         final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
         String dateString = "";
 
-//        if(formatter.format(date).contains("2018-01")){
-//            dateString = "2018-01-01T00:00:00Z";
-//        }
-//        else if (formatter.format(date).contains("2018-02")){
-//            dateString = "2018-02-01T00:00:00Z";
-//        }
-//        else if (formatter.format(date).contains("2018-03")){
-//            dateString = "2018-03-01T00:00:00Z";
-//        }
-//        else if (formatter.format(date).contains("2018-04")){
-//            dateString = "2018-04-01T00:00:00Z";
-//        }
-//
-//        final String finalDateString = dateString;
+        if(formatter.format(date).contains("2018-01")){
+            dateString = "2018-01-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-02")){
+            dateString = "2018-02-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-03")){
+            dateString = "2018-03-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-04")){
+            dateString = "2018-04-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-05")){
+            dateString = "2018-05-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-06")){
+            dateString = "2018-06-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-07")){
+            dateString = "2018-07-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-08")){
+            dateString = "2018-08-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-09")){
+            dateString = "2018-09-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-10")){
+            dateString = "2018-10-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-11")){
+            dateString = "2018-11-01T00:00:00Z";
+        }
+        else if (formatter.format(date).contains("2018-12")){
+            dateString = "2018-12-01T00:00:00Z";
+        }
+
+        final String finalDateString = dateString;
 
         runnable = new Runnable() {
             @Override
             public void run() {
-                Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100, "2018-04-29T00:00:00Z");
+                Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100, finalDateString);
                 Log.d(TAG, "On loop start, page number is :" + page);
                 Log.d(TAG, "headerString: " + headerString);
                 if (headerString.isEmpty()) {
@@ -304,11 +324,9 @@ public class MainActivity extends AppCompatActivity {
 
                                 if (response.isSuccessful()) {
 
-                                    //sharedPreferences = getSharedPreferences("dataRecord", Context.MODE_PRIVATE);
-                                    //getDataRecord();
 
                                     Log.e(TAG, "This is the current page number: " + page);
-                                    Log.i(TAG, "response succesful");
+                                    Log.i(TAG, "response successful");
 
                                     if (tickets != null) {
                                         for (int i = 0; i < model.size(); i++) {
@@ -360,53 +378,129 @@ public class MainActivity extends AppCompatActivity {
                                         // END OF RESPONSE TIME
                                         //BARCHART DATA
                                         for (int i = 0; i < model.size(); i++) {
-//                                            Log.d(TAG, model.get(i).status);
-//                                            if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-01")) {
-//                                                janO += 1;
-//                                            } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-01")) {
-//                                                janU += 1;
-//                                            } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-01")) {
-//                                                janR += 1;
-//                                            }
-//
-//                                            if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-02")) {
-//                                                febO += 1;
-//                                            } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-02")) {
-//                                                febU += 1;
-//                                            } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-02")) {
-//                                                febR += 1;
-//                                            }
-//
-//                                            if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-03")) {
-//                                                marO += 1;
-//                                            } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-03")) {
-//                                                marU += 1;
-//                                            } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-03")) {
-//                                                marR += 1;
-//                                            }
 
-                                            if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-04")) {
-                                                aprilO += 1;
-                                            } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-04")) {
-                                                aprilU += 1;
-                                            } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-04")) {
-                                                aprilR += 1;
+                                            File directory = new File("/mnt/internal_sd/F45Dashboard/");
+                                            String filename = "barData.txt";
+                                            File file = new File(directory, filename);
+                                            isFileCreated = file.exists();
+                                            isDirectoryCreated = directory.exists();
+                                            if (!(isDirectoryCreated && isFileCreated )){
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-01")) {
+                                                    janO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-01")) {
+                                                    janU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-01")) {
+                                                    janR += 1;
+                                                }
+
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-02")) {
+                                                    febO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-02")) {
+                                                    febU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-02")) {
+                                                    febR += 1;
+                                                }
+
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-03")) {
+                                                    marO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-03")) {
+                                                    marU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-03")) {
+                                                    marR += 1;
+                                                }
+
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-04")) {
+                                                    aprilO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-04")) {
+                                                    aprilU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-04")) {
+                                                    aprilR += 1;
+                                                }
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-05")) {
+                                                    mayO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-05")) {
+                                                    mayU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-05")) {
+                                                    mayR += 1;
+                                                }
+                                            } else {
+                                                //https://kodejava.org/how-do-i-read-file-using-fileinputstream/
+                                                // Get the temporary directory. We'll read the data.txt file
+                                                // from this directory.
+
+                                                StringBuilder builder = new StringBuilder();
+                                                FileInputStream fis = null;
+                                                try {
+                                                    // Create a FileInputStream to read the file.
+                                                    fis = new FileInputStream(file);
+
+                                                    int data;
+                                                    // Read the entire file data. When -1 is returned it
+                                                    // means no more content to read.
+                                                    while ((data = fis.read()) != -1) {
+                                                        builder.append((char) data);
+                                                    }
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                } finally {
+                                                    if (fis != null) {
+                                                        try {
+                                                            fis.close();
+                                                        } catch (IOException e) {
+                                                            e.printStackTrace();
+                                                        }
+                                                    }
+                                                }
+
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-05")) {
+                                                    mayO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-05")) {
+                                                    mayU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-05")) {
+                                                    mayR += 1;
+                                                }
+
+                                                // Print the content of the file
+                                                String s = builder.toString();
+                                                try {
+                                                    JSONObject jsonObj = new JSONObject(s);
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+
                                             }
+
                                         }
 
 
-                                        Log.i(TAG, Integer.toString(janO));
-                                        Log.i(TAG, Integer.toString(janU));
-                                        Log.i(TAG, Integer.toString(janR));
-                                        Log.i(TAG, Integer.toString(febO));
-                                        Log.i(TAG, Integer.toString(febU));
-                                        Log.i(TAG, Integer.toString(febR));
-                                        Log.i(TAG, Integer.toString(marO));
-                                        Log.i(TAG, Integer.toString(marU));
-                                        Log.i(TAG, Integer.toString(marR));
-                                        Log.i(TAG, Integer.toString(aprilO));
-                                        Log.i(TAG, Integer.toString(aprilU));
-                                        Log.i(TAG, Integer.toString(aprilR));
+                                        Log.i(TAG, "Jan: "+Integer.toString(janO));
+                                        Log.i(TAG, "Jan: "+Integer.toString(janU));
+                                        Log.i(TAG, "Jan: "+Integer.toString(janR));
+                                        Log.i(TAG, "Feb: "+Integer.toString(febO));
+                                        Log.i(TAG, "Feb: "+Integer.toString(febU));
+                                        Log.i(TAG, "Feb: "+Integer.toString(febR));
+                                        Log.i(TAG, "Mar: "+Integer.toString(marO));
+                                        Log.i(TAG, "Mar: "+Integer.toString(marU));
+                                        Log.i(TAG, "Mar: "+Integer.toString(marR));
+                                        Log.i(TAG, "Apr: "+Integer.toString(aprilO));
+                                        Log.i(TAG, "Apr: "+Integer.toString(aprilU));
+                                        Log.i(TAG, "Apr: "+Integer.toString(aprilR));
+                                        Log.i(TAG, "May: "+Integer.toString(mayO));
+                                        Log.i(TAG, "May: "+Integer.toString(mayU));
+                                        Log.i(TAG, "May: "+Integer.toString(mayR));
 
 
                                         //END OF BARCHART DATA
@@ -444,32 +538,33 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
 
 
-                    JSONObject dataObject = new JSONObject();
-                    JsonArray janArray = new JsonArray();
-                    janArray.add("Open:"+Integer.toString(janO));
-                    janArray.add("Unresolved:" + Integer.toString(janU));
-                    janArray.add("Resolved:" + Integer.toString(janR));
-                    JsonArray febArray = new JsonArray();
-                    febArray.add("Open:" + Integer.toString(febO));
-                    febArray.add("Unresolved:" + Integer.toString(febU));
-                    febArray.add("Resolved:" + Integer.toString(febR));
-                    JsonArray marArray = new JsonArray();
-                    marArray.add("Open:" + Integer.toString(marO));
-                    marArray.add("Unresolved:" + Integer.toString(marU));
-                    marArray.add("Resolved:" + Integer.toString(marR));
-                    JsonArray aprArray = new JsonArray();
-                    aprArray.add("Open:" + Integer.toString(aprilO));
-                    aprArray.add("Unresolved:" + Integer.toString(aprilU));
-                    aprArray.add("Resolved:" + Integer.toString(aprilR));
-                    try {
-                        dataObject.put("januaryData", janArray);
-                        dataObject.put("februaryData", febArray);
-                        dataObject.put("marchData", marArray);
-                        dataObject.put("aprilData", aprArray);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
+                    JsonObject dataObject = new JsonObject(); // Parent Object
+                    JsonObject janObject = new JsonObject(); // Child Object
+                    janObject.addProperty("Open", janO);
+                    janObject.addProperty("Unresolved", janU);
+                    janObject.addProperty("Resolved", janR);
+                    JsonObject febObject = new JsonObject(); // Child Object
+                    febObject.addProperty("Open", febO);
+                    febObject.addProperty("Unresolved",febU);
+                    febObject.addProperty("Resolved",febR);
+                    JsonObject marObject = new JsonObject(); // Child Object
+                    marObject.addProperty("Open", marO);
+                    marObject.addProperty("Unresolved", marU);
+                    marObject.addProperty("Resolved",marR);
+                    JsonObject aprObject = new JsonObject(); // Child Object
+                    aprObject.addProperty("Open", aprilO);
+                    aprObject.addProperty("Unresolved", aprilU);
+                    aprObject.addProperty("Resolved",aprilR);
+                    JsonObject mayObject = new JsonObject(); // Child Object
+                    mayObject.addProperty("Open:",mayO);
+                    mayObject.addProperty("Unresolved:", mayU);
+                    mayObject.addProperty("Resolved:", mayR);
+                    //Adding Child to Parent
+                    dataObject.add("januaryData", janObject);
+                    dataObject.add("februaryData", febObject);
+                    dataObject.add("marchData", marObject);
+                    dataObject.add("aprilData", aprObject);
+                    dataObject.add("mayData", mayObject);
 
                     String content = dataObject.toString();
                     Log.d(TAG, "checkComplete: "+ content);
@@ -479,36 +574,55 @@ public class MainActivity extends AppCompatActivity {
                     File directory = new File("/mnt/internal_sd/F45Dashboard/");
                     String filename = "barData.txt";
 
-                    boolean isDirectoryCreated = directory.exists();
+                    isDirectoryCreated = directory.exists();
                     if (!isDirectoryCreated){
                         directory.mkdirs();
                         directory.createNewFile();
                         Log.d(TAG, "directory created..");
                     }
 
-                    if(isDirectoryCreated){
+                    if (isDirectoryCreated) {
                         File file = new File(directory, filename);
-                        file.createNewFile();
-                        file.canWrite();
-                        file.canRead();
-                        Log.d(TAG, "file created.. @ "+ file.getPath());
-                        FileOutputStream fos = new FileOutputStream(file);
-                        FileWriter fw = new FileWriter(fos.getFD());
-                        try {
-                            fw.write(content);
-                            fw.close();
-                            Log.d(TAG, "content written..");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            fos.getFD().sync();
-                            fos.close();
+                        isFileCreated = file.exists();
+                        if (!isFileCreated) {
+                            file.createNewFile();
+                            file.canWrite();
+                            file.canRead();
+                            Log.d(TAG, "file created.. @ " + file.getPath());
+                            FileOutputStream fos = new FileOutputStream(file);
+                            FileWriter fw = new FileWriter(fos.getFD());
+                            try {
+                                fw.write(content);
+                                fw.close();
+                                Log.d(TAG, "content written..");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } finally {
+                                fos.getFD().sync();
+                                fos.close();
+                            }
                         }
+                        else {
+                            FileOutputStream fos = new FileOutputStream(file);
+                            FileWriter fw = new FileWriter(fos.getFD());
+                            try {
+                                fw.write(content);
+                                fw.close();
+                                Log.d(TAG, "content written..");
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            } finally {
+                                fos.getFD().sync();
+                                fos.close();
+                            }
+                            Log.d(TAG, "file rewritten.. @ " + file.getPath());
+                        }
+
                     }
 
-                    int[] opened = {janO, febO, marO, aprilO, 0, 0, 0, 0, 0, 0, 0, 0};
-                    int[] resolved = {janR, febR, marR, aprilR, 0, 0, 0, 0, 0, 0, 0, 0};
-                    int[] unresolved = {janU, febU, marU, aprilU, 0, 0, 0, 0, 0, 0, 0, 0};
+                    int[] opened = {janO, febO, marO, aprilO, mayO, 0, 0, 0, 0, 0, 0, 0};
+                    int[] resolved = {janR, febR, marR, aprilR, mayR, 0, 0, 0, 0, 0, 0, 0};
+                    int[] unresolved = {janU, febU, marU, aprilU, mayU, 0, 0, 0, 0, 0, 0, 0};
 
                     for (int i = 0; i < 11; i++) {
                         barEntries1.add(new BarEntry(i, opened[i]));
@@ -533,8 +647,27 @@ public class MainActivity extends AppCompatActivity {
                     barW = data.getBarWidth();
                     data.setBarWidth(barW / 3);
                     data.setHighlightEnabled(false);
+                    if(formatter.format(date).contains("2018-01")||formatter.format(date).contains("2018-02")||formatter.format(date).contains("2018-03")||formatter.format(date).contains("2018-04")) {
+                        barChart.moveViewToX(0); //this moves to what index of the month
+                    } else if(formatter.format(date).contains("2018-05")) {
+                        barChart.moveViewToX(1); //this moves to what index of the month
+                    } else if(formatter.format(date).contains("2018-06")) {
+                        barChart.moveViewToX(2);
+                    } else if(formatter.format(date).contains("2018-07")) {
+                        barChart.moveViewToX(3);
+                    } else if(formatter.format(date).contains("2018-08")) { //aug
+                        barChart.moveViewToX(4);
+                    } else if(formatter.format(date).contains("2018-09")) { //sep
+                        barChart.moveViewToX(5);
+                    } else if(formatter.format(date).contains("2018-10")) { //oct
+                        barChart.moveViewToX(6);
+                    } else if(formatter.format(date).contains("2018-11")) { //nov
+                        barChart.moveViewToX(7);
+                    } else if(formatter.format(date).contains("2018-12")) { //dec
+                        barChart.moveViewToX(8);
+                    }
+
                     barChart.setVisibleXRangeMaximum(4);
-                    barChart.moveViewToX(0); //this moves to what index of the month
                     barChart.setFitBars(true);
                     barChart.groupBars(0, (barW / 3) / 2, 0);
                     handler.removeCallbacksAndMessages(runnable);

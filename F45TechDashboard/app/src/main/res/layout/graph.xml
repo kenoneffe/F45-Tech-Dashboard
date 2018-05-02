@@ -5,11 +5,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.android.f45tv.f45techdashboard.MainActivity"
     tools:ignore="NestedWeights"
-    android:id="@+id/graphCon">
+    android:id="@+id/graphCon"
+    >
 
     <com.github.mikephil.charting.charts.BarChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
