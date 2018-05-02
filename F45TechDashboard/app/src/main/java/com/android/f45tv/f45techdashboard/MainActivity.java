@@ -109,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
     boolean isComplete = false;
     Handler handler = new Handler();
     Runnable runnable;
+    long timeleft;
+
+
 
     //Schedule Declarations
     ScheduleManager shiftManager;
@@ -123,15 +126,18 @@ public class MainActivity extends AppCompatActivity {
         shiftManager = new ScheduleManager();
         controller = new ScheduleController(this);
 
+
+        //time
+        timerController = new TimerController(this);
+        timerFrame = findViewById(R.id.timerFrame);
+        timerFrame.addView(timerController);
+        timerController.setTimer(TimeUnit.SECONDS.toMillis(10), 1000);
+
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
         ticketLayout = findViewById(R.id.ticketFrame);
 
-        //Timer Controller
-        timerController = new TimerController(this);
-        timerFrame = findViewById(R.id.timerFrame);
-        timerController.setTimer(TimeUnit.SECONDS.toMillis(10), 1000);
-        timerFrame.addView(timerController);
+
 
 
         //Methods
@@ -176,18 +182,44 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Toast.makeText(this, "Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
+
+
+
+
+
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show();
+
+
+
+        //timerController.resumeCount();
+
+
+
+
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+
+        timerController.pauseCount();
+
     }
+
+    @Override
+    protected void onStop() {
+
+        super.onStop();
+
+        timerController.pauseCount();
+    }
+
 
     protected void makeGraph() {
         //Graph
