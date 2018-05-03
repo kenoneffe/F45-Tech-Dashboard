@@ -4,7 +4,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent" android:layout_width="match_parent"
     android:orientation="horizontal" android:gravity="center"
-    android:id="@+id/timerFragment">
+    android:id="@+id/timerFragment"
+    android:background="@drawable/layout_rounded">
 
     <include
         layout="@layout/alert"
@@ -12,7 +13,6 @@
         android:layout_height="match_parent"
         android:id="@id/alert_layout"
         android:visibility="gone"/>
-
 
 
     <TextView

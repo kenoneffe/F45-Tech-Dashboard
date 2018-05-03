@@ -67,7 +67,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-
 /**
  * Created by LeakSun on 04/04/2018.
  * Developed and Modified by Kyle & Keno.
@@ -78,6 +77,8 @@ public class MainActivity extends AppCompatActivity {
     Boolean isDirectoryCreated;
     Boolean isFileCreated;
     TextView marqueeView;
+    View loadingView;
+    View barChartView;
     BarChart barChart;
     String[] graphLabels;
     List<BarEntry> barEntries1;
@@ -106,11 +107,17 @@ public class MainActivity extends AppCompatActivity {
     int marO = 0, marR = 0, marU = 0;
     int aprilO = 0, aprilR = 0, aprilU = 0;
     int mayO = 0, mayR = 0, mayU = 0;
+    int junO = 0, junR = 0, junU = 0;
+    int julO = 0, julR = 0, julU = 0;
+    int augO = 0, augR = 0, augU = 0;
+    int sepO = 0, sepR = 0, sepU = 0;
+    int octO = 0, octR = 0, octU = 0;
+    int novO = 0, novR = 0, novU = 0;
+    int decO = 0, decR = 0, decU = 0;
     boolean isComplete = false;
     Handler handler = new Handler();
     Runnable runnable;
     long timeleft;
-
 
 
     //Schedule Declarations
@@ -122,22 +129,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //loading view
+        loadingView = findViewById(R.id.loading_layout);
+        //loadingView.setVisibility(View.VISIBLE);
+        barChartView = findViewById(R.id.chart);
+        //barChartView.setVisibility(View.GONE);
+
         //Schedule
         shiftManager = new ScheduleManager();
         controller = new ScheduleController(this);
-
 
         //time
         timerController = new TimerController(this);
         timerFrame = findViewById(R.id.timerFrame);
         timerFrame.addView(timerController);
-        timerController.setTimer(TimeUnit.SECONDS.toMillis(10), 1000);
+        timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
+
 
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
         ticketLayout = findViewById(R.id.ticketFrame);
-
-
 
 
         //Methods
@@ -178,48 +189,38 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /* ADDED TOAST ON ACTIVITY LIFE CYCLE */
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Toast.makeText(this, "Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
-
-
-
-
-
-
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        Toast.makeText(this, "Created by: Kyle & Keno", Toast.LENGTH_SHORT).show();
+//
+//
+//    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Toast.makeText(this, "On Resume", Toast.LENGTH_SHORT).show();
+    }
 
-
-
-        //timerController.resumeCount();
-
-
-
-
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        timeleft = timerController.getTimeleft();
+        Log.d(TAG, "onResume: millis " + timeleft);
+        timerController.setTimer(timeleft,1000);
+        Toast.makeText(this, "On Resume ", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        timerController.pauseCount();
-
     }
 
     @Override
     protected void onStop() {
-
         super.onStop();
-
         timerController.pauseCount();
     }
-
 
     protected void makeGraph() {
         //Graph
@@ -269,42 +270,42 @@ public class MainActivity extends AppCompatActivity {
         final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
         String dateString = "";
 
-        if(formatter.format(date).contains("2018-01")){
+        File directory = new File("/mnt/internal_sd/F45Dashboard/");
+        String filename = "barData.txt";
+        final File file = new File(directory, filename);
+        isFileCreated = file.exists();
+        isDirectoryCreated = directory.exists();
+
+        if (!(isDirectoryCreated && isFileCreated)) {
             dateString = "2018-01-01T00:00:00Z";
+        } else {
+            if (formatter.format(date).contains("2018-01")) {
+                dateString = "2018-01-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-02")) {
+                dateString = "2018-02-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-03")) {
+                dateString = "2018-03-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-04")) {
+                dateString = "2018-04-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-05")) {
+                dateString = "2018-05-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-06")) {
+                dateString = "2018-06-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-07")) {
+                dateString = "2018-07-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-08")) {
+                dateString = "2018-08-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-09")) {
+                dateString = "2018-09-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-10")) {
+                dateString = "2018-10-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-11")) {
+                dateString = "2018-11-01T00:00:00Z";
+            } else if (formatter.format(date).contains("2018-12")) {
+                dateString = "2018-12-01T00:00:00Z";
+            }
         }
-        else if (formatter.format(date).contains("2018-02")){
-            dateString = "2018-02-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-03")){
-            dateString = "2018-03-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-04")){
-            dateString = "2018-04-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-05")){
-            dateString = "2018-05-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-06")){
-            dateString = "2018-06-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-07")){
-            dateString = "2018-07-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-08")){
-            dateString = "2018-08-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-09")){
-            dateString = "2018-09-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-10")){
-            dateString = "2018-10-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-11")){
-            dateString = "2018-11-01T00:00:00Z";
-        }
-        else if (formatter.format(date).contains("2018-12")){
-            dateString = "2018-12-01T00:00:00Z";
-        }
+
 
         final String finalDateString = dateString;
 
@@ -411,12 +412,12 @@ public class MainActivity extends AppCompatActivity {
                                         //BARCHART DATA
                                         for (int i = 0; i < model.size(); i++) {
 
-                                            File directory = new File("/mnt/internal_sd/F45Dashboard/");
-                                            String filename = "barData.txt";
-                                            File file = new File(directory, filename);
-                                            isFileCreated = file.exists();
-                                            isDirectoryCreated = directory.exists();
-                                            if (!(isDirectoryCreated && isFileCreated )){
+//                                            File directory = new File("/mnt/internal_sd/F45Dashboard/");
+//                                            String filename = "barData.txt";
+//                                            File file = new File(directory, filename);
+//                                            isFileCreated = file.exists();
+//                                            isDirectoryCreated = directory.exists();
+                                            if (!(isDirectoryCreated && isFileCreated)) {
                                                 if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-01")) {
                                                     janO += 1;
                                                 } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-01")) {
@@ -455,7 +456,159 @@ public class MainActivity extends AppCompatActivity {
                                                 } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-05")) {
                                                     mayR += 1;
                                                 }
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-06")) {
+                                                    junO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-06") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-06")) {
+                                                    junU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-06") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-06")) {
+                                                    junR += 1;
+                                                }
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-07")) {
+                                                    julO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-07") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-07")) {
+                                                    julU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-07") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-07")) {
+                                                    julR += 1;
+                                                }
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-08")) {
+                                                    augO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-08") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-08")) {
+                                                    augU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-08") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-08")) {
+                                                    augR += 1;
+                                                }
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-09")) {
+                                                    sepO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-09") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-09")) {
+                                                    sepU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-09") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-09")) {
+                                                    sepR += 1;
+                                                }
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-10")) {
+                                                    octO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-10") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-10")) {
+                                                    octU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-10") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-10")) {
+                                                    octR += 1;
+                                                }
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-11")) {
+                                                    novO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-11") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-11")) {
+                                                    novU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-11") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-11")) {
+                                                    novR += 1;
+                                                }
+                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-12")) {
+                                                    decO += 1;
+                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-12") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-12")) {
+                                                    decU += 1;
+                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-12") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-12")) {
+                                                    decR += 1;
+                                                }
                                             } else {
+
+                                                if (formatter.format(date).contains("2018-01")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-01")) {
+                                                        janO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-01")) {
+                                                        janU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-01") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-01")) {
+                                                        janR += 1;
+                                                    }
+
+                                                } else if (formatter.format(date).contains("2018-02")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-02")) {
+                                                        febO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-02")) {
+                                                        febU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-02") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-02")) {
+                                                        febR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-03")) {
+
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-03")) {
+                                                        marO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-03")) {
+                                                        marU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-03") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-03")) {
+                                                        marR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-04")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-04")) {
+                                                        aprilO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-04")) {
+                                                        aprilU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-04") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-04")) {
+                                                        aprilR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-05")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-05")) {
+                                                        mayO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-05")) {
+                                                        mayU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-05")) {
+                                                        mayR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-06")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-06")) {
+                                                        junO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-06") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-06")) {
+                                                        junU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-06") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-06")) {
+                                                        junR += 1;
+                                                    }
+
+                                                } else if (formatter.format(date).contains("2018-07")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-07")) {
+                                                        julO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-07") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-07")) {
+                                                        julU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-07") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-07")) {
+                                                        julR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-08")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-08")) {
+                                                        augO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-08") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-08")) {
+                                                        augU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-08") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-08")) {
+                                                        augR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-09")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-09")) {
+                                                        sepO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-09") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-09")) {
+                                                        sepU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-09") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-09")) {
+                                                        sepR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-10")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-10")) {
+                                                        octO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-10") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-10")) {
+                                                        octU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-10") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-10")) {
+                                                        octR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-11")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-11")) {
+                                                        novO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-11") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-11")) {
+                                                        novU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-11") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-11")) {
+                                                        novR += 1;
+                                                    }
+                                                } else if (formatter.format(date).contains("2018-12")) {
+                                                    if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-12")) {
+                                                        decO += 1;
+                                                    } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-12") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-12")) {
+                                                        decU += 1;
+                                                    } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-12") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-12")) {
+                                                        decR += 1;
+                                                    }
+                                                }
+
+
                                                 //https://kodejava.org/how-do-i-read-file-using-fileinputstream/
                                                 // Get the temporary directory. We'll read the data.txt file
                                                 // from this directory.
@@ -484,13 +637,6 @@ public class MainActivity extends AppCompatActivity {
                                                     }
                                                 }
 
-                                                if (model.get(i).status.equals("2") && model.get(i).created_at.contains("2018-05")) {
-                                                    mayO += 1;
-                                                } else if (model.get(i).status.equals("3") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("6") && model.get(i).created_at.contains("2018-05")) {
-                                                    mayU += 1;
-                                                } else if (model.get(i).status.equals("4") && model.get(i).created_at.contains("2018-05") || model.get(i).status.equals("5") && model.get(i).created_at.contains("2018-05")) {
-                                                    mayR += 1;
-                                                }
 
                                                 // Print the content of the file
                                                 String s = builder.toString();
@@ -508,7 +654,30 @@ public class MainActivity extends AppCompatActivity {
                                                     aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
                                                     aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
                                                     aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
-
+                                                    mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
+                                                    mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
+                                                    mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
+                                                    junO = (Integer) jsonObj.getJSONObject("juneData").get("Open");
+                                                    junU = (Integer) jsonObj.getJSONObject("juneData").get("Unresolved");
+                                                    junR = (Integer) jsonObj.getJSONObject("juneData").get("Resolved");
+                                                    julO = (Integer) jsonObj.getJSONObject("julyData").get("Open");
+                                                    julU = (Integer) jsonObj.getJSONObject("julyData").get("Unresolved");
+                                                    julR = (Integer) jsonObj.getJSONObject("julyData").get("Resolved");
+                                                    augO = (Integer) jsonObj.getJSONObject("augustData").get("Open");
+                                                    augU = (Integer) jsonObj.getJSONObject("augustData").get("Unresolved");
+                                                    augR = (Integer) jsonObj.getJSONObject("augustData").get("Resolved");
+                                                    sepO = (Integer) jsonObj.getJSONObject("septemberData").get("Open");
+                                                    sepU = (Integer) jsonObj.getJSONObject("septemberData").get("Unresolved");
+                                                    sepR = (Integer) jsonObj.getJSONObject("septemberData").get("Resolved");
+                                                    octO = (Integer) jsonObj.getJSONObject("octoberData").get("Open");
+                                                    octU = (Integer) jsonObj.getJSONObject("octoberData").get("Unresolved");
+                                                    octR = (Integer) jsonObj.getJSONObject("octoberData").get("Resolved");
+                                                    novO = (Integer) jsonObj.getJSONObject("novemberData").get("Open");
+                                                    novU = (Integer) jsonObj.getJSONObject("novemberData").get("Unresolved");
+                                                    novR = (Integer) jsonObj.getJSONObject("novemberData").get("Resolved");
+                                                    decO = (Integer) jsonObj.getJSONObject("decemberData").get("Open");
+                                                    decU = (Integer) jsonObj.getJSONObject("decemberData").get("Unresolved");
+                                                    decR = (Integer) jsonObj.getJSONObject("decemberData").get("Resolved");
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -516,25 +685,6 @@ public class MainActivity extends AppCompatActivity {
                                             }
 
                                         }
-
-
-                                        Log.i(TAG, "Jan: "+Integer.toString(janO));
-                                        Log.i(TAG, "Jan: "+Integer.toString(janU));
-                                        Log.i(TAG, "Jan: "+Integer.toString(janR));
-                                        Log.i(TAG, "Feb: "+Integer.toString(febO));
-                                        Log.i(TAG, "Feb: "+Integer.toString(febU));
-                                        Log.i(TAG, "Feb: "+Integer.toString(febR));
-                                        Log.i(TAG, "Mar: "+Integer.toString(marO));
-                                        Log.i(TAG, "Mar: "+Integer.toString(marU));
-                                        Log.i(TAG, "Mar: "+Integer.toString(marR));
-                                        Log.i(TAG, "Apr: "+Integer.toString(aprilO));
-                                        Log.i(TAG, "Apr: "+Integer.toString(aprilU));
-                                        Log.i(TAG, "Apr: "+Integer.toString(aprilR));
-                                        Log.i(TAG, "May: "+Integer.toString(mayO));
-                                        Log.i(TAG, "May: "+Integer.toString(mayU));
-                                        Log.i(TAG, "May: "+Integer.toString(mayR));
-
-
                                         //END OF BARCHART DATA
                                     } else {
                                         Log.e(TAG, "tickets is null");
@@ -577,29 +727,64 @@ public class MainActivity extends AppCompatActivity {
                     janObject.addProperty("Resolved", janR);
                     JsonObject febObject = new JsonObject(); // Child Object
                     febObject.addProperty("Open", febO);
-                    febObject.addProperty("Unresolved",febU);
-                    febObject.addProperty("Resolved",febR);
+                    febObject.addProperty("Unresolved", febU);
+                    febObject.addProperty("Resolved", febR);
                     JsonObject marObject = new JsonObject(); // Child Object
                     marObject.addProperty("Open", marO);
                     marObject.addProperty("Unresolved", marU);
-                    marObject.addProperty("Resolved",marR);
+                    marObject.addProperty("Resolved", marR);
                     JsonObject aprObject = new JsonObject(); // Child Object
                     aprObject.addProperty("Open", aprilO);
                     aprObject.addProperty("Unresolved", aprilU);
-                    aprObject.addProperty("Resolved",aprilR);
+                    aprObject.addProperty("Resolved", aprilR);
                     JsonObject mayObject = new JsonObject(); // Child Object
-                    mayObject.addProperty("Open:",mayO);
+                    mayObject.addProperty("Open:", mayO);
                     mayObject.addProperty("Unresolved:", mayU);
                     mayObject.addProperty("Resolved:", mayR);
+                    JsonObject junObject = new JsonObject(); // Child Object
+                    junObject.addProperty("Open:", junO);
+                    junObject.addProperty("Unresolved:", junU);
+                    junObject.addProperty("Resolved:", junR);
+                    JsonObject julObject = new JsonObject(); // Child Object
+                    julObject.addProperty("Open:", julO);
+                    julObject.addProperty("Unresolved:", julU);
+                    julObject.addProperty("Resolved:", julR);
+                    JsonObject augObject = new JsonObject(); // Child Object
+                    augObject.addProperty("Open:", augO);
+                    augObject.addProperty("Unresolved:", augU);
+                    augObject.addProperty("Resolved:", augR);
+                    JsonObject sepObject = new JsonObject(); // Child Object
+                    sepObject.addProperty("Open:", sepO);
+                    sepObject.addProperty("Unresolved:", sepU);
+                    sepObject.addProperty("Resolved:", sepR);
+                    JsonObject octObject = new JsonObject(); // Child Object
+                    octObject.addProperty("Open:", octO);
+                    octObject.addProperty("Unresolved:", octU);
+                    octObject.addProperty("Resolved:", octR);
+                    JsonObject novObject = new JsonObject(); // Child Object
+                    novObject.addProperty("Open:", novO);
+                    novObject.addProperty("Unresolved:", novU);
+                    novObject.addProperty("Resolved:", novR);
+                    JsonObject decObject = new JsonObject(); // Child Object
+                    decObject.addProperty("Open:", decO);
+                    decObject.addProperty("Unresolved:", decU);
+                    decObject.addProperty("Resolved:", decR);
                     //Adding Child to Parent
                     dataObject.add("januaryData", janObject);
                     dataObject.add("februaryData", febObject);
                     dataObject.add("marchData", marObject);
                     dataObject.add("aprilData", aprObject);
                     dataObject.add("mayData", mayObject);
+                    dataObject.add("juneData", junObject);
+                    dataObject.add("julyData", julObject);
+                    dataObject.add("augustData", augObject);
+                    dataObject.add("septemberData", sepObject);
+                    dataObject.add("octoberData", octObject);
+                    dataObject.add("novemberData", novObject);
+                    dataObject.add("decemberData", decObject);
 
                     String content = dataObject.toString();
-                    Log.d(TAG, "checkComplete: "+ content);
+                    Log.d(TAG, "checkComplete: " + content);
 
                     // Android not creating file
                     // https://stackoverflow.com/questions/20202966/android-not-creating-file
@@ -607,7 +792,7 @@ public class MainActivity extends AppCompatActivity {
                     String filename = "barData.txt";
 
                     isDirectoryCreated = directory.exists();
-                    if (!isDirectoryCreated){
+                    if (!isDirectoryCreated) {
                         directory.mkdirs();
                         directory.createNewFile();
                         Log.d(TAG, "directory created..");
@@ -633,8 +818,7 @@ public class MainActivity extends AppCompatActivity {
                                 fos.getFD().sync();
                                 fos.close();
                             }
-                        }
-                        else {
+                        } else {
                             FileOutputStream fos = new FileOutputStream(file);
                             FileWriter fw = new FileWriter(fos.getFD());
                             try {
@@ -652,9 +836,9 @@ public class MainActivity extends AppCompatActivity {
 
                     }
 
-                    int[] opened = {janO, febO, marO, aprilO, mayO, 0, 0, 0, 0, 0, 0, 0};
-                    int[] resolved = {janR, febR, marR, aprilR, mayR, 0, 0, 0, 0, 0, 0, 0};
-                    int[] unresolved = {janU, febU, marU, aprilU, mayU, 0, 0, 0, 0, 0, 0, 0};
+                    int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
+                    int[] resolved = {janR, febR, marR, aprilR, mayR, junR, julR, augR, sepR, octR, novR, decR};
+                    int[] unresolved = {janU, febU, marU, aprilU, mayU, junU, julU, augU, sepU, octU, novU, decU};
 
                     for (int i = 0; i < 11; i++) {
                         barEntries1.add(new BarEntry(i, opened[i]));
@@ -674,34 +858,37 @@ public class MainActivity extends AppCompatActivity {
                     barDataSetOpened.notifyDataSetChanged();
                     barDataSetResolved.notifyDataSetChanged();
                     barDataSetUnresolved.notifyDataSetChanged();
+                    loadingView.setVisibility(View.GONE);
+                    barChartView.setVisibility(View.VISIBLE);
                     barChart.invalidate();
                     barChart.refreshDrawableState();
                     barW = data.getBarWidth();
                     data.setBarWidth(barW / 3);
                     data.setHighlightEnabled(false);
-                    if(formatter.format(date).contains("2018-01")||formatter.format(date).contains("2018-02")||formatter.format(date).contains("2018-03")||formatter.format(date).contains("2018-04")) {
+                    if (formatter.format(date).contains("2018-01") || formatter.format(date).contains("2018-02") || formatter.format(date).contains("2018-03") || formatter.format(date).contains("2018-04")) {
                         barChart.moveViewToX(0); //this moves to what index of the month
-                    } else if(formatter.format(date).contains("2018-05")) {
+                    } else if (formatter.format(date).contains("2018-05")) {
                         barChart.moveViewToX(1); //this moves to what index of the month
-                    } else if(formatter.format(date).contains("2018-06")) {
+                    } else if (formatter.format(date).contains("2018-06")) {
                         barChart.moveViewToX(2);
-                    } else if(formatter.format(date).contains("2018-07")) {
+                    } else if (formatter.format(date).contains("2018-07")) {
                         barChart.moveViewToX(3);
-                    } else if(formatter.format(date).contains("2018-08")) { //aug
+                    } else if (formatter.format(date).contains("2018-08")) { //aug
                         barChart.moveViewToX(4);
-                    } else if(formatter.format(date).contains("2018-09")) { //sep
+                    } else if (formatter.format(date).contains("2018-09")) { //sep
                         barChart.moveViewToX(5);
-                    } else if(formatter.format(date).contains("2018-10")) { //oct
+                    } else if (formatter.format(date).contains("2018-10")) { //oct
                         barChart.moveViewToX(6);
-                    } else if(formatter.format(date).contains("2018-11")) { //nov
+                    } else if (formatter.format(date).contains("2018-11")) { //nov
                         barChart.moveViewToX(7);
-                    } else if(formatter.format(date).contains("2018-12")) { //dec
+                    } else if (formatter.format(date).contains("2018-12")) { //dec
                         barChart.moveViewToX(8);
                     }
 
                     barChart.setVisibleXRangeMaximum(4);
                     barChart.setFitBars(true);
                     barChart.groupBars(0, (barW / 3) / 2, 0);
+
                     handler.removeCallbacksAndMessages(runnable);
                 }
             }
