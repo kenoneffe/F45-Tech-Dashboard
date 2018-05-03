@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     Handler handler = new Handler();
     Runnable runnable;
     long timeleft;
+    int prevPage = 1;
 
 
     //Schedule Declarations
@@ -321,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                             Headers header = response.headers();
-                            Log.d(TAG, header.toString());
+                            //Log.d(TAG, header.toString());
                             headerString = header.get("link");
                             Log.d(TAG, "ON RESPONSE: " + headerString);
                         }
@@ -339,7 +340,6 @@ public class MainActivity extends AppCompatActivity {
                             //updated at - created at = summation of everything / model size
                             ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
                             Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
-                            Log.d(TAG, headers.toString());
                             if (headers.get("link") == null) {
                                 isComplete = true;
                                 try {
@@ -352,24 +352,20 @@ public class MainActivity extends AppCompatActivity {
                                 headerString = headers.get("link");
                                 String result = headerString.substring(headerString.indexOf("?") + 1, headerString.indexOf("&"));
                                 pageNum = result.substring(result.lastIndexOf('=') + 1);
-                                Log.d(TAG, "This is the page number " + pageNum);
                                 page = Integer.parseInt(pageNum);
-
-                                if (response.isSuccessful()) {
-
-
-                                    Log.e(TAG, "This is the current page number: " + page);
-                                    Log.i(TAG, "response successful");
-
+                                Log.e(TAG, "This is the prev/current page number: " + prevPage);
+                                Log.e(TAG, "This is the next page number " + page);
+                                if (prevPage != page && prevPage < page) {
+                                    prevPage = page;
+                                    Log.e(TAG, "PROCEED");
                                     if (tickets != null) {
                                         for (int i = 0; i < model.size(); i++) {
                                             //getting current date time so we can get tickets for today only
-                                            TicketVolumeDataModel tvdm = response.body().get(i);
+                                            TicketVolumeDataModel tvdm = model.get(i);
                                             TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
                                             if (model.get(i).created_at.contains(formatter.format(date))) {
-                                                if (a.department != null) { //&& a.department.equals("Tech Systems")
+                                                if (a.department != null && a.department.equals("Tech Systems")) { //&& a.department.equals("Tech Systems")
                                                     tickets += 1;
-                                                    //Log.e("TEST123", "onResponse: " + "index " + i + " " + a.department);
                                                 }
                                             }
                                         }
@@ -639,9 +635,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                                                 // Print the content of the file
-                                                String s = builder.toString();
+                                                String textfile = builder.toString();
                                                 try {
-                                                    JSONObject jsonObj = new JSONObject(s);
+                                                    JSONObject jsonObj = new JSONObject(textfile);
                                                     janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
                                                     janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
                                                     janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
@@ -738,37 +734,37 @@ public class MainActivity extends AppCompatActivity {
                     aprObject.addProperty("Unresolved", aprilU);
                     aprObject.addProperty("Resolved", aprilR);
                     JsonObject mayObject = new JsonObject(); // Child Object
-                    mayObject.addProperty("Open:", mayO);
-                    mayObject.addProperty("Unresolved:", mayU);
-                    mayObject.addProperty("Resolved:", mayR);
+                    mayObject.addProperty("Open", mayO);
+                    mayObject.addProperty("Unresolved", mayU);
+                    mayObject.addProperty("Resolved", mayR);
                     JsonObject junObject = new JsonObject(); // Child Object
-                    junObject.addProperty("Open:", junO);
-                    junObject.addProperty("Unresolved:", junU);
-                    junObject.addProperty("Resolved:", junR);
+                    junObject.addProperty("Open", junO);
+                    junObject.addProperty("Unresolved", junU);
+                    junObject.addProperty("Resolved", junR);
                     JsonObject julObject = new JsonObject(); // Child Object
-                    julObject.addProperty("Open:", julO);
-                    julObject.addProperty("Unresolved:", julU);
-                    julObject.addProperty("Resolved:", julR);
+                    julObject.addProperty("Open", julO);
+                    julObject.addProperty("Unresolved", julU);
+                    julObject.addProperty("Resolved", julR);
                     JsonObject augObject = new JsonObject(); // Child Object
-                    augObject.addProperty("Open:", augO);
-                    augObject.addProperty("Unresolved:", augU);
-                    augObject.addProperty("Resolved:", augR);
+                    augObject.addProperty("Open", augO);
+                    augObject.addProperty("Unresolved", augU);
+                    augObject.addProperty("Resolved", augR);
                     JsonObject sepObject = new JsonObject(); // Child Object
-                    sepObject.addProperty("Open:", sepO);
-                    sepObject.addProperty("Unresolved:", sepU);
-                    sepObject.addProperty("Resolved:", sepR);
+                    sepObject.addProperty("Open", sepO);
+                    sepObject.addProperty("Unresolved", sepU);
+                    sepObject.addProperty("Resolved", sepR);
                     JsonObject octObject = new JsonObject(); // Child Object
-                    octObject.addProperty("Open:", octO);
-                    octObject.addProperty("Unresolved:", octU);
-                    octObject.addProperty("Resolved:", octR);
+                    octObject.addProperty("Open", octO);
+                    octObject.addProperty("Unresolved", octU);
+                    octObject.addProperty("Resolved", octR);
                     JsonObject novObject = new JsonObject(); // Child Object
-                    novObject.addProperty("Open:", novO);
-                    novObject.addProperty("Unresolved:", novU);
-                    novObject.addProperty("Resolved:", novR);
+                    novObject.addProperty("Open", novO);
+                    novObject.addProperty("Unresolved", novU);
+                    novObject.addProperty("Resolved", novR);
                     JsonObject decObject = new JsonObject(); // Child Object
-                    decObject.addProperty("Open:", decO);
-                    decObject.addProperty("Unresolved:", decU);
-                    decObject.addProperty("Resolved:", decR);
+                    decObject.addProperty("Open", decO);
+                    decObject.addProperty("Unresolved", decU);
+                    decObject.addProperty("Resolved", decR);
                     //Adding Child to Parent
                     dataObject.add("januaryData", janObject);
                     dataObject.add("februaryData", febObject);
