@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
     int novO = 0, novR = 0, novU = 0;
     int decO = 0, decR = 0, decU = 0;
     boolean isComplete = false;
+    boolean isCompleteUpdate = false;
+
     boolean firstRunThrough = false;
     Handler handler = new Handler();
     Handler handler2 = new Handler();
@@ -911,7 +913,7 @@ public class MainActivity extends AppCompatActivity {
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             updateTickets();
-
+            createNotifications();
             if (!firstRunThrough) {
                 loadingscreen.setVisibility(View.GONE);
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
@@ -1134,13 +1136,34 @@ public class MainActivity extends AppCompatActivity {
                             ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
                             Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
                             if (headers.get("link") == null) {
-                                isComplete = true;
+                                isCompleteUpdate = true;
+                                Log.d(TAG, "OnUpdate: " + isComplete );
+                                if (ticketsv2 < tickets) {
+                                    ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+                                    try {
+                                        long avgResponseTime = responseTime2 / ticketsv2;
+                                        Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
+                                        ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                                    } catch (Exception e) {
+                                        Log.e(TAG, "onResponse: ", e);
+                                    }
+                                } else if (ticketsv2 > tickets){
+                                    Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
+                                    ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
+                                    tickets = ticketsv2;
+                                    long avgResponseTime = responseTime2 / ticketsv2;
+                                    Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
+                                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                                    ticketsv2 = 0;
+                                }
+
                                 try {
                                     checkComplete();
+                                    isCompleteUpdate = false;
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                                Log.d(TAG, "ISCOMPLETE: " + isComplete);
+                                Log.d(TAG, "ISCOMPLETE Update: " + isCompleteUpdate);
                             } else {
                                 headerString = headers.get("link");
                                 String result = headerString.substring(headerString.indexOf("?") + 1, headerString.indexOf("&"));
@@ -1179,24 +1202,6 @@ public class MainActivity extends AppCompatActivity {
                                     } else {
                                         Log.e(TAG, "updated tickets is null");
                                     }
-                                    if (ticketsv2 < tickets) {
-                                        ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-                                        try {
-                                            long avgResponseTime = responseTime2 / ticketsv2;
-                                            Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-                                            ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                        } catch (Exception e) {
-                                            Log.e(TAG, "onResponse: ", e);
-                                        }
-                                    } else {
-                                        Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
-                                        ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
-                                        tickets = ticketsv2;
-                                        long avgResponseTime = responseTime2 / ticketsv2;
-                                        Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-                                        ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                        ticketsv2 = 0;
-                                    }
 
                                 }
                             }
@@ -1212,7 +1217,7 @@ public class MainActivity extends AppCompatActivity {
                             t.printStackTrace();
                         }
                     });
-                    Log.d("HERE", "ISCOMPLETE: " + isComplete);
+                    Log.d("HERE", "ISCOMPLETE UPDATE: " + isCompleteUpdate);
                 }
                 try {
                     checkComplete();
@@ -1269,7 +1274,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         };
-        handler3.post(runnable3);
+        handler3.postDelayed(runnable3, 5000);
     }
 }
 
