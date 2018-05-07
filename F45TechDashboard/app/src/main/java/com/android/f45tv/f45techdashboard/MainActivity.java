@@ -825,16 +825,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void startDeputyRequest() {
-        RetrofitClient retrofitClientD = new RetrofitClient();
-        retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
-        final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
-        final String cacheControlD = "no-cache";
-        final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
-        final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
+                RetrofitClient retrofitClientD = new RetrofitClient();
+                retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
+                final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
+                final String cacheControlD = "no-cache";
+                final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
+                final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
 
-        Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
-        call.enqueue(new Callback<List<ScheduleDataModel>>() {
-            @Override
+                Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
+                call.enqueue(new Callback<List<ScheduleDataModel>>() {
+                    @Override
             public void onResponse(Call<List<ScheduleDataModel>> call, Response<List<ScheduleDataModel>> response) {
 
                 ArrayList<ScheduleDataModel> model
@@ -1145,31 +1145,31 @@ public class MainActivity extends AppCompatActivity {
                                     } else {
                                         Log.e(TAG, "updated tickets is null");
                                     }
+                                    if (ticketsv2 < tickets) {
+                                        ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+                                        try {
+                                            long avgResponseTime = 1;
+                                            avgResponseTime = responseTime2 / ticketsv2;
+                                            Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
+                                            ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                                        } catch (Exception e) {
+                                            Log.e(TAG, "onResponse: ", e);
+                                        }
+                                    } else {
+                                        Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
+                                        ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
+                                        tickets = ticketsv2;
+                                        long avgResponseTime = responseTime2 / ticketsv2;
+                                        Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
+                                        ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                                        ticketsv2 = 0;
+                                    }
 
                                 }
                             }
 
 
-                            if (ticketsv2 > tickets) {
-                                Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
-                                ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
-                                tickets = ticketsv2;
-                                long avgResponseTime = responseTime2 / ticketsv2;
-                                Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-                                ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                ticketsv2 = 0;
-                            } else {
-                                ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-                                try {
-                                    long avgResponseTime = 1;
-                                    avgResponseTime = responseTime2 / ticketsv2;
-                                    Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-                                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                } catch (Exception e) {
-                                    Log.e(TAG, "onResponse: ", e);
-                                }
 
-                            }
                         }
 
                         @Override
@@ -1188,6 +1188,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+
         handler2.postDelayed(runnable2, 10000);
     }
 
