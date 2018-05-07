@@ -587,173 +587,136 @@ public class MainActivity extends AppCompatActivity {
                                                     }
                                                 }
                                             } else {
-                                                if (model.get(i).created_at.contains(currentYear + "-01")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            janO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            janU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            janR += 1;
-                                                            break;
+                                                if (model.get(i).created_at.contains(currentYear + "-01") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        janO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        janU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        janR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-02")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            febO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            febU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            febR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-02") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        febO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        febU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        febR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-03")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            marO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            marU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            marR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-03") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        marO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        marU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        marR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-04")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            aprilO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            aprilU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            aprilR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-04") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        aprilO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        aprilU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        aprilR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-05")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            mayO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            mayU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            mayR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-05") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        mayO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        mayU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        mayR += 1;
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-06")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            junO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            junU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            junR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-06") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        junO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        junU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        junR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-07")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            julO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            julU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            julR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-07") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        julO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        julU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        julR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-08")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            augO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            augU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            augR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-08") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        augO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        augU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        augR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-09")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            sepO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            sepU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            sepR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-09") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        sepO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        sepU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        sepR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-10")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            octO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            octU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            octR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-10") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        octO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        octU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        octR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-11")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            novO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            novU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            novR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-11") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        novO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        novU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        novR += 1;
+
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-12")) {
-                                                    switch (model.get(i).status) {
-                                                        case "2":
-                                                            decO += 1;
-                                                            break;
-                                                        case "3":
-                                                        case "6":
-                                                            decU += 1;
-                                                            break;
-                                                        case "4":
-                                                        case "5":
-                                                            decR += 1;
-                                                            break;
+                                                } else if (model.get(i).created_at.contains(currentYear + "-12") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                    if ("2".equals(model.get(i).status)) {
+                                                        decO += 1;
+
+                                                    } else if ("3".equals(model.get(i).status) || "6".equals(model.get(i).status)) {
+                                                        decU += 1;
+
+                                                    } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
+                                                        decR += 1;
+
                                                     }
                                                 }
                                             }
@@ -909,11 +872,11 @@ public class MainActivity extends AppCompatActivity {
         if (!isComplete) {
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
             handler.postDelayed(runnable, 1500);
+
         } else {
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             updateTickets();
-            createNotifications();
             if (!firstRunThrough) {
                 loadingscreen.setVisibility(View.GONE);
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
@@ -1136,9 +1099,9 @@ public class MainActivity extends AppCompatActivity {
                             ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
                             Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
                             if (headers.get("link") == null) {
-                                isCompleteUpdate = true;
-                                Log.d(TAG, "OnUpdate: " + isComplete );
                                 if (ticketsv2 < tickets ) {
+                                    isCompleteUpdate = false;
+                                    Log.d(TAG, "OnUpdate: " + isComplete );
                                     ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
                                     try {
                                         long avgResponseTime = responseTime2 / ticketsv2;
@@ -1155,11 +1118,11 @@ public class MainActivity extends AppCompatActivity {
                                     Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
                                     ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
                                     ticketsv2 = 0;
+                                    isCompleteUpdate = true;
+                                    Log.d(TAG, "OnUpdate: " + isComplete );
                                 }
-
                                 try {
                                     checkComplete();
-                                    isCompleteUpdate = false;
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
@@ -1226,7 +1189,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        handler2.postDelayed(runnable2, 10000);
+        handler2.postDelayed(runnable2, TimeUnit.MINUTES.toMillis(5));
     }
 
     public void createNotifications(){
@@ -1260,6 +1223,8 @@ public class MainActivity extends AppCompatActivity {
 
                         try {
                             recyclerView.setAdapter(adapter);
+                            recyclerView.invalidateItemDecorations();
+                            recyclerView.invalidate();
                             Log.d(TAG, "onStartNotifications: Adapter Set");
                         } catch (Exception e) {
                             Log.e(TAG, "onStartNotifications", e);
@@ -1274,7 +1239,7 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         };
-        handler3.postDelayed(runnable3, 5000);
+        handler3.post(runnable3);
     }
 }
 
