@@ -1138,7 +1138,7 @@ public class MainActivity extends AppCompatActivity {
                             if (headers.get("link") == null) {
                                 isCompleteUpdate = true;
                                 Log.d(TAG, "OnUpdate: " + isComplete );
-                                if (ticketsv2 < tickets) {
+                                if (ticketsv2 < tickets ) {
                                     ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
                                     try {
                                         long avgResponseTime = responseTime2 / ticketsv2;
@@ -1147,7 +1147,7 @@ public class MainActivity extends AppCompatActivity {
                                     } catch (Exception e) {
                                         Log.e(TAG, "onResponse: ", e);
                                     }
-                                } else if (ticketsv2 > tickets){
+                                } else {
                                     Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
                                     ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
                                     tickets = ticketsv2;
