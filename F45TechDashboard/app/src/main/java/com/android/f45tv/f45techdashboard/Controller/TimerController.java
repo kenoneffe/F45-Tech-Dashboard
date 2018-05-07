@@ -112,7 +112,6 @@ public class TimerController extends LinearLayout implements TimerInterface {
 
     public void pauseCount(){
         countDownTimer.cancel();
-        audioPlay.stop();
     }
 
 

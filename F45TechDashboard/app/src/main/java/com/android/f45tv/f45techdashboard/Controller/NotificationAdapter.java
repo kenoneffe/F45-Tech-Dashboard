@@ -28,7 +28,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public NotificationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.notification, null);
+        View view = layoutInflater.inflate(R.layout.notification,null);
         return new NotificationViewHolder(view);
 
     }
@@ -36,11 +36,43 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public void onBindViewHolder(NotificationViewHolder holder, int position) {
 
+        NotificationController notificationController = notificationList.get(position);
+        int priority = notificationController.getPriority();
+        int source = notificationController.getSource();
+
+        if (priority == 1){
+            holder.priority.setText("Low");
+        } else if (priority == 2){
+            holder.priority.setText("Medium");
+        } else if (priority == 3){
+            holder.priority.setText("High");
+        } else if (priority == 4){
+            holder.priority.setText("Urgent");
+        }
+
+        if (source == 1){
+            holder.source.setText("Email");
+        } else if (source == 2){
+            holder.source.setText("Portal");
+        } else if (source == 3){
+            holder.source.setText("Phone");
+        } else if (source == 7){
+            holder.source.setText("Chat");
+        } else if (source == 8){
+            holder.source.setText("Mobihelp");
+        } else if (source == 9){
+            holder.source.setText("Feedback Widget");
+        } else if (source == 10){
+            holder.source.setText("Outbound Email");
+        }
+        holder.subject.setText(notificationController.getSubject());
+
+
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return notificationList.size();
     }
 
     class NotificationViewHolder extends RecyclerView.ViewHolder{
@@ -49,7 +81,10 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         public NotificationViewHolder(View itemView) {
             super(itemView);
 
-
+            priority = itemView.findViewById(R.id.priority_entry);
+            source = itemView.findViewById(R.id.source_entry);
+            subject = itemView.findViewById(R.id.subject_entry);
+            itemView.invalidate();
         }
     }
 }

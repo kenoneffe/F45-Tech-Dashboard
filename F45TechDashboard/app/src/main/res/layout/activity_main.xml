@@ -11,6 +11,16 @@
     android:background="@drawable/f45bg">
 
     <LinearLayout
+        android:id="@+id/loading_screen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/f45bg"
+        android:visibility="visible"
+        android:orientation="horizontal">
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/alert_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -70,12 +80,75 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight=".3"
-            android:orientation="horizontal">
+            android:orientation="vertical"
+            android:background="@drawable/layout_rounded">
 
-            <include
-                layout="@layout/notification"
+            <TableLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#cc576ad1"
+                android:weightSum="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="@string/Notifications"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </TableRow>
+
+            <TableRow
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#957a87ce"
+                android:weightSum="1">
+
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".015"
+                    android:gravity="center"
+                    android:text="Priority"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".085"
+                    android:gravity="center"
+                    android:text="Source"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".90"
+                    android:gravity="center"
+                    android:text="Subject"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </TableRow>
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recyclerViewId"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+            </TableLayout>
+
+
 
 
         </LinearLayout>

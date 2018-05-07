@@ -1,5 +1,6 @@
 package com.android.f45tv.f45techdashboard;
 
+import android.app.Notification;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,6 +9,8 @@ import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +20,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
+import com.android.f45tv.f45techdashboard.Controller.NotificationAdapter;
+import com.android.f45tv.f45techdashboard.Controller.NotificationController;
 import com.android.f45tv.f45techdashboard.Controller.ScheduleController;
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
@@ -73,7 +78,7 @@ import retrofit2.Response;
  */
 
 public class MainActivity extends AppCompatActivity {
-
+    LinearLayout loadingscreen;
     Boolean isDirectoryCreated;
     Boolean isFileCreated;
     TextView marqueeView;
@@ -127,11 +132,18 @@ public class MainActivity extends AppCompatActivity {
     boolean firstRunThrough = false;
     Handler handler = new Handler();
     Handler handler2 = new Handler();
+    Handler handler3 = new Handler();
     Runnable runnable;
     Runnable runnable2;
+    Runnable runnable3;
+    RecyclerView recyclerView;
+    NotificationAdapter adapter;
+    List<NotificationController> notificationList;
 
     long timeleft;
     boolean doubleBackToExitPressedOnce = false;
+
+
 
     //Schedule Declarations
     ScheduleManager shiftManager;
@@ -141,6 +153,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        loadingscreen  = findViewById(R.id.loading_screen);
+        //notification
+        notificationList = new ArrayList<>();
+        recyclerView = findViewById(R.id.recyclerViewId);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new NotificationAdapter(this, notificationList);
+        createNotifications();
+
 
         //loading view
         loadingView = findViewById(R.id.loading_layout);
@@ -156,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         timerController = new TimerController(this);
         timerFrame = findViewById(R.id.timerFrame);
         timerFrame.addView(timerController);
-        timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
+        //timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
 
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
@@ -347,6 +369,7 @@ public class MainActivity extends AppCompatActivity {
                                             if (model.get(i).created_at.contains(formatter.format(date))) {
                                                 if (a.department != null && a.department.equals("Tech Systems")) { //&& a.department.equals("Tech Systems")
                                                     tickets += 1;
+                                                    //notificationList.add(new NotificationController(i, model.get(i).subject, Integer.parseInt(model.get(i).source), Integer.parseInt(model.get(i).priority)));
                                                 }
                                             }
                                             Log.d(TAG, "This is the number of tickets today: " + Integer.toString(tickets));
@@ -379,6 +402,7 @@ public class MainActivity extends AppCompatActivity {
                                             ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
                                             // END OF RESPONSE TIME
                                         }
+
 
                                         //BARCHART DATA
                                         for (int i = 0; i < model.size(); i++) {
@@ -881,6 +905,8 @@ public class MainActivity extends AppCompatActivity {
             updateTickets();
 
             if (!firstRunThrough) {
+                loadingscreen.setVisibility(View.GONE);
+                timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
                 JsonObject dataObject = new JsonObject(); // Parent Object
                 JsonObject janObject = new JsonObject(); // Child Object
                 janObject.addProperty("Open", janO);
@@ -1148,8 +1174,7 @@ public class MainActivity extends AppCompatActivity {
                                     if (ticketsv2 < tickets) {
                                         ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
                                         try {
-                                            long avgResponseTime = 1;
-                                            avgResponseTime = responseTime2 / ticketsv2;
+                                            long avgResponseTime = responseTime2 / ticketsv2;
                                             Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
                                             ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
                                         } catch (Exception e) {
@@ -1188,24 +1213,55 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-
-
         handler2.postDelayed(runnable2, 10000);
     }
 
-    /* Source | Value
-     * Email 	1
-     * Portal 	2
-     * Phone 	3
-     * Chat 	    7
-     * Mobihelp 	8
-     * Feedback Widget 	9
-     * Outbound Email 	10
-     * Priority | Value
-     * Low      1
-     * Medium   2
-     * High  3
-     * Urgent    4
-     * */
+    public void createNotifications(){
+
+        Log.d(TAG, "updateTickets: UPDATING");
+        //retrofitclient
+        RetrofitClient retrofitClient = new RetrofitClient();
+        retrofitClient.setBaseUrl("https://f45training.freshdesk.com/");
+        final String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
+        final String cacheControl = "no-cache";
+        final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
+        final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
+        final String dateString = currentYear + "-" + currentMonth + "-01T00:00:00Z";
+        runnable3 = new Runnable() {
+            @Override
+            public void run() {
+                Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100, dateString);
+                call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
+                    @Override
+                    public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
+                        ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
+                        Log.d(TAG, "onStartNotifications");
+
+                        for (int i = 0; i < model.size(); i++) {
+                            TicketVolumeDataModel tvdm = model.get(i);
+                            TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
+                            if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
+                                notificationList.add(new NotificationController(i, model.get(i).subject, Integer.parseInt(model.get(i).source), Integer.parseInt(model.get(i).priority)));
+                            }
+                            Log.d(TAG, "Adding:"+ "index: "+ i +" subject: "+ model.get(i).subject +" source: "+ Integer.parseInt(model.get(i).source)+" priority: "+ Integer.parseInt(model.get(i).priority));}
+
+                        try {
+                            recyclerView.setAdapter(adapter);
+                            Log.d(TAG, "onStartNotifications: Adapter Set");
+                        } catch (Exception e) {
+                            Log.e(TAG, "onStartNotifications", e);
+                        }
+
+//
+                    }
+                    @Override
+                    public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
+                        Log.e(TAG, "onFailure: onNotif", t);
+                    }
+                });
+            }
+        };
+        handler3.post(runnable3);
+    }
 }
 

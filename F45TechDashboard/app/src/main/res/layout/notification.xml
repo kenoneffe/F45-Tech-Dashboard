@@ -5,33 +5,14 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:weightSum="3"
     android:background="@drawable/layout_rounded">
-
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#cc576ad1"
-            android:weightSum="1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="@string/Notifications"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-
-        </TableRow>
-
-        <TableRow
-
+            android:id="@+id/row_entry"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="#957a87ce"
@@ -39,31 +20,37 @@
 
             <TextView
 
-                android:layout_width="wrap_content"
+                android:id="@+id/priority_entry"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".015"
                 android:gravity="center"
-                android:text="Priority"
+                android:text="High"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
 
-                android:layout_width="match_parent"
+                android:id="@+id/source_entry"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_weight=".085"
                 android:gravity="center"
-                android:text="Source"
+                android:text="Email"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/subject_entry"
+                android:layout_width="500dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".90"
-                android:gravity="center"
-                android:text="Subject"
-                android:textSize="18sp"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Sample Subject Using Recycler View blah blah blah test test test"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
         </TableRow>
