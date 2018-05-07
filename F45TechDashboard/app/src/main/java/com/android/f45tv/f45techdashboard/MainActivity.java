@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
@@ -41,6 +42,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
@@ -143,6 +145,8 @@ public class MainActivity extends AppCompatActivity {
     long timeleft;
     boolean doubleBackToExitPressedOnce = false;
 
+    ProgressBar progressBar;
+    DoubleBounce doubleBounce;
 
 
     //Schedule Declarations
@@ -154,6 +158,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        progressBar = findViewById(R.id.spin_kit);
+        /*doubleBounce = new DoubleBounce();
+        progressBar.setIndeterminateDrawable(doubleBounce);
+*/
         loadingscreen  = findViewById(R.id.loading_screen);
         //notification
         notificationList = new ArrayList<>();
@@ -194,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         marqueeView.startAnimation(marqueeAnim);
 
         //Deputy
-        startDeputyRequest();
+        //startDeputyRequest();
 
     }
 
