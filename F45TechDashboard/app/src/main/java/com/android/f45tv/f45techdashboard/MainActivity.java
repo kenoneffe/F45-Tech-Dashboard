@@ -1,8 +1,8 @@
 package com.android.f45tv.f45techdashboard;
 
-import android.app.Notification;
-import android.content.Context;
-import android.content.SharedPreferences;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -80,6 +80,8 @@ import retrofit2.Response;
  */
 
 public class MainActivity extends AppCompatActivity {
+
+
     LinearLayout loadingscreen;
     Boolean isDirectoryCreated;
     Boolean isFileCreated;
@@ -164,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
         /*doubleBounce = new DoubleBounce();
         progressBar.setIndeterminateDrawable(doubleBounce);
 */
-        loadingscreen  = findViewById(R.id.loading_screen);
+        loadingscreen = findViewById(R.id.loading_screen);
         //notification
         notificationList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerViewId);
@@ -205,6 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Deputy
         //startDeputyRequest();
+        //practiceNewThread();
 
     }
 
@@ -587,7 +590,7 @@ public class MainActivity extends AppCompatActivity {
                                                     }
                                                 }
                                             } else {
-                                                if (model.get(i).created_at.contains(currentYear + "-01") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                if (model.get(i).created_at.contains(currentYear + "-01") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         janO += 1;
 
@@ -596,9 +599,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         janR += 1;
-
+                                                        Log.i(TAG, "ADDING: JAN");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-02") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-02") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         febO += 1;
 
@@ -607,9 +610,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         febR += 1;
-
+                                                        Log.i(TAG, "ADDING: FEB");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-03") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-03") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         marO += 1;
 
@@ -618,9 +621,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         marR += 1;
-
+                                                        Log.i(TAG, "ADDING: MAR");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-04") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-04") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         aprilO += 1;
 
@@ -629,9 +632,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         aprilR += 1;
-
+                                                        Log.i(TAG, "ADDING: APR");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-05") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-05") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         mayO += 1;
 
@@ -640,8 +643,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         mayR += 1;
+                                                        Log.i(TAG, "ADDING: MAY");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-06") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-06") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         junO += 1;
 
@@ -650,9 +654,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         junR += 1;
-
+                                                        Log.i(TAG, "ADDING: JUN");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-07") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-07") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         julO += 1;
 
@@ -661,9 +665,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         julR += 1;
-
+                                                        Log.i(TAG, "ADDING: JUL");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-08") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-08") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         augO += 1;
 
@@ -672,9 +676,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         augR += 1;
-
+                                                        Log.i(TAG, "ADDING: AUG");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-09") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-09") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         sepO += 1;
 
@@ -683,9 +687,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         sepR += 1;
-
+                                                        Log.i(TAG, "ADDING: SEP");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-10") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-10") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         octO += 1;
 
@@ -694,9 +698,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         octR += 1;
-
+                                                        Log.i(TAG, "ADDING: OCT");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-11") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-11") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         novO += 1;
 
@@ -705,9 +709,9 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         novR += 1;
-
+                                                        Log.i(TAG, "ADDING: NOV");
                                                     }
-                                                } else if (model.get(i).created_at.contains(currentYear + "-12") == model.get(i).created_at.contains(currentYear +"-"+ currentMonth)) {
+                                                } else if (model.get(i).created_at.contains(currentYear + "-12") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
                                                     if ("2".equals(model.get(i).status)) {
                                                         decO += 1;
 
@@ -716,7 +720,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                     } else if ("4".equals(model.get(i).status) || "5".equals(model.get(i).status)) {
                                                         decR += 1;
-
+                                                        Log.i(TAG, "ADDING: DEC");
                                                     }
                                                 }
                                             }
@@ -724,6 +728,8 @@ public class MainActivity extends AppCompatActivity {
                                         //https://kodejava.org/how-do-i-read-file-using-fileinputstream/
                                         // Get the temporary directory. We'll read the data.txt file
                                         // from this directory.
+
+                                        Log.i(TAG, "BEFORE TEXT:" + mayO + " " + mayR + " " + mayU);
 
                                         StringBuilder builder = new StringBuilder();
                                         FileInputStream fis = null;
@@ -753,45 +759,228 @@ public class MainActivity extends AppCompatActivity {
                                         String textfile = builder.toString();
                                         try {
                                             JSONObject jsonObj = new JSONObject(textfile);
-                                            janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
-                                            janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
-                                            janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
-                                            febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
-                                            febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
-                                            febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
-                                            marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
-                                            marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
-                                            marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
-                                            aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
-                                            aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
-                                            aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
-                                            mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
-                                            mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
-                                            mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
-                                            junO = (Integer) jsonObj.getJSONObject("juneData").get("Open");
-                                            junU = (Integer) jsonObj.getJSONObject("juneData").get("Unresolved");
-                                            junR = (Integer) jsonObj.getJSONObject("juneData").get("Resolved");
-                                            julO = (Integer) jsonObj.getJSONObject("julyData").get("Open");
-                                            julU = (Integer) jsonObj.getJSONObject("julyData").get("Unresolved");
-                                            julR = (Integer) jsonObj.getJSONObject("julyData").get("Resolved");
-                                            augO = (Integer) jsonObj.getJSONObject("augustData").get("Open");
-                                            augU = (Integer) jsonObj.getJSONObject("augustData").get("Unresolved");
-                                            augR = (Integer) jsonObj.getJSONObject("augustData").get("Resolved");
-                                            sepO = (Integer) jsonObj.getJSONObject("septemberData").get("Open");
-                                            sepU = (Integer) jsonObj.getJSONObject("septemberData").get("Unresolved");
-                                            sepR = (Integer) jsonObj.getJSONObject("septemberData").get("Resolved");
-                                            octO = (Integer) jsonObj.getJSONObject("octoberData").get("Open");
-                                            octU = (Integer) jsonObj.getJSONObject("octoberData").get("Unresolved");
-                                            octR = (Integer) jsonObj.getJSONObject("octoberData").get("Resolved");
-                                            novO = (Integer) jsonObj.getJSONObject("novemberData").get("Open");
-                                            novU = (Integer) jsonObj.getJSONObject("novemberData").get("Unresolved");
-                                            novR = (Integer) jsonObj.getJSONObject("novemberData").get("Resolved");
-                                            decO = (Integer) jsonObj.getJSONObject("decemberData").get("Open");
-                                            decU = (Integer) jsonObj.getJSONObject("decemberData").get("Unresolved");
-                                            decR = (Integer) jsonObj.getJSONObject("decemberData").get("Resolved");
+                                            for (int i = 0; i < model.size(); i++) {
+                                                if (model.get(i).created_at.contains(currentYear + "-01") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+
+                                                } else if (model.get(i).created_at.contains(currentYear + "-02") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-03") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-04") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-05") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-06") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+                                                    mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
+                                                    mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
+                                                    mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-07") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+                                                    mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
+                                                    mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
+                                                    mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
+                                                    junO = (Integer) jsonObj.getJSONObject("juneData").get("Open");
+                                                    junU = (Integer) jsonObj.getJSONObject("juneData").get("Unresolved");
+                                                    junR = (Integer) jsonObj.getJSONObject("juneData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-08") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+                                                    mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
+                                                    mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
+                                                    mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
+                                                    junO = (Integer) jsonObj.getJSONObject("juneData").get("Open");
+                                                    junU = (Integer) jsonObj.getJSONObject("juneData").get("Unresolved");
+                                                    junR = (Integer) jsonObj.getJSONObject("juneData").get("Resolved");
+                                                    julO = (Integer) jsonObj.getJSONObject("julyData").get("Open");
+                                                    julU = (Integer) jsonObj.getJSONObject("julyData").get("Unresolved");
+                                                    julR = (Integer) jsonObj.getJSONObject("julyData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-09") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+                                                    mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
+                                                    mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
+                                                    mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
+                                                    junO = (Integer) jsonObj.getJSONObject("juneData").get("Open");
+                                                    junU = (Integer) jsonObj.getJSONObject("juneData").get("Unresolved");
+                                                    junR = (Integer) jsonObj.getJSONObject("juneData").get("Resolved");
+                                                    julO = (Integer) jsonObj.getJSONObject("julyData").get("Open");
+                                                    julU = (Integer) jsonObj.getJSONObject("julyData").get("Unresolved");
+                                                    julR = (Integer) jsonObj.getJSONObject("julyData").get("Resolved");
+                                                    augO = (Integer) jsonObj.getJSONObject("augustData").get("Open");
+                                                    augU = (Integer) jsonObj.getJSONObject("augustData").get("Unresolved");
+                                                    augR = (Integer) jsonObj.getJSONObject("augustData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-10") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+                                                    mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
+                                                    mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
+                                                    mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
+                                                    junO = (Integer) jsonObj.getJSONObject("juneData").get("Open");
+                                                    junU = (Integer) jsonObj.getJSONObject("juneData").get("Unresolved");
+                                                    junR = (Integer) jsonObj.getJSONObject("juneData").get("Resolved");
+                                                    julO = (Integer) jsonObj.getJSONObject("julyData").get("Open");
+                                                    julU = (Integer) jsonObj.getJSONObject("julyData").get("Unresolved");
+                                                    julR = (Integer) jsonObj.getJSONObject("julyData").get("Resolved");
+                                                    augO = (Integer) jsonObj.getJSONObject("augustData").get("Open");
+                                                    augU = (Integer) jsonObj.getJSONObject("augustData").get("Unresolved");
+                                                    augR = (Integer) jsonObj.getJSONObject("augustData").get("Resolved");
+                                                    sepO = (Integer) jsonObj.getJSONObject("septemberData").get("Open");
+                                                    sepU = (Integer) jsonObj.getJSONObject("septemberData").get("Unresolved");
+                                                    sepR = (Integer) jsonObj.getJSONObject("septemberData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-11") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+                                                    mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
+                                                    mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
+                                                    mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
+                                                    junO = (Integer) jsonObj.getJSONObject("juneData").get("Open");
+                                                    junU = (Integer) jsonObj.getJSONObject("juneData").get("Unresolved");
+                                                    junR = (Integer) jsonObj.getJSONObject("juneData").get("Resolved");
+                                                    julO = (Integer) jsonObj.getJSONObject("julyData").get("Open");
+                                                    julU = (Integer) jsonObj.getJSONObject("julyData").get("Unresolved");
+                                                    julR = (Integer) jsonObj.getJSONObject("julyData").get("Resolved");
+                                                    augO = (Integer) jsonObj.getJSONObject("augustData").get("Open");
+                                                    augU = (Integer) jsonObj.getJSONObject("augustData").get("Unresolved");
+                                                    augR = (Integer) jsonObj.getJSONObject("augustData").get("Resolved");
+                                                    sepO = (Integer) jsonObj.getJSONObject("septemberData").get("Open");
+                                                    sepU = (Integer) jsonObj.getJSONObject("septemberData").get("Unresolved");
+                                                    sepR = (Integer) jsonObj.getJSONObject("septemberData").get("Resolved");
+                                                    octO = (Integer) jsonObj.getJSONObject("octoberData").get("Open");
+                                                    octU = (Integer) jsonObj.getJSONObject("octoberData").get("Unresolved");
+                                                    octR = (Integer) jsonObj.getJSONObject("octoberData").get("Resolved");
+                                                } else if (model.get(i).created_at.contains(currentYear + "-12") && model.get(i).created_at.contains(currentYear + "-" + currentMonth)) {
+                                                    janO = (Integer) jsonObj.getJSONObject("januaryData").get("Open");
+                                                    janU = (Integer) jsonObj.getJSONObject("januaryData").get("Unresolved");
+                                                    janR = (Integer) jsonObj.getJSONObject("januaryData").get("Resolved");
+                                                    febO = (Integer) jsonObj.getJSONObject("februaryData").get("Open");
+                                                    febU = (Integer) jsonObj.getJSONObject("februaryData").get("Unresolved");
+                                                    febR = (Integer) jsonObj.getJSONObject("februaryData").get("Resolved");
+                                                    marO = (Integer) jsonObj.getJSONObject("marchData").get("Open");
+                                                    marU = (Integer) jsonObj.getJSONObject("marchData").get("Unresolved");
+                                                    marR = (Integer) jsonObj.getJSONObject("marchData").get("Resolved");
+                                                    aprilO = (Integer) jsonObj.getJSONObject("aprilData").get("Open");
+                                                    aprilU = (Integer) jsonObj.getJSONObject("aprilData").get("Unresolved");
+                                                    aprilR = (Integer) jsonObj.getJSONObject("aprilData").get("Resolved");
+                                                    mayO = (Integer) jsonObj.getJSONObject("mayData").get("Open");
+                                                    mayU = (Integer) jsonObj.getJSONObject("mayData").get("Unresolved");
+                                                    mayR = (Integer) jsonObj.getJSONObject("mayData").get("Resolved");
+                                                    junO = (Integer) jsonObj.getJSONObject("juneData").get("Open");
+                                                    junU = (Integer) jsonObj.getJSONObject("juneData").get("Unresolved");
+                                                    junR = (Integer) jsonObj.getJSONObject("juneData").get("Resolved");
+                                                    julO = (Integer) jsonObj.getJSONObject("julyData").get("Open");
+                                                    julU = (Integer) jsonObj.getJSONObject("julyData").get("Unresolved");
+                                                    julR = (Integer) jsonObj.getJSONObject("julyData").get("Resolved");
+                                                    augO = (Integer) jsonObj.getJSONObject("augustData").get("Open");
+                                                    augU = (Integer) jsonObj.getJSONObject("augustData").get("Unresolved");
+                                                    augR = (Integer) jsonObj.getJSONObject("augustData").get("Resolved");
+                                                    sepO = (Integer) jsonObj.getJSONObject("septemberData").get("Open");
+                                                    sepU = (Integer) jsonObj.getJSONObject("septemberData").get("Unresolved");
+                                                    sepR = (Integer) jsonObj.getJSONObject("septemberData").get("Resolved");
+                                                    octO = (Integer) jsonObj.getJSONObject("octoberData").get("Open");
+                                                    octU = (Integer) jsonObj.getJSONObject("octoberData").get("Unresolved");
+                                                    octR = (Integer) jsonObj.getJSONObject("octoberData").get("Resolved");
+                                                    novO = (Integer) jsonObj.getJSONObject("novemberData").get("Open");
+                                                    novU = (Integer) jsonObj.getJSONObject("novemberData").get("Unresolved");
+                                                    novR = (Integer) jsonObj.getJSONObject("novemberData").get("Resolved");
+                                                }
+//                                                    decO = (Integer) jsonObj.getJSONObject("decemberData").get("Open");
+//                                                    decU = (Integer) jsonObj.getJSONObject("decemberData").get("Unresolved");
+//                                                    decR = (Integer) jsonObj.getJSONObject("decemberData").get("Resolved");
+                                            }
+
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
+                                        Log.i(TAG, "AFTER TEXT:" + mayO + " " + mayR + " " + mayU);
                                         //END OF BARCHART DATA
                                     } else {
                                         Log.e(TAG, "tickets is null");
@@ -811,6 +1000,7 @@ public class MainActivity extends AppCompatActivity {
 
                     Log.d("HERE", "ISCOMPLETE: " + isComplete);
                 }
+
                 try {
                     checkComplete();
                 } catch (IOException e) {
@@ -822,16 +1012,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void startDeputyRequest() {
-                RetrofitClient retrofitClientD = new RetrofitClient();
-                retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
-                final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
-                final String cacheControlD = "no-cache";
-                final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
-                final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
+        RetrofitClient retrofitClientD = new RetrofitClient();
+        retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
+        final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
+        final String cacheControlD = "no-cache";
+        final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
+        final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
 
-                Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
-                call.enqueue(new Callback<List<ScheduleDataModel>>() {
-                    @Override
+        Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
+        call.enqueue(new Callback<List<ScheduleDataModel>>() {
+            @Override
             public void onResponse(Call<List<ScheduleDataModel>> call, Response<List<ScheduleDataModel>> response) {
 
                 ArrayList<ScheduleDataModel> model
@@ -872,130 +1062,15 @@ public class MainActivity extends AppCompatActivity {
         if (!isComplete) {
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
             handler.postDelayed(runnable, 1500);
-
         } else {
+//            Future futureProcess = getFutureProcess();
+//            updateTickets();
+            practiceNewThread();
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
-            updateTickets();
             if (!firstRunThrough) {
                 loadingscreen.setVisibility(View.GONE);
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
-                JsonObject dataObject = new JsonObject(); // Parent Object
-                JsonObject janObject = new JsonObject(); // Child Object
-                janObject.addProperty("Open", janO);
-                janObject.addProperty("Unresolved", janU);
-                janObject.addProperty("Resolved", janR);
-                JsonObject febObject = new JsonObject(); // Child Object
-                febObject.addProperty("Open", febO);
-                febObject.addProperty("Unresolved", febU);
-                febObject.addProperty("Resolved", febR);
-                JsonObject marObject = new JsonObject(); // Child Object
-                marObject.addProperty("Open", marO);
-                marObject.addProperty("Unresolved", marU);
-                marObject.addProperty("Resolved", marR);
-                JsonObject aprObject = new JsonObject(); // Child Object
-                aprObject.addProperty("Open", aprilO);
-                aprObject.addProperty("Unresolved", aprilU);
-                aprObject.addProperty("Resolved", aprilR);
-                JsonObject mayObject = new JsonObject(); // Child Object
-                mayObject.addProperty("Open", mayO);
-                mayObject.addProperty("Unresolved", mayU);
-                mayObject.addProperty("Resolved", mayR);
-                JsonObject junObject = new JsonObject(); // Child Object
-                junObject.addProperty("Open", junO);
-                junObject.addProperty("Unresolved", junU);
-                junObject.addProperty("Resolved", junR);
-                JsonObject julObject = new JsonObject(); // Child Object
-                julObject.addProperty("Open", julO);
-                julObject.addProperty("Unresolved", julU);
-                julObject.addProperty("Resolved", julR);
-                JsonObject augObject = new JsonObject(); // Child Object
-                augObject.addProperty("Open", augO);
-                augObject.addProperty("Unresolved", augU);
-                augObject.addProperty("Resolved", augR);
-                JsonObject sepObject = new JsonObject(); // Child Object
-                sepObject.addProperty("Open", sepO);
-                sepObject.addProperty("Unresolved", sepU);
-                sepObject.addProperty("Resolved", sepR);
-                JsonObject octObject = new JsonObject(); // Child Object
-                octObject.addProperty("Open", octO);
-                octObject.addProperty("Unresolved", octU);
-                octObject.addProperty("Resolved", octR);
-                JsonObject novObject = new JsonObject(); // Child Object
-                novObject.addProperty("Open", novO);
-                novObject.addProperty("Unresolved", novU);
-                novObject.addProperty("Resolved", novR);
-                JsonObject decObject = new JsonObject(); // Child Object
-                decObject.addProperty("Open", decO);
-                decObject.addProperty("Unresolved", decU);
-                decObject.addProperty("Resolved", decR);
-                //Adding Child to Parent
-                dataObject.add("januaryData", janObject);
-                dataObject.add("februaryData", febObject);
-                dataObject.add("marchData", marObject);
-                dataObject.add("aprilData", aprObject);
-                dataObject.add("mayData", mayObject);
-                dataObject.add("juneData", junObject);
-                dataObject.add("julyData", julObject);
-                dataObject.add("augustData", augObject);
-                dataObject.add("septemberData", sepObject);
-                dataObject.add("octoberData", octObject);
-                dataObject.add("novemberData", novObject);
-                dataObject.add("decemberData", decObject);
-
-                String content = dataObject.toString();
-                Log.d(TAG, "checkComplete: " + content);
-
-                // Android not creating file
-                // https://stackoverflow.com/questions/20202966/android-not-creating-file
-                File directory = new File("/mnt/internal_sd/F45Dashboard/");
-                String filename = "barData.txt";
-
-                isDirectoryCreated = directory.exists();
-                if (!isDirectoryCreated) {
-                    directory.mkdirs();
-                    directory.createNewFile();
-                    Log.d(TAG, "directory created..");
-                }
-
-                if (isDirectoryCreated) {
-                    File file = new File(directory, filename);
-                    isFileCreated = file.exists();
-                    if (!isFileCreated) {
-                        file.createNewFile();
-                        file.canWrite();
-                        file.canRead();
-                        Log.d(TAG, "file created.. @ " + file.getPath());
-                        FileOutputStream fos = new FileOutputStream(file);
-                        FileWriter fw = new FileWriter(fos.getFD());
-                        try {
-                            fw.write(content);
-                            fw.close();
-                            Log.d(TAG, "content written..");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            fos.getFD().sync();
-                            fos.close();
-                        }
-                    } else {
-                        FileOutputStream fos = new FileOutputStream(file);
-                        FileWriter fw = new FileWriter(fos.getFD());
-                        try {
-                            fw.write(content);
-                            fw.close();
-                            Log.d(TAG, "content written..");
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } finally {
-                            fos.getFD().sync();
-                            fos.close();
-                        }
-                        Log.d(TAG, "file rewritten.. @ " + file.getPath());
-                    }
-
-                }
-
                 int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
                 int[] resolved = {janR, febR, marR, aprilR, mayR, junR, julR, augR, sepR, octR, novR, decR};
                 int[] unresolved = {janU, febU, marU, aprilU, mayU, junU, julU, augU, sepU, octU, novU, decU};
@@ -1048,10 +1123,145 @@ public class MainActivity extends AppCompatActivity {
                 barChart.setVisibleXRangeMaximum(4);
                 barChart.setFitBars(true);
                 barChart.groupBars(0, (barW / 3) / 2, 0);
+                firstRunThrough = true;
             }
-            firstRunThrough = true;
+            JsonObject dataObject = new JsonObject(); // Parent Object
+            JsonObject janObject = new JsonObject(); // Child Object
+            janObject.addProperty("Open", janO);
+            janObject.addProperty("Unresolved", janU);
+            janObject.addProperty("Resolved", janR);
+            JsonObject febObject = new JsonObject(); // Child Object
+            febObject.addProperty("Open", febO);
+            febObject.addProperty("Unresolved", febU);
+            febObject.addProperty("Resolved", febR);
+            JsonObject marObject = new JsonObject(); // Child Object
+            marObject.addProperty("Open", marO);
+            marObject.addProperty("Unresolved", marU);
+            marObject.addProperty("Resolved", marR);
+            JsonObject aprObject = new JsonObject(); // Child Object
+            aprObject.addProperty("Open", aprilO);
+            aprObject.addProperty("Unresolved", aprilU);
+            aprObject.addProperty("Resolved", aprilR);
+            JsonObject mayObject = new JsonObject(); // Child Object
+            mayObject.addProperty("Open", mayO);
+            mayObject.addProperty("Unresolved", mayU);
+            mayObject.addProperty("Resolved", mayR);
+            JsonObject junObject = new JsonObject(); // Child Object
+            junObject.addProperty("Open", junO);
+            junObject.addProperty("Unresolved", junU);
+            junObject.addProperty("Resolved", junR);
+            JsonObject julObject = new JsonObject(); // Child Object
+            julObject.addProperty("Open", julO);
+            julObject.addProperty("Unresolved", julU);
+            julObject.addProperty("Resolved", julR);
+            JsonObject augObject = new JsonObject(); // Child Object
+            augObject.addProperty("Open", augO);
+            augObject.addProperty("Unresolved", augU);
+            augObject.addProperty("Resolved", augR);
+            JsonObject sepObject = new JsonObject(); // Child Object
+            sepObject.addProperty("Open", sepO);
+            sepObject.addProperty("Unresolved", sepU);
+            sepObject.addProperty("Resolved", sepR);
+            JsonObject octObject = new JsonObject(); // Child Object
+            octObject.addProperty("Open", octO);
+            octObject.addProperty("Unresolved", octU);
+            octObject.addProperty("Resolved", octR);
+            JsonObject novObject = new JsonObject(); // Child Object
+            novObject.addProperty("Open", novO);
+            novObject.addProperty("Unresolved", novU);
+            novObject.addProperty("Resolved", novR);
+            JsonObject decObject = new JsonObject(); // Child Object
+            decObject.addProperty("Open", decO);
+            decObject.addProperty("Unresolved", decU);
+            decObject.addProperty("Resolved", decR);
+            //Adding Child to Parent
+            dataObject.add("januaryData", janObject);
+            dataObject.add("februaryData", febObject);
+            dataObject.add("marchData", marObject);
+            dataObject.add("aprilData", aprObject);
+            dataObject.add("mayData", mayObject);
+            dataObject.add("juneData", junObject);
+            dataObject.add("julyData", julObject);
+            dataObject.add("augustData", augObject);
+            dataObject.add("septemberData", sepObject);
+            dataObject.add("octoberData", octObject);
+            dataObject.add("novemberData", novObject);
+            dataObject.add("decemberData", decObject);
+
+            String content = dataObject.toString();
+            Log.d(TAG, "checkComplete: " + content);
+
+            // Android not creating file
+            // https://stackoverflow.com/questions/20202966/android-not-creating-file
+            File directory = new File("/mnt/internal_sd/F45Dashboard/");
+            String filename = "barData.txt";
+
+            isDirectoryCreated = directory.exists();
+            if (!isDirectoryCreated) {
+                directory.mkdirs();
+                directory.createNewFile();
+                Log.d(TAG, "directory created..");
+            }
+
+            if (isDirectoryCreated) {
+                File file = new File(directory, filename);
+                isFileCreated = file.exists();
+                if (!isFileCreated) {
+                    file.createNewFile();
+                    file.canWrite();
+                    file.canRead();
+                    Log.d(TAG, "file created.. @ " + file.getPath());
+                    FileOutputStream fos = new FileOutputStream(file);
+                    FileWriter fw = new FileWriter(fos.getFD());
+                    try {
+                        fw.write(content);
+                        fw.close();
+                        Log.d(TAG, "content written..");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        fos.getFD().sync();
+                        fos.close();
+                    }
+                } else {
+                    FileOutputStream fos = new FileOutputStream(file);
+                    FileWriter fw = new FileWriter(fos.getFD());
+                    try {
+                        fw.write(content);
+                        fw.close();
+                        Log.d(TAG, "content written..");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } finally {
+                        fos.getFD().sync();
+                        fos.close();
+                    }
+                    Log.d(TAG, "file rewritten.. @ " + file.getPath());
+                }
+
+            }
+
+
         }
 
+    }
+
+    Thread thread;
+//    ExecutorService executorService = Executors.newSingleThreadExecutor();
+//    private Future getFutureProcess() {
+//        return executorService.submit(runnable2);
+//    }
+    public void practiceNewThread() {
+        thread = new Thread(new Runnable() {
+            public void run() {
+                // a potentially  time consuming task
+                updateTickets();
+                Log.d("thread", "run: doing updatetickets();");
+            }
+        });
+        Log.d(TAG, "practiceNewThread: " + thread.activeCount());
+        Log.d(TAG, "practiceNewThread: " + thread.getThreadGroup());
+        thread.start();
     }
 
     public void updateTickets() {
@@ -1066,7 +1276,6 @@ public class MainActivity extends AppCompatActivity {
         final String dateString = currentYear + "-" + currentMonth + "-01T00:00:00Z";
         page = 1;
         prevPage = 1;
-
         runnable2 = new Runnable() {
             @Override
             public void run() {
@@ -1099,34 +1308,33 @@ public class MainActivity extends AppCompatActivity {
                             ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
                             Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
                             if (headers.get("link") == null) {
-                                if (ticketsv2 < tickets ) {
-                                    isCompleteUpdate = false;
-                                    Log.d(TAG, "OnUpdate: " + isComplete );
-                                    ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-                                    try {
+                                isComplete = true;
+                                try {
+                                    if (ticketsv2 > tickets ) {
+                                        Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
+                                        ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
+                                        tickets = ticketsv2;
                                         long avgResponseTime = responseTime2 / ticketsv2;
                                         Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
                                         ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                    } catch (Exception e) {
-                                        Log.e(TAG, "onResponse: ", e);
+                                        ticketsv2 = 0;
+
+                                    } else {
+                                        ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+                                        try {
+                                            long avgResponseTime = 1;
+                                            avgResponseTime = responseTime2 / ticketsv2;
+                                            Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
+                                            ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                                        } catch (Exception e) {
+                                            Log.e(TAG, "onResponse: ", e);
+                                        }
                                     }
-                                } else {
-                                    Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
-                                    ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
-                                    tickets = ticketsv2;
-                                    long avgResponseTime = responseTime2 / ticketsv2;
-                                    Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-                                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                    ticketsv2 = 0;
-                                    isCompleteUpdate = true;
-                                    Log.d(TAG, "OnUpdate: " + isComplete );
-                                }
-                                try {
                                     checkComplete();
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
-                                Log.d(TAG, "ISCOMPLETE Update: " + isCompleteUpdate);
+                                Log.d(TAG, "ISCOMPLETE update: " + isCompleteUpdate);
                             } else {
                                 headerString = headers.get("link");
                                 String result = headerString.substring(headerString.indexOf("?") + 1, headerString.indexOf("&"));
@@ -1169,8 +1377,6 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
 
-
-
                         }
 
                         @Override
@@ -1183,16 +1389,17 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("HERE", "ISCOMPLETE UPDATE: " + isCompleteUpdate);
                 }
                 try {
+                    thread.interrupt();
                     checkComplete();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         };
-        handler2.postDelayed(runnable2, TimeUnit.MINUTES.toMillis(5));
+        handler2.postDelayed(runnable2, 5000);
     }
 
-    public void createNotifications(){
+    public void createNotifications() {
 
         Log.d(TAG, "updateTickets: UPDATING");
         //retrofitclient
@@ -1219,7 +1426,8 @@ public class MainActivity extends AppCompatActivity {
                             if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
                                 notificationList.add(new NotificationController(i, model.get(i).subject, Integer.parseInt(model.get(i).source), Integer.parseInt(model.get(i).priority)));
                             }
-                            Log.d(TAG, "Adding:"+ "index: "+ i +" subject: "+ model.get(i).subject +" source: "+ Integer.parseInt(model.get(i).source)+" priority: "+ Integer.parseInt(model.get(i).priority));}
+                            Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
+                        }
 
                         try {
                             recyclerView.setAdapter(adapter);
@@ -1232,6 +1440,7 @@ public class MainActivity extends AppCompatActivity {
 
 //
                     }
+
                     @Override
                     public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
                         Log.e(TAG, "onFailure: onNotif", t);
