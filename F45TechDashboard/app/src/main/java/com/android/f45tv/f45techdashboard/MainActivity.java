@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
 import com.android.f45tv.f45techdashboard.Managers.ScheduleManager;
 import com.android.f45tv.f45techdashboard.Model.ScheduleDataModel;
+import com.android.f45tv.f45techdashboard.Model.TVReportsModel;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -81,7 +82,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-
+    Future futureProcess;
     LinearLayout loadingscreen;
     Boolean isDirectoryCreated;
     Boolean isFileCreated;
@@ -202,6 +203,8 @@ public class MainActivity extends AppCompatActivity {
         ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
         //Marquee
         marqueeView = findViewById(R.id.marque_scrolling_text);
+        //marqueeView.setText("this is a newwwwwwwwwwwwwww marquee");
+
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
@@ -1038,6 +1041,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    protected void startKlipfolio(){
+        RetrofitClient retrofitClientK = new RetrofitClient();
+        retrofitClientK.setBaseUrl("http://matrix.f45.info/");
+        RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
+        Call<List<TVReportsModel>> call = retrofitInterface.getAllTVReports();
+        call.enqueue(new Callback<List<TVReportsModel>>() {
+            @Override
+            public void onResponse(Call<List<TVReportsModel>> call, Response<List<TVReportsModel>> response) {
+                ArrayList<TVReportsModel> model = (ArrayList<TVReportsModel>) response.body();
+
+                Log.e("KLIPFOLIO", model.toString());
+
+                if (model == null) {
+                    Log.e(TAG, "klipfolio: null");
+                } else {
+//                    String text = model.get(0).getName() + " " + model.get(0).getLastOnline() + " | " + model.get(1).getName() + " " + model.get(1).getLastOnline();
+//                    marqueeView.setText(text);
+//                    Log.e(TAG, "klipfolio: not null");
+                }
+            }
+            @Override
+            public void onFailure(Call<List<TVReportsModel>> call, Throwable t) {
+                Log.e(TAG, "klipfolio: ",t );
+            }
+        });
+    }
 
     @Override
     public void onBackPressed() {
@@ -1063,13 +1092,13 @@ public class MainActivity extends AppCompatActivity {
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
             handler.postDelayed(runnable, 1500);
         } else {
-//            Future futureProcess = getFutureProcess();
-//            updateTickets();
-            practiceNewThread();
+            page = 1;
+            prevPage = 1;
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             if (!firstRunThrough) {
                 loadingscreen.setVisibility(View.GONE);
+                startKlipfolio();
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
                 int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
                 int[] resolved = {janR, febR, marR, aprilR, mayR, junR, julR, augR, sepR, octR, novR, decR};
@@ -1240,31 +1269,33 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             }
-
+            page = 1;
+            futureProcess = getFutureProcess();
 
         }
 
     }
 
-    Thread thread;
-//    ExecutorService executorService = Executors.newSingleThreadExecutor();
-//    private Future getFutureProcess() {
-//        return executorService.submit(runnable2);
-//    }
-    public void practiceNewThread() {
-        thread = new Thread(new Runnable() {
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Future getFutureProcess() {
+        return executorService.submit(new Runnable() {
+            @Override
             public void run() {
-                // a potentially  time consuming task
                 updateTickets();
-                Log.d("thread", "run: doing updatetickets();");
+                Log.d(TAG, "future: tickets "+tickets);
+                Log.d(TAG, "future: ticketsv2 "+ticketsv2);
+                futureProcess = getFutureProcess();
             }
         });
-        Log.d(TAG, "practiceNewThread: " + thread.activeCount());
-        Log.d(TAG, "practiceNewThread: " + thread.getThreadGroup());
-        thread.start();
     }
 
     public void updateTickets() {
+        try {
+            Thread.sleep(2000);
+            Log.d("THREAD", "running futureThread: " + futureProcess);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         Log.d(TAG, "updateTickets: UPDATING");
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
@@ -1274,8 +1305,6 @@ public class MainActivity extends AppCompatActivity {
         final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
         final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
         final String dateString = currentYear + "-" + currentMonth + "-01T00:00:00Z";
-        page = 1;
-        prevPage = 1;
         runnable2 = new Runnable() {
             @Override
             public void run() {
@@ -1318,7 +1347,6 @@ public class MainActivity extends AppCompatActivity {
                                         Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
                                         ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
                                         ticketsv2 = 0;
-
                                     } else {
                                         ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
                                         try {
@@ -1389,7 +1417,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("HERE", "ISCOMPLETE UPDATE: " + isCompleteUpdate);
                 }
                 try {
-                    thread.interrupt();
                     checkComplete();
                 } catch (IOException e) {
                     e.printStackTrace();

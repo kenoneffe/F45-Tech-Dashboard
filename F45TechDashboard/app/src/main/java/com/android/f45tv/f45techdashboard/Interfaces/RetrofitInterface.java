@@ -1,6 +1,7 @@
 package com.android.f45tv.f45techdashboard.Interfaces;
 
 import com.android.f45tv.f45techdashboard.Model.ScheduleDataModel;
+import com.android.f45tv.f45techdashboard.Model.TVReportsModel;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 
 import java.util.List;
@@ -30,7 +31,8 @@ public interface RetrofitInterface {
                                               @Header("Cache-Control") String cacheControlD,
                                               @Header("Postman-Token") String postmanTokenD);
 
-
+    @GET("/v3/tv_reports/")
+    Call<List<TVReportsModel>> getAllTVReports();
 
 
 

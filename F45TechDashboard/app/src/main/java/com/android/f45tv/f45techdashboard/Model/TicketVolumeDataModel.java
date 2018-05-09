@@ -1,6 +1,5 @@
 package com.android.f45tv.f45techdashboard.Model;
 
-import com.google.gson.annotations.SerializedName;
 
 public class TicketVolumeDataModel {
 
