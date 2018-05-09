@@ -1,19 +1,17 @@
 package com.android.f45tv.f45techdashboard.Interfaces;
 
 import com.android.f45tv.f45techdashboard.Model.ScheduleDataModel;
-import com.android.f45tv.f45techdashboard.Model.TVReportsModel;
+import com.android.f45tv.f45techdashboard.Model.TVReportsKeyModel;
+import com.android.f45tv.f45techdashboard.Model.TVReportsValueModel;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.Headers;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.Url;
 
 public interface RetrofitInterface {
 
@@ -32,7 +30,10 @@ public interface RetrofitInterface {
                                               @Header("Postman-Token") String postmanTokenD);
 
     @GET("/v3/tv_reports/")
-    Call<List<TVReportsModel>> getAllTVReports();
+    Call<ResponseBody> getAllTVReports();
+
+    @GET("/v3/tv_reports/")
+    Call<TVReportsKeyModel> getAllTVReportsKey();
 
 
 

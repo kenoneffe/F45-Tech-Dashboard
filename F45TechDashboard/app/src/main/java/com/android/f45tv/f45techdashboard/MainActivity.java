@@ -1,17 +1,16 @@
 package com.android.f45tv.f45techdashboard;
 
+import java.util.Iterator;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -33,7 +32,8 @@ import android.widget.Toast;
 import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
 import com.android.f45tv.f45techdashboard.Managers.ScheduleManager;
 import com.android.f45tv.f45techdashboard.Model.ScheduleDataModel;
-import com.android.f45tv.f45techdashboard.Model.TVReportsModel;
+import com.android.f45tv.f45techdashboard.Model.TVReportsKeyModel;
+import com.android.f45tv.f45techdashboard.Model.TVReportsValueModel;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -44,23 +44,17 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
-import org.joda.time.LocalDateTime;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -70,6 +64,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Headers;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,6 +78,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     Future futureProcess;
+    Future futureProcess2;
     LinearLayout loadingscreen;
     Boolean isDirectoryCreated;
     Boolean isFileCreated;
@@ -210,7 +206,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Deputy
         //startDeputyRequest();
-        //practiceNewThread();
+
+        loadingscreen.setVisibility(View.GONE);
+        startKlipfolio();
 
     }
 
@@ -1042,30 +1040,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     protected void startKlipfolio(){
+        Log.d(TAG, "startKlipfolio: has started");
         RetrofitClient retrofitClientK = new RetrofitClient();
         retrofitClientK.setBaseUrl("http://matrix.f45.info/");
         RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-        Call<List<TVReportsModel>> call = retrofitInterface.getAllTVReports();
-        call.enqueue(new Callback<List<TVReportsModel>>() {
+        Call<ResponseBody> call = retrofitInterface.getAllTVReports();
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<List<TVReportsModel>> call, Response<List<TVReportsModel>> response) {
-                ArrayList<TVReportsModel> model = (ArrayList<TVReportsModel>) response.body();
-
-                Log.e("KLIPFOLIO", model.toString());
-
-                if (model == null) {
-                    Log.e(TAG, "klipfolio: null");
-                } else {
-//                    String text = model.get(0).getName() + " " + model.get(0).getLastOnline() + " | " + model.get(1).getName() + " " + model.get(1).getLastOnline();
-//                    marqueeView.setText(text);
-//                    Log.e(TAG, "klipfolio: not null");
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Iterator<String> iterator;
+                String text = null;
+                try {
+                    text = response.body().string().toString();
+                    JSONObject jsonObject = new JSONObject(text);
+                    iterator = jsonObject.keys();
+                    while(iterator.hasNext()){
+                        JSONObject jsonObject2 = jsonObject.getJSONObject(iterator.next());
+                        if (jsonObject2.getString("last_online").contains("minutes") || jsonObject2.getString("last_online").contains("seconds")){
+                            marqueeView.setText(jsonObject2.getString("name") +" - "+ jsonObject2.getString("last_online")+" | ", TextView.BufferType.SPANNABLE);
+                            Log.d(TAG, "for marquee: "+ jsonObject2.getString("name") +" - "+ jsonObject2.getString("last_online")+" | ");
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "KLIP err: ", e);
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
+
             @Override
-            public void onFailure(Call<List<TVReportsModel>> call, Throwable t) {
-                Log.e(TAG, "klipfolio: ",t );
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "KLIP err: ", t);
             }
         });
+
     }
 
     @Override
@@ -1097,8 +1106,8 @@ public class MainActivity extends AppCompatActivity {
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             if (!firstRunThrough) {
-                loadingscreen.setVisibility(View.GONE);
-                startKlipfolio();
+//                loadingscreen.setVisibility(View.GONE);
+//                startKlipfolio();
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
                 int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
                 int[] resolved = {janR, febR, marR, aprilR, mayR, junR, julR, augR, sepR, octR, novR, decR};
@@ -1271,12 +1280,14 @@ public class MainActivity extends AppCompatActivity {
             }
             page = 1;
             futureProcess = getFutureProcess();
-
+            //futureProcess2 = getFutureProcess2();
         }
 
     }
 
     ExecutorService executorService = Executors.newSingleThreadExecutor();
+    ExecutorService executorService2 = Executors.newSingleThreadExecutor();
+
     private Future getFutureProcess() {
         return executorService.submit(new Runnable() {
             @Override
@@ -1284,10 +1295,18 @@ public class MainActivity extends AppCompatActivity {
                 updateTickets();
                 Log.d(TAG, "future: tickets "+tickets);
                 Log.d(TAG, "future: ticketsv2 "+ticketsv2);
+                String threadName = Thread.currentThread().getName();
+                Log.d(TAG, "future: thread name "+ threadName);
+                if (ticketsv2 <= tickets){
+                    ticketsv2 = 0;
+                    Log.d(TAG, "future: tickets "+tickets);
+                    Log.d(TAG, "future: ticketsv2 "+ticketsv2);
+                }
                 futureProcess = getFutureProcess();
             }
         });
     }
+
 
     public void updateTickets() {
         try {
@@ -1309,7 +1328,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100, dateString);
-                page += 1;
                 Log.d(TAG, "OnUpdate: On loop start, page number is :" + page);
                 Log.d(TAG, "OnUpdate: headerString: " + headerString);
                 if (headerString.isEmpty()) {
@@ -1374,37 +1392,29 @@ public class MainActivity extends AppCompatActivity {
                                 if (prevPage != page && prevPage < page) {
                                     prevPage = page;
                                     Log.e(TAG, "OnUpdate: PROCEED");
-                                    if (ticketsv2 != null) {
-                                        for (int i = 0; i < model.size(); i++) {
-                                            //TICKETS FOR TODAY
-                                            TicketVolumeDataModel tvdm = model.get(i);
-                                            TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
-                                            if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
-                                                ticketsv2 += 1;
-                                            }
-                                            //END TICKETS TODAY
-                                            if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
-                                                try {
-                                                    Date updated_at = dateFormat.parse(model.get(i).updated_at);
-                                                    Date created_at = dateFormat.parse(model.get(i).created_at);
-                                                    long diff = updated_at.getTime() - created_at.getTime();
-                                                    long rT = diff / 1000;
-                                                    responseTime2 += rT;
-                                                } catch (ParseException e) {
-                                                    e.printStackTrace();
-                                                    Log.e(TAG, "onResponse: error in parsing created at");
-                                                }
+                                    for (int i = 0; i < model.size(); i++) {
+                                        //TICKETS FOR TODAY
+                                        TicketVolumeDataModel tvdm = model.get(i);
+                                        TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
+                                        if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
+                                            ticketsv2 += 1;
+                                        }
+                                        //END TICKETS TODAY
+                                        if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
+                                            try {
+                                                Date updated_at = dateFormat.parse(model.get(i).updated_at);
+                                                Date created_at = dateFormat.parse(model.get(i).created_at);
+                                                long diff = updated_at.getTime() - created_at.getTime();
+                                                long rT = diff / 1000;
+                                                responseTime2 += rT;
+                                            } catch (ParseException e) {
+                                                e.printStackTrace();
+                                                Log.e(TAG, "onResponse: error in parsing created at");
                                             }
                                         }
-
-
-                                    } else {
-                                        Log.e(TAG, "updated tickets is null");
                                     }
-
                                 }
                             }
-
                         }
 
                         @Override
@@ -1423,7 +1433,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        handler2.postDelayed(runnable2, 5000);
+        //handler2.postDelayed(runnable2, 5000);
+        handler2.post(runnable2);
     }
 
     public void createNotifications() {
