@@ -193,14 +193,16 @@
             android:id="@+id/marque_scrolling_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:ellipsize="marquee"
+
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"
             android:text="This is a marquee"
             android:textColor="@color/white"
             android:textSize="20sp"
-            tools:ignore="MissingConstraints" />
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:freezesText="true"/>
 
 
     </LinearLayout>

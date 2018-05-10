@@ -5,12 +5,14 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -200,7 +202,6 @@ public class MainActivity extends AppCompatActivity {
         //Marquee
         marqueeView = findViewById(R.id.marque_scrolling_text);
         //marqueeView.setText("this is a newwwwwwwwwwwwwww marquee");
-
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
 
@@ -1039,7 +1040,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    protected void startKlipfolio(){
+
+    protected void startKlipfolio() {
         Log.d(TAG, "startKlipfolio: has started");
         RetrofitClient retrofitClientK = new RetrofitClient();
         retrofitClientK.setBaseUrl("http://matrix.f45.info/");
@@ -1049,23 +1051,30 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 Iterator<String> iterator;
-                String text = null;
+                String text;
+                ArrayList<String> arrayList = new ArrayList<String>();
                 try {
-                    text = response.body().string().toString();
+                    text = response.body().string();
                     JSONObject jsonObject = new JSONObject(text);
                     iterator = jsonObject.keys();
-                    while(iterator.hasNext()){
-                        JSONObject jsonObject2 = jsonObject.getJSONObject(iterator.next());
-                        if (jsonObject2.getString("last_online").contains("minutes") || jsonObject2.getString("last_online").contains("seconds")){
-                            marqueeView.setText(jsonObject2.getString("name") +" - "+ jsonObject2.getString("last_online")+" | ", TextView.BufferType.SPANNABLE);
-                            Log.d(TAG, "for marquee: "+ jsonObject2.getString("name") +" - "+ jsonObject2.getString("last_online")+" | ");
+                    JSONObject jsonObject2;
+                    while (iterator.hasNext()) {
+                        jsonObject2 = jsonObject.getJSONObject(iterator.next());
+                        if (jsonObject2.getString("last_online").contains("minutes") || jsonObject2.getString("last_online").contains("seconds")) {
+                            arrayList.add(jsonObject2.getString("name") + " - " + jsonObject2.getString("last_online"));
+                            //Log.d(TAG, "for marquee: " + jsonObject2.getString("name") + " - " + jsonObject2.getString("last_online") + " | ");
                         }
                     }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.e(TAG, "KLIP err: ", e);
                 } catch (JSONException e) {
                     e.printStackTrace();
+                }
+                finally {
+                    String joined = TextUtils.join("| ", arrayList);
+                    marqueeView.setText(joined);
                 }
             }
 
@@ -1293,20 +1302,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 updateTickets();
-                Log.d(TAG, "future: tickets "+tickets);
-                Log.d(TAG, "future: ticketsv2 "+ticketsv2);
+                Log.d(TAG, "future: tickets " + tickets);
+                Log.d(TAG, "future: ticketsv2 " + ticketsv2);
                 String threadName = Thread.currentThread().getName();
-                Log.d(TAG, "future: thread name "+ threadName);
-                if (ticketsv2 <= tickets){
+                Log.d(TAG, "future: thread name " + threadName);
+                if (ticketsv2 <= tickets) {
                     ticketsv2 = 0;
-                    Log.d(TAG, "future: tickets "+tickets);
-                    Log.d(TAG, "future: ticketsv2 "+ticketsv2);
+                    Log.d(TAG, "future: tickets " + tickets);
+                    Log.d(TAG, "future: ticketsv2 " + ticketsv2);
                 }
                 futureProcess = getFutureProcess();
             }
         });
     }
-
 
     public void updateTickets() {
         try {
@@ -1357,7 +1365,7 @@ public class MainActivity extends AppCompatActivity {
                             if (headers.get("link") == null) {
                                 isComplete = true;
                                 try {
-                                    if (ticketsv2 > tickets ) {
+                                    if (ticketsv2 > tickets) {
                                         Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
                                         ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
                                         tickets = ticketsv2;
@@ -1439,7 +1447,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void createNotifications() {
 
-        Log.d(TAG, "updateTickets: UPDATING");
+        Log.d(TAG, "updateNotifications: UPDATING");
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
         retrofitClient.setBaseUrl("https://f45training.freshdesk.com/");
@@ -1457,7 +1465,6 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                         ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
                         Log.d(TAG, "onStartNotifications");
-
                         for (int i = 0; i < model.size(); i++) {
                             TicketVolumeDataModel tvdm = model.get(i);
                             TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
@@ -1466,7 +1473,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                             Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
                         }
-
                         try {
                             recyclerView.setAdapter(adapter);
                             recyclerView.invalidateItemDecorations();
@@ -1475,8 +1481,6 @@ public class MainActivity extends AppCompatActivity {
                         } catch (Exception e) {
                             Log.e(TAG, "onStartNotifications", e);
                         }
-
-//
                     }
 
                     @Override
