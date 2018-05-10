@@ -193,7 +193,7 @@
             android:id="@+id/marque_scrolling_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
+            android:ellipsize="end"
             android:marqueeRepeatLimit="marquee_forever"
             android:scrollHorizontally="true"
             android:singleLine="true"

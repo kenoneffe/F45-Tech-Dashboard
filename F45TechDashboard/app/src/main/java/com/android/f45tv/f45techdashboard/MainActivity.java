@@ -1056,15 +1056,20 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     text = response.body().string();
                     JSONObject jsonObject = new JSONObject(text);
-                    iterator = jsonObject.keys();
-                    JSONObject jsonObject2;
-                    while (iterator.hasNext()) {
-                        jsonObject2 = jsonObject.getJSONObject(iterator.next());
-                        if (jsonObject2.getString("last_online").contains("minutes") || jsonObject2.getString("last_online").contains("seconds")) {
-                            arrayList.add(jsonObject2.getString("name") + " - " + jsonObject2.getString("last_online"));
-                            //Log.d(TAG, "for marquee: " + jsonObject2.getString("name") + " - " + jsonObject2.getString("last_online") + " | ");
-                        }
+                    for(int i = 0; i < jsonObject.length(); i++ ){
+                        JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
+                        arrayList.add(object.getString("name") + " - " + object.getString("last_online")+" | ");
                     }
+                    Log.d(TAG, "KLIP: "+ jsonObject.get("0"));
+                    iterator = jsonObject.keys();
+//                    JSONObject jsonObject2;
+//                    while (iterator.hasNext()) {
+//                        jsonObject2 = jsonObject.getJSONObject(iterator.next());
+//                        if (jsonObject2.getString("last_online").contains("minutes") || jsonObject2.getString("last_online").contains("seconds")) {
+//                            arrayList.add(jsonObject2.getString("name") + " - " + jsonObject2.getString("last_online"));
+//                            //Log.d(TAG, "for marquee: " + jsonObject2.getString("name") + " - " + jsonObject2.getString("last_online") + " | ");
+//                        }
+//                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -1073,7 +1078,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 finally {
-                    String joined = TextUtils.join("| ", arrayList);
+                    String joined = TextUtils.join(" ", arrayList);
                     marqueeView.setText(joined);
                 }
             }
@@ -1310,6 +1315,13 @@ public class MainActivity extends AppCompatActivity {
                     ticketsv2 = 0;
                     Log.d(TAG, "future: tickets " + tickets);
                     Log.d(TAG, "future: ticketsv2 " + ticketsv2);
+                } else {
+                    Log.d(TAG, "future: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
+                    ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
+                    long avgResponseTime = responseTime2 / ticketsv2;
+                    Log.i(TAG, "future: This is the updated average response time: " + avgResponseTime);
+                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                    ticketsv2 = 0;
                 }
                 futureProcess = getFutureProcess();
             }
@@ -1364,29 +1376,13 @@ public class MainActivity extends AppCompatActivity {
                             Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
                             if (headers.get("link") == null) {
                                 isComplete = true;
-                                try {
-                                    if (ticketsv2 > tickets) {
-                                        Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
-                                        ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
-                                        tickets = ticketsv2;
-                                        long avgResponseTime = responseTime2 / ticketsv2;
-                                        Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-                                        ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                        ticketsv2 = 0;
-                                    } else {
-                                        ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-                                        try {
-                                            long avgResponseTime = 1;
-                                            avgResponseTime = responseTime2 / ticketsv2;
-                                            Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-                                            ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                        } catch (Exception e) {
-                                            Log.e(TAG, "onResponse: ", e);
-                                        }
-                                    }
-                                    checkComplete();
-                                } catch (IOException e) {
-                                    e.printStackTrace();
+                                if (ticketsv2 > tickets) {
+                                    Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
+                                    ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
+                                    long avgResponseTime = responseTime2 / ticketsv2;
+                                    Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
+                                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                                    ticketsv2 = 0;
                                 }
                                 Log.d(TAG, "ISCOMPLETE update: " + isCompleteUpdate);
                             } else {
