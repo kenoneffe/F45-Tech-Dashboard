@@ -1,14 +1,20 @@
 package com.android.f45tv.f45techdashboard.Controller;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.android.f45tv.f45techdashboard.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /*
@@ -25,6 +31,12 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         this.notificationList = notificationList;
     }
 
+
+    public void setNotificationList(List<NotificationController> notificationList) {
+        this.notificationList = notificationList;
+        notifyDataSetChanged();
+    }
+
     @Override
     public NotificationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -34,38 +46,27 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     }
 
     @Override
-    public void onBindViewHolder(NotificationViewHolder holder, int position) {
+    public void onBindViewHolder(final NotificationViewHolder holder, final int position) {
 
         NotificationController notificationController = notificationList.get(position);
-        int priority = notificationController.getPriority();
-        int source = notificationController.getSource();
+        String priority = notificationController.getPriority();
+        String source = notificationController.getSource();
+        int id = notificationController.getId();
+        holder.setIsRecyclable(true);
 
-        if (priority == 1){
-            holder.priority.setText("Low");
-        } else if (priority == 2){
-            holder.priority.setText("Medium");
-        } else if (priority == 3){
-            holder.priority.setText("High");
-        } else if (priority == 4){
-            holder.priority.setText("Urgent");
-        }
-
-        if (source == 1){
-            holder.source.setText("Email");
-        } else if (source == 2){
-            holder.source.setText("Portal");
-        } else if (source == 3){
-            holder.source.setText("Phone");
-        } else if (source == 7){
-            holder.source.setText("Chat");
-        } else if (source == 8){
-            holder.source.setText("Mobihelp");
-        } else if (source == 9){
-            holder.source.setText("Feedback Widget");
-        } else if (source == 10){
-            holder.source.setText("Outbound Email");
-        }
+        holder.priority.setText(notificationController.getPriority());
+        holder.priority.invalidate();
+        holder.source.setText(notificationController.getSource());
+        holder.source.invalidate();
         holder.subject.setText(notificationController.getSubject());
+        holder.subject.invalidate();
+
+        holder.row_entry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_roundedclicked"));
+            }
+        });
 
 
     }
@@ -78,12 +79,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     class NotificationViewHolder extends RecyclerView.ViewHolder{
 
         TextView priority, source, subject;
+        TableRow row_entry;
+        RecyclerView rv;
         public NotificationViewHolder(View itemView) {
             super(itemView);
-
             priority = itemView.findViewById(R.id.priority_entry);
             source = itemView.findViewById(R.id.source_entry);
             subject = itemView.findViewById(R.id.subject_entry);
+            row_entry = itemView.findViewById(R.id.row_entry);
+            rv = itemView.findViewById(R.id.recyclerViewId);
             itemView.invalidate();
         }
     }

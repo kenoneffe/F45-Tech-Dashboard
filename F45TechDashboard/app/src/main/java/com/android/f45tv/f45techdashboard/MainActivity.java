@@ -208,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         //Deputy
         //startDeputyRequest();
 
-        loadingscreen.setVisibility(View.GONE);
+        //loadingscreen.setVisibility(View.GONE);
         startKlipfolio();
 
     }
@@ -1056,11 +1056,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     text = response.body().string();
                     JSONObject jsonObject = new JSONObject(text);
-                    for(int i = 0; i < jsonObject.length(); i++ ){
+                    for (int i = 0; i < jsonObject.length(); i++) {
                         JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
-                        arrayList.add(object.getString("name") + " - " + object.getString("last_online")+" | ");
+                        arrayList.add(object.getString("name") + " - " + object.getString("last_online") + " | ");
                     }
-                    Log.d(TAG, "KLIP: "+ jsonObject.get("0"));
+                    Log.d(TAG, "KLIP: " + jsonObject.get("0"));
                     iterator = jsonObject.keys();
 //                    JSONObject jsonObject2;
 //                    while (iterator.hasNext()) {
@@ -1076,8 +1076,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.e(TAG, "KLIP err: ", e);
                 } catch (JSONException e) {
                     e.printStackTrace();
-                }
-                finally {
+                } finally {
                     String joined = TextUtils.join(" ", arrayList);
                     marqueeView.setText(joined);
                 }
@@ -1120,7 +1119,7 @@ public class MainActivity extends AppCompatActivity {
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             if (!firstRunThrough) {
-//                loadingscreen.setVisibility(View.GONE);
+                loadingscreen.setVisibility(View.GONE);
 //                startKlipfolio();
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
                 int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
@@ -1306,35 +1305,38 @@ public class MainActivity extends AppCompatActivity {
         return executorService.submit(new Runnable() {
             @Override
             public void run() {
-                updateTickets();
-                Log.d(TAG, "future: tickets " + tickets);
-                Log.d(TAG, "future: ticketsv2 " + ticketsv2);
-                String threadName = Thread.currentThread().getName();
-                Log.d(TAG, "future: thread name " + threadName);
-                if (ticketsv2 <= tickets) {
-                    ticketsv2 = 0;
+                try {
+                    Thread.sleep(2000);
+                    updateTickets();
                     Log.d(TAG, "future: tickets " + tickets);
                     Log.d(TAG, "future: ticketsv2 " + ticketsv2);
-                } else {
-                    Log.d(TAG, "future: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
-                    ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
-                    long avgResponseTime = responseTime2 / ticketsv2;
-                    Log.i(TAG, "future: This is the updated average response time: " + avgResponseTime);
-                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                    ticketsv2 = 0;
+                    String threadName = Thread.currentThread().getName();
+                    Log.d(TAG, "future: thread name " + threadName);
+                    if (ticketsv2 <= tickets) {
+                        ticketsv2 = 0;
+                        Log.d(TAG, "future: tickets " + tickets);
+                        Log.d(TAG, "future: ticketsv2 " + ticketsv2);
+                    } else {
+                        tickets = ticketsv2;
+                        ticketsv2 = 0;
+                        Log.d(TAG, "future: This is the updated number of tickets today: " + Integer.toString(tickets));
+                        ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+                        long avgResponseTime = responseTime2 / tickets;
+                        Log.i(TAG, "future: This is the updated average response time: " + avgResponseTime);
+                        ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                    }
+                    futureProcess = getFutureProcess();
+                    Log.d("THREAD", "running futureThread: " + futureProcess);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                futureProcess = getFutureProcess();
+
             }
         });
     }
 
     public void updateTickets() {
-        try {
-            Thread.sleep(2000);
-            Log.d("THREAD", "running futureThread: " + futureProcess);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         Log.d(TAG, "updateTickets: UPDATING");
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
@@ -1376,21 +1378,22 @@ public class MainActivity extends AppCompatActivity {
                             Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
                             if (headers.get("link") == null) {
                                 isComplete = true;
-                                if (ticketsv2 > tickets) {
-                                    Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
-                                    ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
-                                    long avgResponseTime = responseTime2 / ticketsv2;
-                                    Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-                                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                                    ticketsv2 = 0;
-                                }
-                                Log.d(TAG, "ISCOMPLETE update: " + isCompleteUpdate);
+//                                if (ticketsv2 > tickets) {
+//                                    Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
+//                                    ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
+//                                    long avgResponseTime = responseTime2 / ticketsv2;
+//                                    Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
+//                                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+//                                    ticketsv2 = 0;
+//                                }
+                                page = 1;
+                                Log.d(TAG, "is updating finished? " + isCompleteUpdate);
                             } else {
                                 headerString = headers.get("link");
                                 String result = headerString.substring(headerString.indexOf("?") + 1, headerString.indexOf("&"));
                                 pageNum = result.substring(result.lastIndexOf('=') + 1);
+                                Log.e(TAG, "OnUpdate: This is the previous page number: " + page);
                                 page = Integer.parseInt(pageNum);
-                                Log.e(TAG, "OnUpdate: This is the prev/current page number: " + prevPage);
                                 Log.e(TAG, "OnUpdate: This is the next page number " + page);
                                 //TO AVOID DUPLICATES
                                 if (prevPage != page && prevPage < page) {
@@ -1465,25 +1468,28 @@ public class MainActivity extends AppCompatActivity {
                             TicketVolumeDataModel tvdm = model.get(i);
                             TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
                             if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
-                                notificationList.add(new NotificationController(i, model.get(i).subject, Integer.parseInt(model.get(i).source), Integer.parseInt(model.get(i).priority)));
+//                                notificationList.add(new NotificationController(i, model.get(i).subject,model.get(i).source, model.get(i).priority));
+                                  notificationList.add(new NotificationController(i, model.get(i).subject,model.get(i).source, model.get(i).priority));
+                                  adapter.setNotificationList(notificationList);
+                                try {
+                                    recyclerView.invalidate();
+                                    Log.d(TAG, "onStartNotifications: Adapter Set");
+                                } catch (Exception e) {
+                                    Log.e(TAG, "onStartNotificationsError", e);
+                                }
                             }
                             Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
                         }
-                        try {
-                            recyclerView.setAdapter(adapter);
-                            recyclerView.invalidateItemDecorations();
-                            recyclerView.invalidate();
-                            Log.d(TAG, "onStartNotifications: Adapter Set");
-                        } catch (Exception e) {
-                            Log.e(TAG, "onStartNotifications", e);
-                        }
                     }
+
 
                     @Override
                     public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
                         Log.e(TAG, "onFailure: onNotif", t);
                     }
                 });
+
+                recyclerView.setAdapter(adapter);
             }
         };
         handler3.post(runnable3);
