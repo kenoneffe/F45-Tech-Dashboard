@@ -40,7 +40,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     @Override
     public NotificationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.notification,null);
+        View view = layoutInflater.inflate(R.layout.notification,parent, false);
         return new NotificationViewHolder(view);
 
     }
@@ -65,6 +65,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             @Override
             public void onClick(View view) {
                 holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_roundedclicked"));
+
             }
         });
 
