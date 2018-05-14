@@ -29,7 +29,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     private Context context;
     private List<NotificationController> notificationList;
-
     public NotificationAdapter(Context context, List<NotificationController> notificationList) {
         this.context = context;
         this.notificationList = notificationList;
@@ -59,14 +58,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         holder.row_entry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                notificationController.setRead(true);
-//                if (notificationController.getRead()){
+                notificationController.setRead(true);
+                if (notificationController.getRead()){
                     holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_roundedclicked"));
                     notifyDataSetChanged();
-//                }
+                }
                 Toast.makeText(context, "You Clicked " + notificationController.getPosition(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        if(!notificationController.getRead()){
+            Log.d(TAG, "onBindViewHolder: it went inside.");
+            holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_rounded"));
+        }
+
     }
 
     @Override
