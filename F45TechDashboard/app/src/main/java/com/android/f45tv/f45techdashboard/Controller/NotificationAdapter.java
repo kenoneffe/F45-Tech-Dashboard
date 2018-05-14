@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.f45tv.f45techdashboard.R;
 
@@ -24,7 +25,7 @@ import static android.content.ContentValues.TAG;
 * Recycler.Adapter
 * Recycler.ViewHolder
 * */
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
+public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder>{
 
     private Context context;
     private List<NotificationController> notificationList;
@@ -49,27 +50,23 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public void onBindViewHolder(final NotificationViewHolder holder, final int position) {
-
-        NotificationController notificationController = notificationList.get(position);
-//        String priority = notificationController.getPriority();
-//        String source = notificationController.getSource();
-//        int id = notificationController.getId();
+        final NotificationController notificationController = notificationList.get(position);
+        final int adapterPosition = holder.getAdapterPosition();
         holder.priority.setText(notificationController.getPriority());
-        holder.priority.invalidate();
         holder.source.setText(notificationController.getSource());
-        holder.source.invalidate();
         holder.subject.setText(notificationController.getSubject());
-        holder.subject.invalidate();
-
+        notificationController.setPosition(adapterPosition);
         holder.row_entry.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_roundedclicked"));
-                Log.d(TAG, "onClick: "+ position);
+//                notificationController.setRead(true);
+//                if (notificationController.getRead()){
+                    holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_roundedclicked"));
+                    notifyDataSetChanged();
+//                }
+                Toast.makeText(context, "You Clicked " + notificationController.getPosition(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
     @Override
@@ -77,7 +74,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         return notificationList.size();
     }
 
-    class NotificationViewHolder extends RecyclerView.ViewHolder{
+    class NotificationViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
         TextView priority, source, subject;
         TableRow row_entry;
@@ -89,7 +86,17 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             subject = itemView.findViewById(R.id.subject_entry);
             row_entry = itemView.findViewById(R.id.row_entry);
             rv = itemView.findViewById(R.id.recyclerViewId);
+            setIsRecyclable(false);
+            itemView.setOnClickListener(this);
             itemView.invalidate();
         }
+        @Override
+        public void onClick(View view) {
+            NotificationController notificationController = notificationList.get(getAdapterPosition());
+            int position = getAdapterPosition();
+
+        }
     }
+
+
 }

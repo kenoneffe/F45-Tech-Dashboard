@@ -1,12 +1,24 @@
 package com.android.f45tv.f45techdashboard.Controller;
 
 
+import android.view.View;
+
 public class NotificationController {
 
     private int id;
     private String subject;
     private String source;
     private String priority;
+    private boolean isRead;
+    private int position;
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     public NotificationController(int id, String subject, String source, String priority) {
         this.id = id;
@@ -56,4 +68,13 @@ public class NotificationController {
         }
         return text;
     }
+
+
+    public boolean getRead() {
+        return isRead;
+    }
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
 }

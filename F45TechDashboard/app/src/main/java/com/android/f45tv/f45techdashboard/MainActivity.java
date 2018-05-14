@@ -1,11 +1,11 @@
 package com.android.f45tv.f45techdashboard;
 
-import java.util.Iterator;
-import java.util.concurrent.Executor;
+import java.lang.reflect.Array;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,27 +15,26 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
+import com.android.f45tv.f45techdashboard.Controller.CustomAdapter;
 import com.android.f45tv.f45techdashboard.Controller.NotificationAdapter;
 import com.android.f45tv.f45techdashboard.Controller.NotificationController;
 import com.android.f45tv.f45techdashboard.Controller.ScheduleController;
 import com.android.f45tv.f45techdashboard.Controller.TicketVolumeController;
 import com.android.f45tv.f45techdashboard.Controller.TimerController;
-
 import android.widget.LinearLayout;
 import android.widget.Toast;
-
 import com.android.f45tv.f45techdashboard.Interfaces.RetrofitInterface;
 import com.android.f45tv.f45techdashboard.Managers.ScheduleManager;
 import com.android.f45tv.f45techdashboard.Model.ScheduleDataModel;
-import com.android.f45tv.f45techdashboard.Model.TVReportsKeyModel;
-import com.android.f45tv.f45techdashboard.Model.TVReportsValueModel;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
@@ -46,11 +45,10 @@ import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.ybq.android.spinkit.style.DoubleBounce;
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -64,19 +62,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.Headers;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
-
 /**
  * Created by LeakSun on 04/04/2018.
  * Developed and Modified by Kyle & Keno.
  */
-
 public class MainActivity extends AppCompatActivity {
 
     Future futureProcess;
@@ -144,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
     Runnable runnable3;
     RecyclerView recyclerView;
     NotificationAdapter adapter;
+    CustomAdapter customAdapter;
     List<NotificationController> notificationList;
+    ListView listView;
 
     long timeleft;
     boolean doubleBackToExitPressedOnce = false;
@@ -152,20 +148,14 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     DoubleBounce doubleBounce;
 
-
     //Schedule Declarations
     ScheduleManager shiftManager;
     ScheduleController controller;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         progressBar = findViewById(R.id.spin_kit);
-        /*doubleBounce = new DoubleBounce();
-        progressBar.setIndeterminateDrawable(doubleBounce);
-*/
         loadingscreen = findViewById(R.id.loading_screen);
         //notification
         notificationList = new ArrayList<>();
@@ -174,28 +164,24 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new NotificationAdapter(this, notificationList);
         createNotifications();
-
+        listView = findViewById(R.id.listView);
 
         //loading view
         loadingView = findViewById(R.id.loading_layout);
         //loadingView.setVisibility(View.VISIBLE);
         barChartView = findViewById(R.id.chart);
         //barChartView.setVisibility(View.GONE);
-
         //Schedule
         shiftManager = new ScheduleManager();
         controller = new ScheduleController(this);
-
         //time
         timerController = new TimerController(this);
         timerFrame = findViewById(R.id.timerFrame);
         timerFrame.addView(timerController);
         //timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
-
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
         ticketLayout = findViewById(R.id.ticketFrame);
-
         //Methods
         makeGraph();
         startFreshdeskRequest();
@@ -205,15 +191,11 @@ public class MainActivity extends AppCompatActivity {
         //marqueeView.setText("this is a newwwwwwwwwwwwwww marquee");
         Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
         marqueeView.startAnimation(marqueeAnim);
-
         //Deputy
         //startDeputyRequest();
-
-//        loadingscreen.setVisibility(View.GONE);
+        loadingscreen.setVisibility(View.GONE);
         startKlipfolio();
-
     }
-
     public class MyAxisValueFormatter implements IAxisValueFormatter {
 
 
@@ -236,7 +218,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
     /* ADDED TOAST ON ACTIVITY LIFE CYCLE */
 
     @Override
@@ -247,19 +228,16 @@ public class MainActivity extends AppCompatActivity {
         timerController.setTimer(timeleft, 1000);
         Toast.makeText(this, "On Resume ", Toast.LENGTH_SHORT).show();
     }
-
     @Override
     protected void onStop() {
         super.onStop();
         timerController.pauseCount();
     }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         timerController.pauseCount();
     }
-
     protected void makeGraph() {
         //Graph
         barChart = findViewById(R.id.chart);
@@ -297,7 +275,6 @@ public class MainActivity extends AppCompatActivity {
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
 
     }
-
     protected void startFreshdeskRequest() {
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
@@ -1013,7 +990,6 @@ public class MainActivity extends AppCompatActivity {
         };
         handler.postDelayed(runnable, 1500);
     }
-
     protected void startDeputyRequest() {
         RetrofitClient retrofitClientD = new RetrofitClient();
         retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
@@ -1041,7 +1017,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     protected void startKlipfolio() {
         Log.d(TAG, "startKlipfolio: has started");
         RetrofitClient retrofitClientK = new RetrofitClient();
@@ -1051,7 +1026,6 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Iterator<String> iterator;
                 String text;
                 ArrayList<String> arrayList = new ArrayList<String>();
                 try {
@@ -1059,19 +1033,8 @@ public class MainActivity extends AppCompatActivity {
                     JSONObject jsonObject = new JSONObject(text);
                     for (int i = 0; i < jsonObject.length(); i++) {
                         JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
-                        arrayList.add(object.getString("name") + " - " + object.getString("last_online") + " | ");
+                        arrayList.add(object.getString("name") + " | ");
                     }
-                    Log.d(TAG, "KLIP: " + jsonObject.get("0"));
-                    iterator = jsonObject.keys();
-//                    JSONObject jsonObject2;
-//                    while (iterator.hasNext()) {
-//                        jsonObject2 = jsonObject.getJSONObject(iterator.next());
-//                        if (jsonObject2.getString("last_online").contains("minutes") || jsonObject2.getString("last_online").contains("seconds")) {
-//                            arrayList.add(jsonObject2.getString("name") + " - " + jsonObject2.getString("last_online"));
-//                            //Log.d(TAG, "for marquee: " + jsonObject2.getString("name") + " - " + jsonObject2.getString("last_online") + " | ");
-//                        }
-//                    }
-
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.e(TAG, "KLIP err: ", e);
@@ -1088,9 +1051,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "KLIP err: ", t);
             }
         });
-
     }
-
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
@@ -1109,7 +1070,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2000);
     }
-
     public void checkComplete() throws IOException {
         if (!isComplete) {
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
@@ -1120,7 +1080,7 @@ public class MainActivity extends AppCompatActivity {
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             if (!firstRunThrough) {
-                loadingscreen.setVisibility(View.GONE);
+//                loadingscreen.setVisibility(View.GONE);
 //                startKlipfolio();
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
                 int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
@@ -1298,10 +1258,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
     ExecutorService executorService = Executors.newSingleThreadExecutor();
     ExecutorService executorService2 = Executors.newSingleThreadExecutor();
-
     private Future getFutureProcess() {
         return executorService.submit(new Runnable() {
             @Override
@@ -1336,7 +1294,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     public void updateTickets() {
 
         Log.d(TAG, "updateTickets: UPDATING");
@@ -1437,7 +1394,6 @@ public class MainActivity extends AppCompatActivity {
         //handler2.postDelayed(runnable2, 5000);
         handler2.post(runnable2);
     }
-
     public void createNotifications() {
 
         Log.d(TAG, "updateNotifications: UPDATING");
@@ -1458,11 +1414,13 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                         ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
                         Log.d(TAG, "onStartNotifications");
+
+
                         for (int i = 0; i < model.size(); i++) {
                             TicketVolumeDataModel tvdm = model.get(i);
                             TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
                             if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
-//                                notificationList.add(new NotificationController(i, model.get(i).subject,model.get(i).source, model.get(i).priority));
+                                notificationList.add(new NotificationController(i, model.get(i).subject,model.get(i).source, model.get(i).priority));
                                 if (!notificationList.isEmpty()) {
                                     Log.d(TAG, "onStartNotifications: not empty");
                                     NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
@@ -1477,10 +1435,10 @@ public class MainActivity extends AppCompatActivity {
                                         adapter.notifyDataSetChanged();
                                     }
                                 } else {
+
                                     notificationList.add(count,new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject,model.get(i).source, model.get(i).priority));
                                     adapter.notifyDataSetChanged();
                                     adapter.setNotificationList(notificationList);
-
                                 }
                                 Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
                             }
@@ -1493,7 +1451,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.e(TAG, "onFailure: onNotif", t);
                     }
                 });
-
                 recyclerView.setAdapter(adapter);
             }
         };
