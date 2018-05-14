@@ -131,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
     int octO = 0, octR = 0, octU = 0;
     int novO = 0, novR = 0, novU = 0;
     int decO = 0, decR = 0, decU = 0;
+    int count = 0;
     boolean isComplete = false;
     boolean isCompleteUpdate = false;
 
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
         //Deputy
         //startDeputyRequest();
 
-        loadingscreen.setVisibility(View.GONE);
+//        loadingscreen.setVisibility(View.GONE);
         startKlipfolio();
 
     }
@@ -1119,7 +1120,7 @@ public class MainActivity extends AppCompatActivity {
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             if (!firstRunThrough) {
-//                loadingscreen.setVisibility(View.GONE);
+                loadingscreen.setVisibility(View.GONE);
 //                startKlipfolio();
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
                 int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
@@ -1325,6 +1326,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "future: This is the updated average response time: " + avgResponseTime);
                         ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
                     }
+//                    createNotifications();
                     futureProcess = getFutureProcess();
                     Log.d("THREAD", "running futureThread: " + futureProcess);
                 } catch (InterruptedException e) {
@@ -1378,14 +1380,6 @@ public class MainActivity extends AppCompatActivity {
                             Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
                             if (headers.get("link") == null) {
                                 isComplete = true;
-//                                if (ticketsv2 > tickets) {
-//                                    Log.d(TAG, "OnUpdate: This is the updated number of tickets today: " + Integer.toString(ticketsv2));
-//                                    ticketVolumeController.setTicketVolumeText(Integer.toString(ticketsv2));
-//                                    long avgResponseTime = responseTime2 / ticketsv2;
-//                                    Log.i(TAG, "OnUpdate: This is the updated average response time: " + avgResponseTime);
-//                                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-//                                    ticketsv2 = 0;
-//                                }
                                 page = 1;
                                 Log.d(TAG, "is updating finished? " + isCompleteUpdate);
                             } else {
@@ -1469,16 +1463,27 @@ public class MainActivity extends AppCompatActivity {
                             TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
                             if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
 //                                notificationList.add(new NotificationController(i, model.get(i).subject,model.get(i).source, model.get(i).priority));
-                                  notificationList.add(new NotificationController(i, model.get(i).subject,model.get(i).source, model.get(i).priority));
-                                  adapter.setNotificationList(notificationList);
-                                try {
-                                    recyclerView.invalidate();
-                                    Log.d(TAG, "onStartNotifications: Adapter Set");
-                                } catch (Exception e) {
-                                    Log.e(TAG, "onStartNotificationsError", e);
+                                if (!notificationList.isEmpty()) {
+                                    Log.d(TAG, "onStartNotifications: not empty");
+                                    NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
+                                    if (notificationList.get(count).getId() == Integer.parseInt(model.get(i).id)) {
+                                        Log.d(TAG, "onStartNotifications: is in the list");
+                                        count++;
+                                    } else {
+                                        notificationList.add(count, reference);
+                                        Log.d(TAG, "This is count:" + count + " DATA id->  " + notificationList.get(count).getId());
+                                        Log.d(TAG, "This is i:" + count + " DATA id->  " + Integer.parseInt(model.get(i).id));
+                                        count++;
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                } else {
+                                    notificationList.add(count,new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject,model.get(i).source, model.get(i).priority));
+                                    adapter.notifyDataSetChanged();
+                                    adapter.setNotificationList(notificationList);
+
                                 }
+                                Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
                             }
-                            Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
                         }
                     }
 

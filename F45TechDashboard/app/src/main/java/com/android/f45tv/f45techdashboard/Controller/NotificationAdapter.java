@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.android.f45tv.f45techdashboard.R;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 /*
 * Recycler.Adapter
@@ -30,7 +33,6 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         this.context = context;
         this.notificationList = notificationList;
     }
-
 
     public void setNotificationList(List<NotificationController> notificationList) {
         this.notificationList = notificationList;
@@ -49,11 +51,9 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(final NotificationViewHolder holder, final int position) {
 
         NotificationController notificationController = notificationList.get(position);
-        String priority = notificationController.getPriority();
-        String source = notificationController.getSource();
-        int id = notificationController.getId();
-        holder.setIsRecyclable(true);
-
+//        String priority = notificationController.getPriority();
+//        String source = notificationController.getSource();
+//        int id = notificationController.getId();
         holder.priority.setText(notificationController.getPriority());
         holder.priority.invalidate();
         holder.source.setText(notificationController.getSource());
@@ -65,7 +65,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             @Override
             public void onClick(View view) {
                 holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_roundedclicked"));
-
+                Log.d(TAG, "onClick: "+ position);
             }
         });
 
