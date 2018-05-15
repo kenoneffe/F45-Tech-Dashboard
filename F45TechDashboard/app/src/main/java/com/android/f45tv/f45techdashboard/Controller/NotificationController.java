@@ -1,8 +1,4 @@
 package com.android.f45tv.f45techdashboard.Controller;
-
-
-import android.view.View;
-
 public class NotificationController {
 
     private int id;

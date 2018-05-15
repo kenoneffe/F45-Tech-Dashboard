@@ -26,10 +26,6 @@ public class TimerController extends LinearLayout implements TimerInterface {
     String remainTime;
     long timeleft;
 
-
-
-
-
     public TimerController(Context context) {
         super(context);
         this.context = context;
@@ -101,23 +97,17 @@ public class TimerController extends LinearLayout implements TimerInterface {
 
     }
 
-    public void hideAlert()
-    {
+    public void hideAlert() {
         alertLayout = findViewById(R.id.alert_layout);
         alertLayout.setVisibility(View.GONE);
         audioPlay.stop();
 
     }
 
-
     public void pauseCount(){
         countDownTimer.cancel();
     }
 
-
-    public void resumeCount() {
-
-    }
 
     public long getTimeleft(){
         return timeleft;

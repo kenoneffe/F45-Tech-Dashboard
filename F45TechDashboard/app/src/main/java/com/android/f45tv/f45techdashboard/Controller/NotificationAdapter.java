@@ -3,6 +3,7 @@ package com.android.f45tv.f45techdashboard.Controller;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,7 +61,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             public void onClick(View view) {
                 notificationController.setRead(true);
                 if (notificationController.getRead()){
-                    holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_roundedclicked"));
+//                    holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_roundedclicked"));
+                    holder.row_entry.setBackground(ContextCompat.getDrawable(context, R.drawable.layout_roundedclicked));
                     notifyDataSetChanged();
                 }
                 Toast.makeText(context, "You Clicked " + notificationController.getPosition(), Toast.LENGTH_SHORT).show();
@@ -69,7 +71,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         if(!notificationController.getRead()){
             Log.d(TAG, "onBindViewHolder: it went inside.");
-            holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_rounded"));
+            holder.row_entry.setBackground(ContextCompat.getDrawable(context, R.drawable.layout_rounded));
+            //holder.row_entry.setBackground(Drawable.createFromPath("@drawable/layout_rounded"));
         }
 
     }

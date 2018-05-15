@@ -1,8 +1,6 @@
 package com.android.f45tv.f45techdashboard.Interfaces;
 
 import com.android.f45tv.f45techdashboard.Model.ScheduleDataModel;
-import com.android.f45tv.f45techdashboard.Model.TVReportsKeyModel;
-import com.android.f45tv.f45techdashboard.Model.TVReportsValueModel;
 import com.android.f45tv.f45techdashboard.Model.TicketVolumeDataModel;
 
 import java.util.List;
@@ -31,10 +29,6 @@ public interface RetrofitInterface {
 
     @GET("/v3/tv_reports/")
     Call<ResponseBody> getAllTVReports();
-
-    @GET("/v3/tv_reports/")
-    Call<TVReportsKeyModel> getAllTVReportsKey();
-
 
 
 }

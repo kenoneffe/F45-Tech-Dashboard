@@ -1,11 +1,7 @@
 package com.android.f45tv.f45techdashboard;
-
-import java.lang.reflect.Array;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,16 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.android.f45tv.f45techdashboard.Client.RetrofitClient;
-import com.android.f45tv.f45techdashboard.Controller.CustomAdapter;
 import com.android.f45tv.f45techdashboard.Controller.NotificationAdapter;
 import com.android.f45tv.f45techdashboard.Controller.NotificationController;
 import com.android.f45tv.f45techdashboard.Controller.ScheduleController;
@@ -44,12 +37,9 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
-import com.github.ybq.android.spinkit.style.DoubleBounce;
 import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -75,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
 
     Future futureProcess;
     Future futureProcess2;
+    String lastonlineString;
     LinearLayout loadingscreen;
     Boolean isDirectoryCreated;
     Boolean isFileCreated;
@@ -109,10 +100,13 @@ public class MainActivity extends AppCompatActivity {
     String headerString = "";
     String pageNum = "1";
     int prevPage = 1;
+    int prevPageNotif = 1;
     long responseTime = 0;
     long responseTime2 = 0;
     float barW;
+    int count = 0;
     int page = 1;
+    int pageNotif = 1;
     int janO = 0, janR = 0, janU = 0;
     int febO = 0, febR = 0, febU = 0;
     int marO = 0, marR = 0, marU = 0;
@@ -125,10 +119,8 @@ public class MainActivity extends AppCompatActivity {
     int octO = 0, octR = 0, octU = 0;
     int novO = 0, novR = 0, novU = 0;
     int decO = 0, decR = 0, decU = 0;
-    int count = 0;
     boolean isComplete = false;
     boolean isCompleteUpdate = false;
-
     boolean firstRunThrough = false;
     Handler handler = new Handler();
     Handler handler2 = new Handler();
@@ -138,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
     Runnable runnable3;
     RecyclerView recyclerView;
     NotificationAdapter adapter;
-    CustomAdapter customAdapter;
     List<NotificationController> notificationList;
     ListView listView;
 
@@ -146,11 +137,14 @@ public class MainActivity extends AppCompatActivity {
     boolean doubleBackToExitPressedOnce = false;
 
     ProgressBar progressBar;
-    DoubleBounce doubleBounce;
 
     //Schedule Declarations
     ScheduleManager shiftManager;
     ScheduleController controller;
+
+    ExecutorService executorService = Executors.newSingleThreadExecutor();
+    ExecutorService executorService2 = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,8 +157,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new NotificationAdapter(this, notificationList);
-        createNotifications();
-        listView = findViewById(R.id.listView);
+        recyclerView.setAdapter(adapter);
 
         //loading view
         loadingView = findViewById(R.id.loading_layout);
@@ -178,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
         timerController = new TimerController(this);
         timerFrame = findViewById(R.id.timerFrame);
         timerFrame.addView(timerController);
-        //timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
         //Ticket Volume Controller
         ticketVolumeController = new TicketVolumeController(this);
         ticketLayout = findViewById(R.id.ticketFrame);
@@ -188,11 +180,10 @@ public class MainActivity extends AppCompatActivity {
         ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
         //Marquee
         marqueeView = findViewById(R.id.marque_scrolling_text);
-        //marqueeView.setText("this is a newwwwwwwwwwwwwww marquee");
-        Animation marqueeAnim = AnimationUtils.loadAnimation(this, R.anim.marquee_animation);
-        marqueeView.startAnimation(marqueeAnim);
+        marqueeView.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+        marqueeView.setSelected(true);
+        marqueeView.setSingleLine(true);
         //Deputy
-        //startDeputyRequest();
         loadingscreen.setVisibility(View.GONE);
         startKlipfolio();
     }
@@ -228,16 +219,19 @@ public class MainActivity extends AppCompatActivity {
         timerController.setTimer(timeleft, 1000);
         Toast.makeText(this, "On Resume ", Toast.LENGTH_SHORT).show();
     }
+
     @Override
     protected void onStop() {
         super.onStop();
         timerController.pauseCount();
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
         timerController.pauseCount();
     }
+
     protected void makeGraph() {
         //Graph
         barChart = findViewById(R.id.chart);
@@ -275,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
         yAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
 
     }
+
     protected void startFreshdeskRequest() {
         //retrofitclient
         RetrofitClient retrofitClient = new RetrofitClient();
@@ -333,7 +328,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                             //updated at - created at = summation of everything / model size
                             ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
-                            Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
+                            Headers headers = response.headers();
                             if (headers.get("link") == null) {
                                 isComplete = true;
                                 try {
@@ -359,6 +354,41 @@ public class MainActivity extends AppCompatActivity {
                                             //getting current date time so we can get tickets for today only
                                             TicketVolumeDataModel tvdm = model.get(i);
                                             TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
+                                            if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
+                                                NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
+                                                if (!notificationList.isEmpty()) {
+                                                    int arraySize = notificationList.size();
+                                                    Log.d(TAG, "onStartNotifications: array size " + arraySize);
+                                                    Log.d(TAG, "onStartNotifications: not empty");
+                                                    Log.d(TAG, "onStartNotifications: count is " + count);
+                                                    if (count > arraySize) {
+                                                        count = 0;
+                                                    }
+                                                    boolean isDup = isDuplicate(notificationList, reference);
+                                                    if (!isDup) {
+                                                        List<NotificationController> dummyList = new ArrayList<>();
+                                                        Log.d(TAG, "!isDup: adding reference "+reference.getId() + "to dummylist");
+//                                                        dummyList.add(reference);
+//                                                        dummyList.addAll(notificationList);
+//                                                        notificationList = dummyList;
+                                                        notificationList.add(0, reference);
+                                                        count++;
+                                                        adapter.notifyDataSetChanged();
+                                                        adapter.setNotificationList(notificationList);
+                                                    } else {
+                                                        Log.d(TAG, "isDup: skipped due to duplicate entry...");
+                                                    }
+                                                }
+                                                else {
+                                                    Log.d(TAG, "added :"+count);
+                                                    notificationList.add(count,reference);
+                                                    adapter.notifyDataSetChanged();
+                                                    count++;
+                                                    adapter.setNotificationList(notificationList);
+                                                }
+                                                Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
+                                            }
+
                                             if (model.get(i).created_at.contains(formatter.format(date))) {
                                                 if (a.department != null && a.department.equals("Tech Systems")) { //&& a.department.equals("Tech Systems")
                                                     tickets += 1;
@@ -990,6 +1020,7 @@ public class MainActivity extends AppCompatActivity {
         };
         handler.postDelayed(runnable, 1500);
     }
+
     protected void startDeputyRequest() {
         RetrofitClient retrofitClientD = new RetrofitClient();
         retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
@@ -1017,6 +1048,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     protected void startKlipfolio() {
         Log.d(TAG, "startKlipfolio: has started");
         RetrofitClient retrofitClientK = new RetrofitClient();
@@ -1027,14 +1059,24 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 String text;
-                ArrayList<String> arrayList = new ArrayList<String>();
+                ArrayList<String> arrayList = new ArrayList<>();
                 try {
                     text = response.body().string();
                     JSONObject jsonObject = new JSONObject(text);
                     for (int i = 0; i < jsonObject.length(); i++) {
                         JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
-                        arrayList.add(object.getString("name") + " | ");
+                        if (object.get("last_online").toString().contains("seconds")) {
+                            lastonlineString = object.getString("last_online");
+                            String lastOLResult = (lastonlineString.substring(0, 1));
+                            if (Integer.parseInt(lastOLResult) < 59) {
+                                Log.d(TAG, "LESS" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                                arrayList.add(object.getString("name") + " | ");
+                            }
+                        } else {
+                            Log.d(TAG, "MInutes" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                        }
                     }
+                    Log.d(TAG, "KLIP: " + jsonObject.get("0"));
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.e(TAG, "KLIP err: ", e);
@@ -1052,6 +1094,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
@@ -1070,6 +1113,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2000);
     }
+
     public void checkComplete() throws IOException {
         if (!isComplete) {
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
@@ -1258,8 +1302,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-    ExecutorService executorService = Executors.newSingleThreadExecutor();
-    ExecutorService executorService2 = Executors.newSingleThreadExecutor();
+
     private Future getFutureProcess() {
         return executorService.submit(new Runnable() {
             @Override
@@ -1267,11 +1310,12 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Thread.sleep(2000);
                     updateTickets();
+                    updateNotifications();
                     Log.d(TAG, "future: tickets " + tickets);
                     Log.d(TAG, "future: ticketsv2 " + ticketsv2);
                     String threadName = Thread.currentThread().getName();
                     Log.d(TAG, "future: thread name " + threadName);
-                    if (ticketsv2 <= tickets) {
+                    if (ticketsv2 == tickets) {
                         ticketsv2 = 0;
                         Log.d(TAG, "future: tickets " + tickets);
                         Log.d(TAG, "future: ticketsv2 " + ticketsv2);
@@ -1284,7 +1328,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "future: This is the updated average response time: " + avgResponseTime);
                         ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
                     }
-//                    createNotifications();
                     futureProcess = getFutureProcess();
                     Log.d("THREAD", "running futureThread: " + futureProcess);
                 } catch (InterruptedException e) {
@@ -1294,6 +1337,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     public void updateTickets() {
 
         Log.d(TAG, "updateTickets: UPDATING");
@@ -1334,7 +1378,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                             //updated at - created at = summation of everything / model size
                             ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
-                            Headers headers = response.headers(); // I GOT THE LINK HEADER I NEED TO UTILIZE THIS SHIT
+                            Headers headers = response.headers();
                             if (headers.get("link") == null) {
                                 isComplete = true;
                                 page = 1;
@@ -1394,7 +1438,8 @@ public class MainActivity extends AppCompatActivity {
         //handler2.postDelayed(runnable2, 5000);
         handler2.post(runnable2);
     }
-    public void createNotifications() {
+
+    public void updateNotifications() {
 
         Log.d(TAG, "updateNotifications: UPDATING");
         //retrofitclient
@@ -1408,53 +1453,78 @@ public class MainActivity extends AppCompatActivity {
         runnable3 = new Runnable() {
             @Override
             public void run() {
-                Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100, dateString);
+                Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, pageNotif, 100, dateString);
                 call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
                     @Override
                     public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
                         ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
-                        Log.d(TAG, "onStartNotifications");
+                        Log.d(TAG, "onStartNotifications - pageNotif:"+pageNotif);
 
-
-                        for (int i = 0; i < model.size(); i++) {
-                            TicketVolumeDataModel tvdm = model.get(i);
-                            TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
-                            if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
-                                notificationList.add(new NotificationController(i, model.get(i).subject,model.get(i).source, model.get(i).priority));
-                                if (!notificationList.isEmpty()) {
-                                    Log.d(TAG, "onStartNotifications: not empty");
-                                    NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
-                                    if (notificationList.get(count).getId() == Integer.parseInt(model.get(i).id)) {
-                                        Log.d(TAG, "onStartNotifications: is in the list");
-                                        count++;
-                                    } else {
-                                        notificationList.add(count, reference);
-                                        Log.d(TAG, "This is count:" + count + " DATA id->  " + notificationList.get(count).getId());
-                                        Log.d(TAG, "This is i:" + count + " DATA id->  " + Integer.parseInt(model.get(i).id));
-                                        count++;
-                                        adapter.notifyDataSetChanged();
+                        Headers headers = response.headers();
+                        if (headers.get("link") == null) {
+                            isComplete = true;
+                            pageNotif = 1;
+                            Log.d(TAG, "is updating finished? " + isCompleteUpdate);
+                        } else {
+                            headerString = headers.get("link");
+                            String result = headerString.substring(headerString.indexOf("?") + 1, headerString.indexOf("&"));
+                            pageNum = result.substring(result.lastIndexOf('=') + 1);
+                            Log.e(TAG, "OnUpdate: This is the previous pageNotif number: " + pageNotif);
+                            pageNotif = Integer.parseInt(pageNum);
+                            Log.e(TAG, "OnUpdate: This is the next pageNotif number " + pageNotif);
+                            //TO AVOID DUPLICATES
+                            if (prevPageNotif != pageNotif && prevPageNotif < pageNotif) {
+                                prevPageNotif = pageNotif;
+                                Log.e(TAG, "OnUpdate: PROCEED");
+                                for (int i = 0; i < model.size(); i++) {
+                                    TicketVolumeDataModel tvdm = model.get(i);
+                                    TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
+                                    int arraySize = notificationList.size();
+                                    if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
+                                        NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
+                                        Log.d(TAG, "onStartNotifications: array size " + arraySize);
+                                        Log.d(TAG, "onStartNotifications: not empty");
+                                        Log.d(TAG, "onStartNotifications: count is " + count);
+                                        boolean isDup = isDuplicate(notificationList, reference);
+                                        if (isDup) {
+                                            Log.d(TAG, "!isDup: adding reference " + reference.getId() + " to dummylist");
+                                            notificationList.add(0, reference);
+                                            count++;
+                                            adapter.notifyDataSetChanged();
+                                            adapter.setNotificationList(notificationList);
+                                        } else {
+                                            Log.d(TAG, "isDup: skipped due to duplicate entry...");
+                                        }
+                                        Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
                                     }
-                                } else {
-
-                                    notificationList.add(count,new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject,model.get(i).source, model.get(i).priority));
-                                    adapter.notifyDataSetChanged();
-                                    adapter.setNotificationList(notificationList);
                                 }
-                                Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
+                                Log.e(TAG, "notificationlist size" + notificationList.size());
                             }
                         }
+
+
                     }
-
-
                     @Override
                     public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
                         Log.e(TAG, "onFailure: onNotif", t);
                     }
                 });
-                recyclerView.setAdapter(adapter);
+
             }
         };
         handler3.post(runnable3);
+    }
+
+    private boolean isDuplicate(List<NotificationController> sourceList, NotificationController newItem) {
+        for (NotificationController ticketModel : sourceList) {
+            if (ticketModel.getId() == newItem.getId()) {
+                Log.d(TAG, "onStartNotifications: " + newItem.getId() + " is in the list");
+                return true; //found dup
+            } else {
+                return false; //!found dup
+            }
+        }
+        return false; //!found dup
     }
 }
 
