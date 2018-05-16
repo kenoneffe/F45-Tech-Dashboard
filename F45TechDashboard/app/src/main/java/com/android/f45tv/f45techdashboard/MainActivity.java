@@ -131,8 +131,6 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     NotificationAdapter adapter;
     List<NotificationController> notificationList;
-    ListView listView;
-
     long timeleft;
     boolean doubleBackToExitPressedOnce = false;
 
@@ -175,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         ticketVolumeController = new TicketVolumeController(this);
         ticketLayout = findViewById(R.id.ticketFrame);
         //Methods
-        makeGraph();
+        makeGraphFuture();
         startFreshdeskRequest();
         ticketLayout.addView(ticketVolumeController); // AFTER FOR LOOP
         //Marquee
@@ -230,6 +228,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         timerController.pauseCount();
+    }
+
+    private Future makeGraphFuture(){
+        return executorService2.submit(new Runnable() {
+            @Override
+            public void run() {
+                String threadName = Thread.currentThread().getName();
+                Log.d(TAG, "future: thread name " + threadName);
+                makeGraph();
+            }
+        });
     }
 
     protected void makeGraph() {
@@ -305,7 +314,10 @@ public class MainActivity extends AppCompatActivity {
                 Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, page, 100, finalDateString);
                 Log.d(TAG, "On loop start, page number is :" + page);
                 Log.d(TAG, "headerString: " + headerString);
-                if (headerString.isEmpty()) {
+                if (headerString == null) {
+                    Log.d(TAG, "headerString: null");
+                }
+                else if (headerString.isEmpty()) {
                     Log.d("HERE", "ENTER HERE");
                     call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
                         @Override
@@ -356,35 +368,22 @@ public class MainActivity extends AppCompatActivity {
                                             TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
                                             if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
                                                 NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
-                                                if (!notificationList.isEmpty()) {
-                                                    int arraySize = notificationList.size();
-                                                    Log.d(TAG, "onStartNotifications: array size " + arraySize);
-                                                    Log.d(TAG, "onStartNotifications: not empty");
-                                                    Log.d(TAG, "onStartNotifications: count is " + count);
-                                                    if (count > arraySize) {
-                                                        count = 0;
-                                                    }
-                                                    boolean isDup = isDuplicate(notificationList, reference);
-                                                    if (!isDup) {
-                                                        List<NotificationController> dummyList = new ArrayList<>();
-                                                        Log.d(TAG, "!isDup: adding reference "+reference.getId() + "to dummylist");
-//                                                        dummyList.add(reference);
-//                                                        dummyList.addAll(notificationList);
-//                                                        notificationList = dummyList;
-                                                        notificationList.add(0, reference);
-                                                        count++;
-                                                        adapter.notifyDataSetChanged();
-                                                        adapter.setNotificationList(notificationList);
-                                                    } else {
-                                                        Log.d(TAG, "isDup: skipped due to duplicate entry...");
-                                                    }
+                                                int arraySize = notificationList.size();
+                                                Log.d(TAG, "onStartNotifications: array size " + arraySize);
+                                                Log.d(TAG, "onStartNotifications: not empty");
+                                                Log.d(TAG, "onStartNotifications: count is " + count);
+                                                if (count > arraySize) {
+                                                    count = 0;
                                                 }
-                                                else {
-                                                    Log.d(TAG, "added :"+count);
-                                                    notificationList.add(count,reference);
-                                                    adapter.notifyDataSetChanged();
+                                                boolean isDup = isDuplicate(notificationList, reference);
+                                                if (!isDup) {
+                                                    Log.d(TAG, "!isDup: adding reference " + reference.getId() + " to NOTIFICATIONLIST");
+                                                    notificationList.add(reference);
                                                     count++;
+                                                    adapter.notifyDataSetChanged();
                                                     adapter.setNotificationList(notificationList);
+                                                } else {
+                                                    Log.d(TAG, "isDup: skipped due to duplicate entry...");
                                                 }
                                                 Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
                                             }
@@ -392,7 +391,6 @@ public class MainActivity extends AppCompatActivity {
                                             if (model.get(i).created_at.contains(formatter.format(date))) {
                                                 if (a.department != null && a.department.equals("Tech Systems")) { //&& a.department.equals("Tech Systems")
                                                     tickets += 1;
-                                                    //notificationList.add(new NotificationController(i, model.get(i).subject, Integer.parseInt(model.get(i).source), Integer.parseInt(model.get(i).priority)));
                                                 }
                                             }
                                             Log.d(TAG, "This is the number of tickets today: " + Integer.toString(tickets));
@@ -1021,99 +1019,6 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 1500);
     }
 
-    protected void startDeputyRequest() {
-        RetrofitClient retrofitClientD = new RetrofitClient();
-        retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
-        final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
-        final String cacheControlD = "no-cache";
-        final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
-        final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
-
-        Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
-        call.enqueue(new Callback<List<ScheduleDataModel>>() {
-            @Override
-            public void onResponse(Call<List<ScheduleDataModel>> call, Response<List<ScheduleDataModel>> response) {
-
-                ArrayList<ScheduleDataModel> model
-                        = (ArrayList<ScheduleDataModel>) response.body();
-                Log.d(TAG, "startDeputyRequest: " + model.get(0).Employee);
-
-
-            }
-
-            @Override
-            public void onFailure(Call<List<ScheduleDataModel>> call, Throwable t) {
-                Log.e(TAG, "onFailure: at startDeputyRequest", t);
-
-            }
-        });
-    }
-
-    protected void startKlipfolio() {
-        Log.d(TAG, "startKlipfolio: has started");
-        RetrofitClient retrofitClientK = new RetrofitClient();
-        retrofitClientK.setBaseUrl("http://matrix.f45.info/");
-        RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-        Call<ResponseBody> call = retrofitInterface.getAllTVReports();
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                String text;
-                ArrayList<String> arrayList = new ArrayList<>();
-                try {
-                    text = response.body().string();
-                    JSONObject jsonObject = new JSONObject(text);
-                    for (int i = 0; i < jsonObject.length(); i++) {
-                        JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
-                        if (object.get("last_online").toString().contains("seconds")) {
-                            lastonlineString = object.getString("last_online");
-                            String lastOLResult = (lastonlineString.substring(0, 1));
-                            if (Integer.parseInt(lastOLResult) < 59) {
-                                Log.d(TAG, "LESS" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
-                                arrayList.add(object.getString("name") + " | ");
-                            }
-                        } else {
-                            Log.d(TAG, "MInutes" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
-                        }
-                    }
-                    Log.d(TAG, "KLIP: " + jsonObject.get("0"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "KLIP err: ", e);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    String joined = TextUtils.join(" ", arrayList);
-                    marqueeView.setText(joined);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(TAG, "KLIP err: ", t);
-            }
-        });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
-    }
-
     public void checkComplete() throws IOException {
         if (!isComplete) {
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
@@ -1297,25 +1202,24 @@ public class MainActivity extends AppCompatActivity {
 
             }
             page = 1;
-            futureProcess = getFutureProcess();
-            //futureProcess2 = getFutureProcess2();
+            updateTicketsFuture();
         }
 
     }
 
-    private Future getFutureProcess() {
+    private Future updateTicketsFuture() {
         return executorService.submit(new Runnable() {
             @Override
             public void run() {
                 try {
                     Thread.sleep(2000);
                     updateTickets();
-                    updateNotifications();
+//                    updateNotifications();
                     Log.d(TAG, "future: tickets " + tickets);
                     Log.d(TAG, "future: ticketsv2 " + ticketsv2);
                     String threadName = Thread.currentThread().getName();
                     Log.d(TAG, "future: thread name " + threadName);
-                    if (ticketsv2 == tickets) {
+                    if (ticketsv2 <= tickets) {
                         ticketsv2 = 0;
                         Log.d(TAG, "future: tickets " + tickets);
                         Log.d(TAG, "future: ticketsv2 " + ticketsv2);
@@ -1328,7 +1232,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.i(TAG, "future: This is the updated average response time: " + avgResponseTime);
                         ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
                     }
-                    futureProcess = getFutureProcess();
+                    futureProcess = updateTicketsFuture();
                     Log.d("THREAD", "running futureThread: " + futureProcess);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -1414,6 +1318,24 @@ public class MainActivity extends AppCompatActivity {
                                                 Log.e(TAG, "onResponse: error in parsing created at");
                                             }
                                         }
+                                        if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
+                                            NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
+                                            Log.d(TAG, "onStartNotifications: array size " + notificationList.size());
+                                            Log.d(TAG, "onStartNotifications: not empty");
+                                            Log.d(TAG, "onStartNotifications: count is " + count);
+                                            Boolean isDup = isDuplicate(notificationList, reference);
+                                            Log.d(TAG, "onStartNotifications: isDup " + isDup);
+                                            if (!isDup) {
+                                                Log.d(TAG, "!isDup: adding reference " + reference.getId() + " to NOTIFICATIONLIST");
+                                                notificationList.add(0,reference);
+                                                count++;
+                                                adapter.notifyDataSetChanged();
+                                                adapter.setNotificationList(notificationList);
+                                            } else {
+                                                Log.d(TAG, "isDup: skipped due to duplicate entry...");
+                                            }
+//                                        Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
+                                        }
                                     }
                                 }
                             }
@@ -1439,92 +1361,192 @@ public class MainActivity extends AppCompatActivity {
         handler2.post(runnable2);
     }
 
-    public void updateNotifications() {
+//    protected void startDeputyRequest() {
+//        RetrofitClient retrofitClientD = new RetrofitClient();
+//        retrofitClientD.setBaseUrl("https://a3c3f816065445.as.deputy.com/");
+//        final String authHeaderD = "Bearer ffc0b18fb4ffd88c70dd523cb38259e5";
+//        final String cacheControlD = "no-cache";
+//        final String postmanTokenD = "ac5c988a-6c35-48e4-a491-67d301b1fa12";
+//        final RetrofitInterface retrofitInterfaceD = RetrofitClient.getClient().create(RetrofitInterface.class);
+//
+//        Call<List<ScheduleDataModel>> call = retrofitInterfaceD.getSchedule(authHeaderD, cacheControlD, postmanTokenD);
+//        call.enqueue(new Callback<List<ScheduleDataModel>>() {
+//            @Override
+//            public void onResponse(Call<List<ScheduleDataModel>> call, Response<List<ScheduleDataModel>> response) {
+//
+//                ArrayList<ScheduleDataModel> model
+//                        = (ArrayList<ScheduleDataModel>) response.body();
+//                Log.d(TAG, "startDeputyRequest: " + model.get(0).Employee);
+//
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<ScheduleDataModel>> call, Throwable t) {
+//                Log.e(TAG, "onFailure: at startDeputyRequest", t);
+//
+//            }
+//        });
+//    }
 
-        Log.d(TAG, "updateNotifications: UPDATING");
-        //retrofitclient
-        RetrofitClient retrofitClient = new RetrofitClient();
-        retrofitClient.setBaseUrl("https://f45training.freshdesk.com/");
-        final String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
-        final String cacheControl = "no-cache";
-        final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
-        final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
-        final String dateString = currentYear + "-" + currentMonth + "-01T00:00:00Z";
-        runnable3 = new Runnable() {
+    protected void startKlipfolio() {
+        Log.d(TAG, "startKlipfolio: has started");
+        RetrofitClient retrofitClientK = new RetrofitClient();
+        retrofitClientK.setBaseUrl("http://matrix.f45.info/");
+        RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
+        Call<ResponseBody> call = retrofitInterface.getAllTVReports();
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void run() {
-                Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, pageNotif, 100, dateString);
-                call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
-                    @Override
-                    public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
-                        ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
-                        Log.d(TAG, "onStartNotifications - pageNotif:"+pageNotif);
-
-                        Headers headers = response.headers();
-                        if (headers.get("link") == null) {
-                            isComplete = true;
-                            pageNotif = 1;
-                            Log.d(TAG, "is updating finished? " + isCompleteUpdate);
-                        } else {
-                            headerString = headers.get("link");
-                            String result = headerString.substring(headerString.indexOf("?") + 1, headerString.indexOf("&"));
-                            pageNum = result.substring(result.lastIndexOf('=') + 1);
-                            Log.e(TAG, "OnUpdate: This is the previous pageNotif number: " + pageNotif);
-                            pageNotif = Integer.parseInt(pageNum);
-                            Log.e(TAG, "OnUpdate: This is the next pageNotif number " + pageNotif);
-                            //TO AVOID DUPLICATES
-                            if (prevPageNotif != pageNotif && prevPageNotif < pageNotif) {
-                                prevPageNotif = pageNotif;
-                                Log.e(TAG, "OnUpdate: PROCEED");
-                                for (int i = 0; i < model.size(); i++) {
-                                    TicketVolumeDataModel tvdm = model.get(i);
-                                    TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
-                                    int arraySize = notificationList.size();
-                                    if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
-                                        NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
-                                        Log.d(TAG, "onStartNotifications: array size " + arraySize);
-                                        Log.d(TAG, "onStartNotifications: not empty");
-                                        Log.d(TAG, "onStartNotifications: count is " + count);
-                                        boolean isDup = isDuplicate(notificationList, reference);
-                                        if (isDup) {
-                                            Log.d(TAG, "!isDup: adding reference " + reference.getId() + " to dummylist");
-                                            notificationList.add(0, reference);
-                                            count++;
-                                            adapter.notifyDataSetChanged();
-                                            adapter.setNotificationList(notificationList);
-                                        } else {
-                                            Log.d(TAG, "isDup: skipped due to duplicate entry...");
-                                        }
-                                        Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
-                                    }
-                                }
-                                Log.e(TAG, "notificationlist size" + notificationList.size());
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                String text;
+                ArrayList<String> arrayList = new ArrayList<>();
+                try {
+                    text = response.body().string();
+                    JSONObject jsonObject = new JSONObject(text);
+                    for (int i = 0; i < jsonObject.length(); i++) {
+                        JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
+                        if (object.get("last_online").toString().contains("seconds")) {
+                            lastonlineString = object.getString("last_online");
+                            String lastOLResult = (lastonlineString.substring(0, 1));
+                            if (Integer.parseInt(lastOLResult) < 59) {
+                                Log.d(TAG, "LESS" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                                arrayList.add(object.getString("name") + " | ");
                             }
+                        } else {
+                            Log.d(TAG, "MInutes" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
                         }
-
-
                     }
-                    @Override
-                    public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
-                        Log.e(TAG, "onFailure: onNotif", t);
-                    }
-                });
-
+                    Log.d(TAG, "KLIP: " + jsonObject.get("0"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "KLIP err: ", e);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } finally {
+                    String joined = TextUtils.join(" ", arrayList);
+                    marqueeView.setText(joined);
+                }
             }
-        };
-        handler3.post(runnable3);
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "KLIP err: ", t);
+            }
+        });
     }
 
-    private boolean isDuplicate(List<NotificationController> sourceList, NotificationController newItem) {
-        for (NotificationController ticketModel : sourceList) {
-            if (ticketModel.getId() == newItem.getId()) {
-                Log.d(TAG, "onStartNotifications: " + newItem.getId() + " is in the list");
-                return true; //found dup
-            } else {
-                return false; //!found dup
-            }
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
         }
-        return false; //!found dup
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
+
+//    public void updateNotifications() {
+//
+//        Log.d(TAG, "updateNotifications: UPDATING");
+//        //retrofitclient
+//        RetrofitClient retrofitClient = new RetrofitClient();
+//        retrofitClient.setBaseUrl("https://f45training.freshdesk.com/");
+//        final String authHeader = "Basic V1U3Y0ZJY0lhNVZDbHE4TnM1Mjo=";
+//        final String cacheControl = "no-cache";
+//        final String postmanToken = "e601edd5-eb58-430f-a43a-ea74b8d6ce6c";
+//        final RetrofitInterface retrofitInterface = RetrofitClient.getClient().create(RetrofitInterface.class);
+//        final String dateString = currentYear + "-" + currentMonth + "-01T00:00:00Z";
+//        runnable3 = new Runnable() {
+//            @Override
+//            public void run() {
+//                Call<List<TicketVolumeDataModel>> call = retrofitInterface.getTicketVolume(authHeader, cacheControl, postmanToken, pageNotif, 100, dateString);
+//                call.enqueue(new Callback<List<TicketVolumeDataModel>>() {
+//                    @Override
+//                    public void onResponse(Call<List<TicketVolumeDataModel>> call, Response<List<TicketVolumeDataModel>> response) {
+//                        ArrayList<TicketVolumeDataModel> model = (ArrayList<TicketVolumeDataModel>) response.body();
+//                        Log.d(TAG, "onStartNotifications - pageNotif:"+pageNotif);
+//
+//                        Headers headers = response.headers();
+//                        if (headers.get("link") == null) {
+//                            isComplete = true;
+//                            pageNotif = 1;
+//                            Log.d(TAG, "is updating finished? " + isCompleteUpdate);
+//                        } else {
+//                            headerString = headers.get("link");
+//                            String result = headerString.substring(headerString.indexOf("?") + 1, headerString.indexOf("&"));
+//                            pageNum = result.substring(result.lastIndexOf('=') + 1);
+//                            Log.e(TAG, "OnUpdate: This is the previous pageNotif number: " + pageNotif);
+//                            pageNotif = Integer.parseInt(pageNum);
+//                            Log.e(TAG, "OnUpdate: This is the next pageNotif number " + pageNotif);
+//                            //TO AVOID DUPLICATES
+//                            boolean isDup;
+//                            if (prevPageNotif != pageNotif && prevPageNotif < pageNotif) {
+//                                prevPageNotif = pageNotif;
+//                                Log.e(TAG, "OnUpdate: PROCEED");
+//                                for (int i = 0; i < model.size(); i++) {
+//                                    TicketVolumeDataModel tvdm = model.get(i);
+//                                    TicketVolumeDataModel.CustomFields a = tvdm.custom_fields;
+//                                    int arraySize = notificationList.size();
+//                                    if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
+//                                        NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
+//                                        Log.d(TAG, "onStartNotifications: array size " + arraySize);
+//                                        Log.d(TAG, "onStartNotifications: not empty");
+//                                        Log.d(TAG, "onStartNotifications: count is " + count);
+//                                        isDup = isDuplicate(notificationList, reference);
+//                                        Log.d(TAG, "onStartNotifications: isDup " + isDup);
+//                                        if (!isDup) {
+//                                            Log.d(TAG, "!isDup: adding reference " + reference.getId() + " to NOTIFICATIONLIST");
+//                                            notificationList.add(0,reference);
+//                                            count++;
+//                                            adapter.notifyDataSetChanged();
+//                                            adapter.setNotificationList(notificationList);
+//                                        } else {
+//                                            Log.d(TAG, "isDup: skipped due to duplicate entry...");
+//                                        }
+////                                        Log.d(TAG, "Adding:" + "index: " + i + " subject: " + model.get(i).subject + " source: " + Integer.parseInt(model.get(i).source) + " priority: " + Integer.parseInt(model.get(i).priority));
+//                                    }
+//                                }
+//                                Log.e(TAG, "notificationlist size :" + notificationList.size());
+//                            }
+//                        }
+//
+//
+//                    }
+//                    @Override
+//                    public void onFailure(Call<List<TicketVolumeDataModel>> call, Throwable t) {
+//                        Log.e(TAG, "onFailure: onNotif", t);
+//                    }
+//                });
+//
+//            }
+//        };
+//        handler3.post(runnable3);
+//    }
+
+    private boolean isDuplicate(List<NotificationController> sourceList, NotificationController newItem) {
+        boolean isDup = false;
+        for (NotificationController ticketModel : sourceList) {
+            Log.e(TAG, "isDuplicate: perModel "+ticketModel.getId()+ " vs "+ newItem.getId());
+            if (ticketModel.getId() == newItem.getId()) {
+                Log.d(TAG, "isDuplicate: " + newItem.getId() + " is in the list");
+                isDup = true; //found dup
+            }
+//            else {
+//                Log.d(TAG, "isDuplicate: " + newItem.getId() + " is NOT in the list");
+//                isDup = false; //!found dup
+//            }
+        }
+        Log.d(TAG, "isDuplicate: end of for loop");
+        return isDup; //!found dup
     }
 }
 
