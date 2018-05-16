@@ -181,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
         marqueeView.setSelected(true);
         marqueeView.setSingleLine(true);
         //Deputy
-        loadingscreen.setVisibility(View.GONE);
+//        loadingscreen.setVisibility(View.GONE);
         startKlipfolio();
     }
     public class MyAxisValueFormatter implements IAxisValueFormatter {
@@ -1082,7 +1082,7 @@ public class MainActivity extends AppCompatActivity {
             handler.removeCallbacks(runnable);
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             if (!firstRunThrough) {
-//                loadingscreen.setVisibility(View.GONE);
+                loadingscreen.setVisibility(View.GONE);
 //                startKlipfolio();
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
                 int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
