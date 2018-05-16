@@ -64,7 +64,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     Future futureProcess;
-    Future futureProcess2;
     String lastonlineString;
     LinearLayout loadingscreen;
     Boolean isDirectoryCreated;
@@ -230,6 +229,25 @@ public class MainActivity extends AppCompatActivity {
         timerController.pauseCount();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (doubleBackToExitPressedOnce) {
+            super.onBackPressed();
+            return;
+        }
+
+        this.doubleBackToExitPressedOnce = true;
+        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+
+            @Override
+            public void run() {
+                doubleBackToExitPressedOnce = false;
+            }
+        }, 2000);
+    }
+
     private Future makeGraphFuture(){
         return executorService2.submit(new Runnable() {
             @Override
@@ -237,6 +255,41 @@ public class MainActivity extends AppCompatActivity {
                 String threadName = Thread.currentThread().getName();
                 Log.d(TAG, "future: thread name " + threadName);
                 makeGraph();
+            }
+        });
+    }
+
+    private Future updateTicketsFuture() {
+        return executorService.submit(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(2000);
+                    updateTickets();
+//                    updateNotifications();
+                    Log.d(TAG, "future: tickets " + tickets);
+                    Log.d(TAG, "future: ticketsv2 " + ticketsv2);
+                    String threadName = Thread.currentThread().getName();
+                    Log.d(TAG, "future: thread name " + threadName);
+                    if (ticketsv2 <= tickets) {
+                        ticketsv2 = 0;
+                        Log.d(TAG, "future: tickets " + tickets);
+                        Log.d(TAG, "future: ticketsv2 " + ticketsv2);
+                    } else {
+                        tickets = ticketsv2;
+                        ticketsv2 = 0;
+                        Log.d(TAG, "future: This is the updated number of tickets today: " + Integer.toString(tickets));
+                        ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
+                        long avgResponseTime = responseTime2 / tickets;
+                        Log.i(TAG, "future: This is the updated average response time: " + avgResponseTime);
+                        ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
+                    }
+                    futureProcess = updateTicketsFuture();
+                    Log.d("THREAD", "running futureThread: " + futureProcess);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             }
         });
     }
@@ -1019,7 +1072,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(runnable, 1500);
     }
 
-    public void checkComplete() throws IOException {
+    protected void checkComplete() throws IOException {
         if (!isComplete) {
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " RUNNING POST DELAY");
             handler.postDelayed(runnable, 1500);
@@ -1207,42 +1260,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private Future updateTicketsFuture() {
-        return executorService.submit(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                    updateTickets();
-//                    updateNotifications();
-                    Log.d(TAG, "future: tickets " + tickets);
-                    Log.d(TAG, "future: ticketsv2 " + ticketsv2);
-                    String threadName = Thread.currentThread().getName();
-                    Log.d(TAG, "future: thread name " + threadName);
-                    if (ticketsv2 <= tickets) {
-                        ticketsv2 = 0;
-                        Log.d(TAG, "future: tickets " + tickets);
-                        Log.d(TAG, "future: ticketsv2 " + ticketsv2);
-                    } else {
-                        tickets = ticketsv2;
-                        ticketsv2 = 0;
-                        Log.d(TAG, "future: This is the updated number of tickets today: " + Integer.toString(tickets));
-                        ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
-                        long avgResponseTime = responseTime2 / tickets;
-                        Log.i(TAG, "future: This is the updated average response time: " + avgResponseTime);
-                        ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
-                    }
-                    futureProcess = updateTicketsFuture();
-                    Log.d("THREAD", "running futureThread: " + futureProcess);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        });
-    }
-
-    public void updateTickets() {
+    protected void updateTickets() {
 
         Log.d(TAG, "updateTickets: UPDATING");
         //retrofitclient
@@ -1397,35 +1415,42 @@ public class MainActivity extends AppCompatActivity {
         Call<ResponseBody> call = retrofitInterface.getAllTVReports();
         call.enqueue(new Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                String text;
-                ArrayList<String> arrayList = new ArrayList<>();
-                try {
-                    text = response.body().string();
-                    JSONObject jsonObject = new JSONObject(text);
-                    for (int i = 0; i < jsonObject.length(); i++) {
-                        JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
-                        if (object.get("last_online").toString().contains("seconds")) {
-                            lastonlineString = object.getString("last_online");
-                            String lastOLResult = (lastonlineString.substring(0, 1));
-                            if (Integer.parseInt(lastOLResult) < 59) {
-                                Log.d(TAG, "LESS" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
-                                arrayList.add(object.getString("name") + " | ");
+            public void onResponse(Call<ResponseBody> call, final Response<ResponseBody> response) {
+                runnable3 = new Runnable() {
+                    @Override
+                    public void run() {
+                        String text;
+                        ArrayList<String> arrayList = new ArrayList<>();
+                        ResponseBody responseBody = response.body();
+                        try {
+                            text = responseBody.string();
+                            JSONObject jsonObject = new JSONObject(text);
+                            for (int i = 0; i < jsonObject.length(); i++) {
+                                JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
+                                if (object.get("last_online").toString().contains("seconds")) {
+                                    lastonlineString = object.getString("last_online");
+                                    String lastOLResult = (lastonlineString.substring(0, 1));
+                                    if (Integer.parseInt(lastOLResult) < 59) {
+                                        Log.d(TAG, "LESS" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                                        arrayList.add(object.getString("name") + " | ");
+                                    }
+                                } else {
+                                    Log.d(TAG, "MInutes" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                                }
                             }
-                        } else {
-                            Log.d(TAG, "MInutes" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                            Log.d(TAG, "KLIP: " + jsonObject.get("0"));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            Log.e(TAG, "KLIP err: ", e);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } finally {
+                            String joined = TextUtils.join(" ", arrayList);
+                            marqueeView.setText(joined);
                         }
                     }
-                    Log.d(TAG, "KLIP: " + jsonObject.get("0"));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Log.e(TAG, "KLIP err: ", e);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } finally {
-                    String joined = TextUtils.join(" ", arrayList);
-                    marqueeView.setText(joined);
-                }
+                };
+                handler3.postDelayed(runnable3, TimeUnit.MINUTES.toMillis(30));
             }
 
             @Override
@@ -1433,25 +1458,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "KLIP err: ", t);
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (doubleBackToExitPressedOnce) {
-            super.onBackPressed();
-            return;
-        }
-
-        this.doubleBackToExitPressedOnce = true;
-        Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-
-        new Handler().postDelayed(new Runnable() {
-
-            @Override
-            public void run() {
-                doubleBackToExitPressedOnce = false;
-            }
-        }, 2000);
     }
 
 //    public void updateNotifications() {
