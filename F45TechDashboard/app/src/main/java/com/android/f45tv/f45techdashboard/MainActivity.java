@@ -182,7 +182,7 @@ public class MainActivity extends AppCompatActivity {
         marqueeView.setSingleLine(true);
         //Deputy
 //        loadingscreen.setVisibility(View.GONE);
-        startKlipfolio();
+//        startKlipfolio();
     }
     public class MyAxisValueFormatter implements IAxisValueFormatter {
 
@@ -1077,7 +1077,7 @@ public class MainActivity extends AppCompatActivity {
             Log.d("HERE", "ISCOMPLETE: " + isComplete + " STOPPING POST DELAY");
             if (!firstRunThrough) {
                 loadingscreen.setVisibility(View.GONE);
-//                startKlipfolio();
+                startKlipfolio();
                 timerController.setTimer(TimeUnit.MINUTES.toMillis(30), 1000);
                 int[] opened = {janO, febO, marO, aprilO, mayO, junO, julO, augO, sepO, octO, novO, decO};
                 int[] resolved = {janR, febR, marR, aprilR, mayR, junR, julR, augR, sepR, octR, novR, decR};
@@ -1421,15 +1421,16 @@ public class MainActivity extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(text);
                             for (int i = 0; i < jsonObject.length(); i++) {
                                 JSONObject object = jsonObject.getJSONObject(Integer.toString(i));
-                                if (object.get("last_online").toString().contains("seconds")) {
+                                if (object.get("last_online").toString().contains("minutes") ) {
                                     lastonlineString = object.getString("last_online");
                                     String lastOLResult = (lastonlineString.substring(0, 1));
-                                    if (Integer.parseInt(lastOLResult) < 59) {
-                                        Log.d(TAG, "LESS" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                                    if (Integer.parseInt(lastOLResult) >= 30) {
+                                        //Log.d(TAG, "LESS" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
                                         arrayList.add(object.getString("name") + " | ");
                                     }
-                                } else {
-                                    Log.d(TAG, "MInutes" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                                } else if (object.get("last_online").toString().contains("hour") || object.get("last_online").toString().contains("hours") ) {
+                                    //Log.d(TAG, "MInutes" + "Name: " + object.getString("name") + "LastOL" + object.getString("last_online"));
+                                    arrayList.add(object.getString("name") + " | ");
                                 }
                             }
                             Log.d(TAG, "KLIP: " + jsonObject.get("0"));
@@ -1445,7 +1446,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 };
                 runnable3.run();
-                handler3.postDelayed(runnable3, TimeUnit.MINUTES.toMillis(30));
+                handler3.postDelayed(runnable3, TimeUnit.MINUTES.toMillis(10));
             }
 
             @Override
