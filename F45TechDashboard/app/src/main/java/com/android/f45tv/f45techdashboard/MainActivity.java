@@ -224,12 +224,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        timerController.pauseCount();
-    }
-
-    @Override
     public void onBackPressed() {
         if (doubleBackToExitPressedOnce) {
             super.onBackPressed();
@@ -1450,6 +1444,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 };
+                runnable3.run();
                 handler3.postDelayed(runnable3, TimeUnit.MINUTES.toMillis(30));
             }
 
