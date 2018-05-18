@@ -65,8 +65,8 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                     holder.row_entry.setBackground(ContextCompat.getDrawable(context, R.drawable.layout_roundedclicked));
                     notifyDataSetChanged();
                 }
-                int num = notificationController.getPosition();
-                Toast.makeText(context, "Read Ticket #"+(num + 1) , Toast.LENGTH_SHORT).show();
+//                int num = notificationController.getPosition();
+//                Toast.makeText(context, "Read Ticket #"+(num + 1) , Toast.LENGTH_SHORT).show();
             }
         });
 

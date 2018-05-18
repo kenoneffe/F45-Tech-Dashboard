@@ -260,7 +260,7 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     Thread.sleep(2000);
                     updateTickets();
-//                    updateNotifications();
+//                    startKlipfolio();
                     Log.d(TAG, "future: tickets " + tickets);
                     Log.d(TAG, "future: ticketsv2 " + ticketsv2);
                     String threadName = Thread.currentThread().getName();
@@ -1330,6 +1330,7 @@ public class MainActivity extends AppCompatActivity {
 //                                                Log.e(TAG, "onResponse: error in parsing created at");
 //                                            }
 //                                        }
+
                                         if (model.get(i).created_at.contains(formatter.format(date)) && a.department != null && a.department.equals("Tech Systems")) {
                                             NotificationController reference = new NotificationController(Integer.parseInt(model.get(i).id), model.get(i).subject, model.get(i).source, model.get(i).priority);
                                             Log.d(TAG, "onStartNotifications: array size " + notificationList.size());
@@ -1346,20 +1347,23 @@ public class MainActivity extends AppCompatActivity {
                                                 * */
                                                 tickets++;
                                                 try {
+                                                    ticketVolumeController.setTicketVolumeText(Integer.toString(tickets));
                                                     Date updated_at = dateFormat.parse(model.get(i).updated_at);
                                                     Date created_at = dateFormat.parse(model.get(i).created_at);
                                                     long diff = updated_at.getTime() - created_at.getTime();
                                                     long rT = diff / 1000;
-                                                    responseTime2 += rT;
+                                                    responseTime += rT;
+                                                    long avgResponseTime = 1;
+                                                    if (tickets != 0) {
+                                                        avgResponseTime = responseTime / tickets; //change to tickets
+                                                    }
+                                                    ticketVolumeController.setResponseTimeText(Long.toString(avgResponseTime));
                                                 } catch (ParseException e) {
                                                     e.printStackTrace();
                                                     Log.e(TAG, "onResponse: error in parsing created at");
                                                 }
-
-
                                                 adapter.notifyDataSetChanged();
                                                 adapter.setNotificationList(notificationList);
-
                                             } else {
                                                 Log.d(TAG, "isDup: skipped due to duplicate entry...");
                                             }
@@ -1454,6 +1458,7 @@ public class MainActivity extends AppCompatActivity {
                         } catch (IOException e) {
                             e.printStackTrace();
                             Log.e(TAG, "KLIP err: ", e);
+                            startKlipfolio();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } finally {
@@ -1462,13 +1467,15 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 };
+
                 runnable3.run();
-                //handler3.postDelayed(runnable3, TimeUnit.MINUTES.toMillis(10));
+
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e(TAG, "KLIP err: ", t);
+                startKlipfolio();
             }
         });
     }
