@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notificationLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/layout_rounded">
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow
+
+            android:id="@+id/row_entry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#957a87ce"
+            android:weightSum="1">
+
+            <TextView
+
+                android:id="@+id/priority_entry"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".015"
+                android:gravity="center"
+                android:text="High"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+
+                android:id="@+id/source_entry"
+                android:layout_width="100dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".085"
+                android:gravity="center"
+                android:text="Email"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/subject_entry"
+                android:layout_width="500dp"
+                android:layout_height="wrap_content"
+                android:layout_weight=".90"
+                android:ellipsize="end"
+                android:gravity="start"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="Sample Subject Using Recycler View blah blah blah test test test"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
